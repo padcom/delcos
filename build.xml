@@ -3,13 +3,15 @@
 <project name="delcos" default="all">
 	<property environment="env"/> 
 	<target name="all" depends="clean,compile"/>
-	<target name="compile">
-		<mkdir dir="build/bin" />
-		<mkdir dir="build/obj" />
+	<target name="prepare_version_info">
 		<exec executable="svnversion" outputproperty="build.revision">
 			<arg value="-n" />
 		</exec>
 		<echo file="cui/revision.inc">const REVISION='${build.revision}';</echo>
+	</target>
+	<target name="compile" depends="prepare_version_info">
+		<mkdir dir="build/bin" />
+		<mkdir dir="build/obj" />
 		<exec executable="dcc32">
 			<arg value="-q" />
 			<arg value="-v-" />
@@ -21,6 +23,7 @@
 	</target>
 	<target name="clean">
 		<delete dir="build"/>
+		<delete file="cui/revision.inc"/>
 	</target>
 	<target name="install" depends="compile">
 		<copy file="build/bin/delcos.exe" todir="${env.SystemRoot}"/>
