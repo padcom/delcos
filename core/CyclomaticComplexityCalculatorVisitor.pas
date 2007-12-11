@@ -124,12 +124,17 @@ end;
 
 function TCyclomaticComplexityCalculatorVisitor.CreateNewMethodFromNode(Node: TParseTreeNode): TMethod;
 begin
-  Result := TMethod.Create;
-  Result.FHeadingNode := Node.ChildNodes[0];
-  Result.FBlockNode := Node.ChildNodes[2];
-  Result.FEndNode := Node.ChildNodes[3];
-  Methods.Add(Result);
-  Result.FParent := FCurrentMethod;
+  if Node.ChildNodeCount < 4 then
+    Result := FCurrentMethod
+  else
+  begin
+    Result := TMethod.Create;
+    Result.FHeadingNode := Node.ChildNodes[0];
+    Result.FBlockNode := Node.ChildNodes[2];
+    Result.FEndNode := Node.ChildNodes[3];
+    Methods.Add(Result);
+    Result.FParent := FCurrentMethod;
+  end;
 end;
 
 procedure TCyclomaticComplexityCalculatorVisitor.ProcessSourceToken(Token: TSourceToken);
@@ -138,7 +143,8 @@ begin
     ttIf: Inc(FCurrentMethod.FIfCount);
     ttAnd: Inc(FCurrentMethod.FAndCount);
     ttOr: Inc(FCurrentMethod.FOrCount);
-    ttElse: if TSourceToken(Token.NextLeafNode).TokenType <> ttIf then Inc(FCurrentMethod.FElseCount);
+    ttElse: if Token.NextLeafNode <> nil then
+      if TSourceToken(Token.NextLeafNode).TokenType <> ttIf then Inc(FCurrentMethod.FElseCount);
     ttFor: Inc(FCurrentMethod.FForCount);
     ttWhile: Inc(FCurrentMethod.FWhileCount);
     ttRepeat: Inc(FCurrentMethod.FRepeatCount);
@@ -171,4 +177,5 @@ begin
 end;
 
 end.
+
 

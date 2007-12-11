@@ -59,23 +59,37 @@ begin
     Exit;
 
   Parent := Root.Parent;
+  if Assigned(Parent) then
+    OldCount := Parent.ChildNodeCount
+  else
+    OldCount := -1;
   Visitor.Visit(Root);
 
-  if ContainsNode(Parent, Root) then
-  begin
-    I := 0;
-    while I < Root.ChildNodeCount do
+  try
+    if (not Assigned(Parent)) or (OldCount = Parent.ChildNodeCount) then
+  //  if ContainsNode(Parent, Root) then
     begin
-      Node := Root.ChildNodes[I];
-      OldCount := Root.ChildNodeCount;
-      Walk(Node, Visitor);
-      if OldCount = Root.ChildNodeCount then
-//      if ContainsNode(Root, Node) then
-        Inc(I);
+      I := 0;
+      while I < Root.ChildNodeCount do
+      begin
+        Node := Root.ChildNodes[I];
+        OldCount := Root.ChildNodeCount;
+        Walk(Node, Visitor);
+        if OldCount = Root.ChildNodeCount then
+  //      if ContainsNode(Root, Node) then
+          Inc(I);
+      end;
+    end;
+  except
+    on E: Exception do
+    begin
+      Writeln(E.Message);
+      raise;
     end;
   end;
 end;
 
 end.
+
 
 
