@@ -11,6 +11,7 @@ type
   private
     function GetHelp: Boolean;
     function GetQuiet: Boolean;
+    function GetPrintVersion: Boolean;
     function GetInputFile: String;
     function GetSearchPath: TStrings;
     function GetDumpDebugTree: Boolean;
@@ -24,11 +25,13 @@ type
     procedure CreateOptions; override;
     procedure AfterParseOptions; override;
     procedure WriteProgramHeader;
+    procedure WriteProgramVersion;
   public
     class function Instance: TOptions;
     constructor Create;
     property Help: Boolean read GetHelp;
     property Quiet: Boolean read GetQuiet;
+    property PrintVersion: Boolean read GetPrintVersion;
     property InputFile: String read GetInputFile;
     property SearchPath: TStrings read GetSearchPath;
     property DumpDebugTree: Boolean read GetDumpDebugTree;
@@ -55,6 +58,11 @@ end;
 function TOptions.GetQuiet: Boolean;
 begin
   Result := ByName['quiet'].Value;
+end;
+
+function TOptions.GetPrintVersion: Boolean;
+begin
+  Result := ByName['version'].Value;
 end;
 
 function TOptions.GetInputFile: String;
@@ -115,6 +123,8 @@ begin
     Explanation := 'Show help';
   with AddOption(TPxBoolOption.Create('q', 'quiet')) do
     Explanation := 'Be quiet';
+  with AddOption(TPxBoolOption.Create(#0, 'version')) do
+    Explanation := 'Print version information and exit';
   with AddOption(TPxStringOption.Create('i', 'input-file')) do
     Explanation := 'Input file (unit or delphi project)';
   with TPxPathListOption(AddOption(TPxPathListOption.Create(#0, 'search-path'))) do
@@ -140,6 +150,7 @@ begin
     try
       OnWriteProgramHeader := WriteProgramHeader;
       OnWriteExplanations := WriteExplanations;
+      OnWriteProgramVersion := WriteProgramVersion;
       Validate;
       if ExtractFilePath(InputFile) <> '' then
       begin
@@ -155,6 +166,13 @@ procedure TOptions.WriteProgramHeader;
 begin
   Writeln(ExtractFileName(ParamStr(0)), ' - Delphi Code Statistics Generator');
   Writeln('Copyright (c) 2005-2007 Matthias Hryniszak');
+  Writeln;
+end;
+
+procedure TOptions.WriteProgramVersion;
+{$I revision.inc}
+begin
+  Writeln('version 1.0 (r', REVISION, ')');
   Writeln;
 end;
 
@@ -179,6 +197,7 @@ finalization
   TOptions.Shutdown;
 
 end.
+
 
 
 

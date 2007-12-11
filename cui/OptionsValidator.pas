@@ -12,14 +12,17 @@ type
   private
     FOnWriteProgramHeader: TConsoleOutputEvent;
     FOnWriteExplanations: TConsoleOutputEvent;
+    FOnWriteProgramVersion: TConsoleOutputEvent;
     procedure UpdateSearchPathFromDOFFile;
   protected
     procedure DoWriteProgramHeader;
     procedure DoWriteExplanations;
+    procedure DoWriteProgramVersion;
   public
     procedure Validate;
     property OnWriteProgramHeader: TConsoleOutputEvent read FOnWriteProgramHeader write FOnWriteProgramHeader;
     property OnWriteExplanations: TConsoleOutputEvent read FOnWriteExplanations write FOnWriteExplanations;
+    property OnWriteProgramVersion: TConsoleOutputEvent read FOnWriteProgramVersion write FOnWriteProgramVersion;
   end;
 
 implementation
@@ -67,6 +70,12 @@ begin
     FOnWriteExplanations;
 end;
 
+procedure TOptionsValidator.DoWriteProgramVersion;
+begin
+  if Assigned(FOnWriteProgramVersion) then
+    FOnWriteProgramVersion;
+end;
+
 { Public declarations }
 
 procedure TOptionsValidator.Validate;
@@ -76,6 +85,11 @@ begin
   if TOptions.Instance.Help then
   begin
     DoWriteExplanations;
+    Halt(0);
+  end;
+  if TOptions.Instance.PrintVersion then
+  begin
+    DoWriteProgramVersion;
     Halt(0);
   end;
   if TOptions.Instance.InputFile = '' then
@@ -97,4 +111,5 @@ begin
 end;
 
 end.
+
 

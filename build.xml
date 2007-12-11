@@ -6,6 +6,11 @@
 	<target name="compile">
 		<mkdir dir="build/bin" />
 		<mkdir dir="build/obj" />
+		<exec executable="svnversion" output="cui/revision.h">
+			<arg value="-n" />
+		</exec>
+		<loadfile srcfile="cui/revision.h" property="build.revision"/>
+		<echo file="cui/revision.inc">const REVISION='${build.revision}';</echo>
 		<exec executable="dcc32">
 			<arg value="-q" />
 			<arg value="-v-" />
