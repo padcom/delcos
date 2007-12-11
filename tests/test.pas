@@ -2,6 +2,11 @@ unit test;
 
 interface
 
+uses
+  Test2;
+
+{$I test.inc}
+
 implementation
 
 procedure TestMe1;

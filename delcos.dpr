@@ -10,6 +10,7 @@ uses
   SourceTreeWalker in 'core\SourceTreeWalker.pas',
   SourceTreeDumperVisitor in 'core\SourceTreeDumperVisitor.pas',
   UnitRegistry in 'core\UnitRegistry.pas',
+  IncludeParser in 'core\IncludeParser.pas',
   ProjectUnitsRegistratorVisitor in 'core\ProjectUnitsRegistratorVisitor.pas',
   UsesTreeBuilderVisitor in 'core\UsesTreeBuilderVisitor.pas',
   CyclomaticComplexityCalculatorVisitor in 'core\CyclomaticComplexityCalculatorVisitor.pas';
@@ -45,6 +46,38 @@ begin
   Result := Copy(Result, 1, Length(Result) - Length(ExtractFileExt(Result)));
 end;
 
+procedure DumpIncludes;
+var
+  I, J: Integer;
+  Units, AllIncludes, Includes: TStrings;
+begin
+  AllIncludes := TStringList.Create;
+  try
+    Includes := TStringList.Create;
+    try
+      Units := TStringList.Create;
+      try
+        TUnitRegistry.Instance.GetAllRegisteredUnitsNames(Units);
+        for I := 0 to Units.Count - 1 do
+        begin
+          TUnitRegistry.Instance.GetUnitIncludes(Units[I], Includes);
+          for J := 0 to Includes.Count - 1 do
+            if AllIncludes.IndexOf(UpperCase(Trim(Includes[J]))) = -1 then
+              AllIncludes.Add(UpperCase(Trim(Includes[J])))
+        end;
+      finally
+        Units.Free;
+      end;
+    finally
+      Includes.Free;
+    end;
+
+    Write(AllIncludes.Text);
+  finally
+    AllIncludes.Free;
+  end;
+end;
+
 var
   Output: TStrings;
   RootUnit: String;
@@ -63,11 +96,17 @@ begin
         if TOptions.Instance.DumpDebugTree then
           Walk(Root, TSourceTreeDumperVisitor.Create(Output) as INodeVisitor);
         if TOptions.Instance.DumpUsesTree then
+        begin
           Walk(Root, TUsesTreeBuilderVisitor.Create(vmSimple, Output) as INodeVisitor);
+          Write(Output.Text);
+          DumpIncludes;
+        end;
         if TOptions.Instance.DumpAdvancedUsesTree then
+        begin
           Walk(Root, TUsesTreeBuilderVisitor.Create(vmFull, Output) as INodeVisitor);
-
-        Write(Output.Text);
+          Write(Output.Text);
+          DumpIncludes;
+        end;
 
         if TOptions.Instance.DumpCyclomaticComplexity then
           DumpCyclomaticComplexity;
@@ -77,4 +116,5 @@ begin
     end;
   end;
 end.
+
 

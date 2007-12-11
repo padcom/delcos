@@ -111,7 +111,10 @@ begin
   with AddOption(TPxStringOption.Create('i', 'input-file')) do
     Explanation := 'Input file (unit or delphi project)';
   with TPxPathListOption(AddOption(TPxPathListOption.Create(#0, 'search-path'))) do
+  begin
     Explanation := 'Additional search path';
+    Values.Add('');
+  end;
   with AddOption(TPxBoolOption.Create('d', 'dump-debug-tree')) do
     Explanation := 'Dump debug source tree';
   with AddOption(TPxBoolOption.Create('u', 'dump-uses-tree')) do
@@ -167,4 +170,5 @@ finalization
   TOptions.Shutdown;
 
 end.
+
 
