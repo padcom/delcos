@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<project name="delcos" default="all">
+	<property environment="env"/> 
+	<target name="all" depends="clean,compile"/>
+	<target name="compile">
+		<mkdir dir="build/bin" />
+		<mkdir dir="build/obj" />
+		<exec executable="dcc32">
+			<arg value="-q" />
+			<arg value="-v-" />
+			<arg value="-$D-" />
+			<arg value="-$O+" />
+			<arg value="-$W-" />
+			<arg value="delcos.dpr" />
+		</exec>
+	</target>
+	<target name="clean">
+		<delete dir="build"/>
+	</target>
+	<target name="install" depends="compile">
+		<copy file="build/bin/delcos.exe" todir="${env.SystemRoot}"/>
+	</target>
+</project>

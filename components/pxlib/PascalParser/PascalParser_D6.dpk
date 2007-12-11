@@ -1,0 +1,52 @@
+package PascalParser_D6;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'PascalParser library'}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  vcl,
+  vclx,
+  designide;
+
+contains
+  BuildParseTree in 'BuildParseTree.pas',
+  BuildTokenList in 'BuildTokenList.pas',
+  Nesting in 'Nesting.pas',
+  PreProcessorParseTree in 'PreProcessorParseTree.pas',
+  PreProcessorExpressionParser in 'PreProcessorExpressionParser.pas',
+  PreProcessorExpressionTokens in 'PreProcessorExpressionTokens.pas',
+  PreProcessorExpressionTokenise in 'PreProcessorExpressionTokenise.pas',
+  ParserUtils in 'ParserUtils.pas',
+  ParseError in 'ParseError.pas',
+  ParseTreeNode in 'ParseTreeNode.pas',
+  ParseTreeNodeType in 'ParseTreeNodeType.pas',
+  PascalParser in 'PascalParser.pas',
+  SourceToken in 'SourceToken.pas',
+  SourceTokenList in 'SourceTokenList.pas',
+  Tokens in 'Tokens.pas',
+  TokenUtils in 'TokenUtils.pas';
+
+end.

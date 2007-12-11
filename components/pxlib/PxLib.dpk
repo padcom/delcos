@@ -1,0 +1,81 @@
+package PxLib;
+
+{$I PxDefines.inc}
+
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION OFF}
+{$OVERFLOWCHECKS ON}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$IMPLICITBUILD OFF}
+
+requires
+{$IFDEF VER130}
+  vcl50, vclx50;
+{$ENDIF}  
+{$IFDEF VER140}
+  rtl, vcl;
+{$ENDIF}
+{$IFDEF VER150}
+  rtl, vcl;
+{$ENDIF}
+
+contains
+  PxBase in 'PxBase.pas',
+  PxAviWriter in 'PxAviWriter.pas',
+  PxBOOTPServer in 'PxBOOTPServer.pas',
+  PxClasses in 'PxClasses.pas',
+  PxCodeGen in 'PxCodeGen.pas',
+  PxCommandLine in 'PxCommandLine.pas',
+  PxCRC in 'PxCRC.pas',
+//  PxCrt32 in 'PxCrt32.pas',
+  PxCSV in 'PxCSV.pas',
+//  PxFarPlugin in 'PxFarPlugin.pas',
+  PxDataFile in 'PxDataFile.pas',
+  PxDataFileGenerator in 'PxDataFileGenerator.pas',
+{$IFDEF VER130}
+  PxDelphi5 in 'PxDelphi5.pas',
+{$ENDIF}  
+//  PxDTDFile in 'PxDTDFile.pas',
+  PxFPC in 'PxFPC.pas',
+  PxGetText in 'PxGetText.pas',
+  PxGUI in 'PxGUI.pas',
+  PxLog in 'PxLog.pas',
+  PxMathParser in 'PxMathParser.pas',
+  PxNetwork in 'PxNetwork.pas',
+  PxNeuralNetwork in 'PxNeuralNetwork.pas',
+  PxRemoteStream in 'PxRemoteStream.pas',
+  PxRemoteStreamDefs in 'PxRemoteStreamDefs.pas',
+  PxRemoteStreamServer in 'PxRemoteStreamServer.pas',
+  PxResources in 'PxResources.pas',
+{$IFDEF VER150}
+//  PxService in 'PxService.pas',
+{$ENDIF}  
+  PxSettings in 'PxSettings.pas',
+  PxSocket in 'PxSocket.pas',
+  PxSocketStream in 'PxSocketStream.pas',
+  PxSplash in 'PxSplash.pas',
+  PxStrUtils in 'PxStrUtils.pas',
+  PxThread in 'PxThread.pas',
+  PxUtils in 'PxUtils.pas',
+  PxProfiler in 'PxProfiler.pas',
+  PxNdisProt in 'PxNdisProt.pas',
+  PxWin32Utils in 'PxWin32Utils.pas',
+  PxXmlFile in 'PxXmlFile.pas';
+
+end.

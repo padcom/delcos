@@ -1,0 +1,4279 @@
+<?xml version="1.0"?>
+
+<codes>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25MAY06</LastDateModified>
+    <LastTimeModified>1640</LastTimeModified>
+    <LastUserToModify>DRBA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXSOURCEDIR </Identifier>
+    <CodeLength>12</CodeLength>
+    <AlternateCode>SEE DESC    </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>C:\FLTCTRL\WXFILES\TXT\                 </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>23JAN01</LastDateModified>
+    <LastTimeModified>1434</LastTimeModified>
+    <LastUserToModify>BHAN</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXDECODECHK </Identifier>
+    <CodeLength>11</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>05</InternalCode>
+    <Description>chks for fdrecv/gribload are running    </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>08NOV99</LastDateModified>
+    <LastTimeModified>1041</LastTimeModified>
+    <LastUserToModify>BHAN</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>GRIBLOADCHK </Identifier>
+    <CodeLength>11</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>05</InternalCode>
+    <Description>chks for fdrecv/wxdecode are running    </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>23JAN01</LastDateModified>
+    <LastTimeModified>1434</LastTimeModified>
+    <LastUserToModify>BHAN</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>FDRECVCHK   </Identifier>
+    <CodeLength>09</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>05</InternalCode>
+    <Description>chks for gribload/wxcode are running    </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>26JUN02</LastDateModified>
+    <LastTimeModified>1553</LastTimeModified>
+    <LastUserToModify>BHAN</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>FDWATCHCHK  </Identifier>
+    <CodeLength>10</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>05</InternalCode>
+    <Description>"05" mins btwn chk that fdwatch is runng</Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>23MAR01</LastDateModified>
+    <LastTimeModified>1416</LastTimeModified>
+    <LastUserToModify>BHAN</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>FDWATCH </CodeType>
+    <Identifier>INTERVAL    </Identifier>
+    <CodeLength>08</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>01</InternalCode>
+    <Description>"internal" nmbr mins between all checks </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>17JAN02</LastDateModified>
+    <LastTimeModified>0841</LastTimeModified>
+    <LastUserToModify>DRBA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXTIMEFILES </Identifier>
+    <CodeLength>12</CodeLength>
+    <AlternateCode>999         </AlternateCode>
+    <InternalCode>99</InternalCode>
+    <Description>ALT CODE IS NBR OF FILES TO CHECK IN LG </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>19MAR02</LastDateModified>
+    <LastTimeModified>1401</LastTimeModified>
+    <LastUserToModify>BHAN</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXKEEPSTART </Identifier>
+    <CodeLength>11</CodeLength>
+    <AlternateCode>0000        </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>TIME TO START SAVING TEXT SOURCE FILES  </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>11AUG02</LastDateModified>
+    <LastTimeModified>2041</LastTimeModified>
+    <LastUserToModify>BHAN</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXKEEPEND   </Identifier>
+    <CodeLength>09</CodeLength>
+    <AlternateCode>2359        </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>TIME TO STOP SAVING TEXT SOURCE FILES   </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25MAY06</LastDateModified>
+    <LastTimeModified>1641</LastTimeModified>
+    <LastUserToModify>DRBA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXKEEPDIR   </Identifier>
+    <CodeLength>09</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>C:\FLTCTRL\WXFILES\TXT\KEEP\            </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>17JAN02</LastDateModified>
+    <LastTimeModified>0841</LastTimeModified>
+    <LastUserToModify>DRBA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXTIMEFILES </Identifier>
+    <CodeLength>12</CodeLength>
+    <AlternateCode>999         </AlternateCode>
+    <InternalCode>99</InternalCode>
+    <Description>ALT CODE IS NBR OF FILES TO CHECK IN LG </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>17JAN02</LastDateModified>
+    <LastTimeModified>0839</LastTimeModified>
+    <LastUserToModify>DRBA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>A           </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>SA FT       </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>ACARS WEATHER REQUEST                   </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1705</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>AB          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>ANALYSES    </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Weather Summaries                       </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1705</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>AC          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>ANALYSES    </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Convective Analyses                     </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1636</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>AD          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>ADMIN       </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Administrative Messages                 </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1705</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>AH          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>ANALYSES    </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Thickness Analyses                      </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1705</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>AL          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>ANALYSES    </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Zonal Wind Analyses                     </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>22MAY98</LastDateModified>
+    <LastTimeModified>2049</LastTimeModified>
+    <LastUserToModify>KMMF</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>AMD         </Identifier>
+    <CodeLength>03</CodeLength>
+    <AlternateCode>FT          </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>TAFORS                                  </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1706</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>AT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>ANALYSES    </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>3-hourly Analyses                       </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1706</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>AU          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>ANALYSES    </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Upper Air Analyses                      </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1706</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>AV          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>ANALYSES    </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Vertical Motion Analyses                </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1706</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>AW          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>ANALYSES    </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Wind Analyses                           </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1707</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>AX          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>ANALYSES    </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Miscellaneous Analyses                  </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1707</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>AZ          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>ANALYSES    </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Zonal Analyses                          </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>23SEP93</LastDateModified>
+    <LastTimeModified>1628</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>CMP         </Identifier>
+    <CodeLength>03</CodeLength>
+    <AlternateCode>IMAGE       </AlternateCode>
+    <InternalCode>21</InternalCode>
+    <Description>Radar Composite                         </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1636</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>CS          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>CLIMATE     </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Surface Climate Data                    </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1636</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>CU          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>CLIMATE     </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Upper Air Climate Data                  </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1637</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>DF          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>FALLOUT     </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Fallout Data Forecasts                  </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>13DEC97</LastDateModified>
+    <LastTimeModified>0718</LastTimeModified>
+    <LastUserToModify>KMMF</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FA          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>FA          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>AREA FORECASTS                          </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>12FEB97</LastDateModified>
+    <LastTimeModified>2216</LastTimeModified>
+    <LastUserToModify>zzzz</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FB          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>FA          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>AVIATION FORECASTS                      </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1655</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FC          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>FT          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>TAF-Short Period                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25OCT93</LastDateModified>
+    <LastTimeModified>1608</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FD          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>FD          </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>Winds Aloft Forecasts                   </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>04APR95</LastDateModified>
+    <LastTimeModified>1645</LastTimeModified>
+    <LastUserToModify>JESA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDAK1       </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FD1         </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>winds aloft forecast (CANADA)           </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>04APR95</LastDateModified>
+    <LastTimeModified>1645</LastTimeModified>
+    <LastUserToModify>JESA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDAK2       </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FD2         </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>winds aloft forecast (CANADA)           </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>04APR95</LastDateModified>
+    <LastTimeModified>1646</LastTimeModified>
+    <LastUserToModify>JESA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDAK3       </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FD3         </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>winds aloft forecast (CANADA)           </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>21NOV95</LastDateModified>
+    <LastTimeModified>2111</LastTimeModified>
+    <LastUserToModify>JESA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDCN01      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FDL1        </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>winds aloft forecast (CANADA)           </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>21NOV95</LastDateModified>
+    <LastTimeModified>2111</LastTimeModified>
+    <LastUserToModify>JESA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDCN02      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FDL2        </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>winds aloft forecast (CANADA)           </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>21NOV95</LastDateModified>
+    <LastTimeModified>2111</LastTimeModified>
+    <LastUserToModify>JESA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDCN03      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FDL3        </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>winds aloft forecast (CANADA)           </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>21NOV95</LastDateModified>
+    <LastTimeModified>2112</LastTimeModified>
+    <LastUserToModify>JESA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDCN1       </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FDH1        </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>winds aloft forecast (CANADA)           </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>21NOV95</LastDateModified>
+    <LastTimeModified>2112</LastTimeModified>
+    <LastUserToModify>JESA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDCN2       </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FDH2        </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>winds aloft forecast (CANADA)           </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>21NOV95</LastDateModified>
+    <LastTimeModified>2112</LastTimeModified>
+    <LastUserToModify>JESA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDCN3       </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FDH3        </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>winds aloft forecast (CANADA)           </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25OCT93</LastDateModified>
+    <LastTimeModified>1609</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDCN50      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FD1         </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>Winds Aloft Forecasts                   </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25OCT93</LastDateModified>
+    <LastTimeModified>1609</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDCN51      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FD2         </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>Winds Aloft Forecasts                   </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25OCT93</LastDateModified>
+    <LastTimeModified>1609</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDCN52      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FD3         </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>Winds Aloft Forecasts                   </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25OCT93</LastDateModified>
+    <LastTimeModified>1610</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDCN53      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FD1         </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>Winds Aloft Forecasts                   </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25OCT93</LastDateModified>
+    <LastTimeModified>1610</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDCN54      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FD2         </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>Winds Aloft Forecasts                   </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25OCT93</LastDateModified>
+    <LastTimeModified>1610</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDCN55      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FD3         </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>Winds Aloft Forecasts                   </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>04JUN98</LastDateModified>
+    <LastTimeModified>2241</LastTimeModified>
+    <LastUserToModify>KMMF</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDCNO       </Identifier>
+    <CodeLength>05</CodeLength>
+    <AlternateCode>FDC         </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>FDC Notams                              </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>21NOV95</LastDateModified>
+    <LastTimeModified>1950</LastTimeModified>
+    <LastUserToModify>JESA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDHW        </Identifier>
+    <CodeLength>04</CodeLength>
+    <AlternateCode>FD          </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>winds aloft forecast HAWAII             </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>18MAR97</LastDateModified>
+    <LastTimeModified>1460</LastTimeModified>
+    <LastUserToModify>JESA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDUS10      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FD3         </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>winds aloft forecast                    </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>14APR94</LastDateModified>
+    <LastTimeModified>2056</LastTimeModified>
+    <LastUserToModify>JESA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDUS11      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FD1         </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>winds aloft forecast                    </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>14APR94</LastDateModified>
+    <LastTimeModified>2056</LastTimeModified>
+    <LastUserToModify>JESA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDUS12      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FD1         </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>winds aloft forecast                    </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>14APR94</LastDateModified>
+    <LastTimeModified>2056</LastTimeModified>
+    <LastUserToModify>JESA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDUS13      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FD2         </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>winds aloft forecast                    </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>14APR94</LastDateModified>
+    <LastTimeModified>2057</LastTimeModified>
+    <LastUserToModify>JESA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDUS14      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FD2         </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>winds aloft forecast                    </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>14APR94</LastDateModified>
+    <LastTimeModified>2057</LastTimeModified>
+    <LastUserToModify>JESA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDUS15      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FD3         </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>winds aloft forecast                    </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>14APR94</LastDateModified>
+    <LastTimeModified>2057</LastTimeModified>
+    <LastUserToModify>JESA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDUS16      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FD3         </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>winds aloft forecast                    </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>27OCT93</LastDateModified>
+    <LastTimeModified>1448</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDUS50      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FD1         </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>winds aloft forecast                    </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>27OCT93</LastDateModified>
+    <LastTimeModified>1448</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDUS51      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FD2         </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>winds aloft forecast                    </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>27OCT93</LastDateModified>
+    <LastTimeModified>1449</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDUS52      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FD3         </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>winds aloft forecast                    </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>27OCT93</LastDateModified>
+    <LastTimeModified>1448</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDUS53      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FD1         </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>winds aloft forecast                    </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>27OCT93</LastDateModified>
+    <LastTimeModified>1448</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDUS54      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FD2         </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>winds aloft forecast                    </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>27OCT93</LastDateModified>
+    <LastTimeModified>1449</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDUS55      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FD3         </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>winds aloft forecast                    </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>18MAR97</LastDateModified>
+    <LastTimeModified>1459</LastTimeModified>
+    <LastUserToModify>JESA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDUS8       </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FD1         </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>winds aloft forecast                    </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>18MAR97</LastDateModified>
+    <LastTimeModified>1459</LastTimeModified>
+    <LastUserToModify>JESA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FDUS9       </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FD2         </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>winds aloft forecast                    </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>13DEC97</LastDateModified>
+    <LastTimeModified>0723</LastTimeModified>
+    <LastUserToModify>KMMF</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FE          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>FA          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Extended Forecast                       </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>26OCT05</LastDateModified>
+    <LastTimeModified>1958</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FEUS        </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>                                        </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>03FEB99</LastDateModified>
+    <LastTimeModified>1423</LastTimeModified>
+    <LastUserToModify>JESA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FEUS61      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FE          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>3 - 5 Day Extented State Forecast.      </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>03FEB99</LastDateModified>
+    <LastTimeModified>1423</LastTimeModified>
+    <LastUserToModify>JESA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FEUS62      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FE          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>3 - 5 Day Extented State Forecast.      </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>03FEB99</LastDateModified>
+    <LastTimeModified>1422</LastTimeModified>
+    <LastUserToModify>JESA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FEUS63      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FE          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>3 - 5 Day Extented State Forecast.      </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1702</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FF          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>ROUTE       </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Flight Forecasts                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1656</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FG          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>RADIO       </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Radio Service Warning                   </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1658</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FH          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>FH          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>High Altitude Forecast                  </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>02MAY97</LastDateModified>
+    <LastTimeModified>2150</LastTimeModified>
+    <LastUserToModify>KMMF</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FI          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>FI          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>ICE FORECAST                            </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1657</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FJ          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>SOLAR       </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Solar Warning                           </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1658</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FK          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>SMOG        </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Smog Pollution Forecast                 </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1659</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FM          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>FM          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Temperature Extreme Forecast            </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1701</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FN          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>FN          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Regional Forcast                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>01JUL98</LastDateModified>
+    <LastTimeModified>1651</LastTimeModified>
+    <LastUserToModify>KMMF</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FOUS14      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>FOUS        </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>Operational Forcast                     </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1702</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FP          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>FP          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Public Forecast                         </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1701</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FQ          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>FQ          </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Shipping Forecast                       </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1702</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FR          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>ROUTE       </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Route Forecast                          </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1702</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FS          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>FS          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Surface Prognostic Chart                </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>13MAR97</LastDateModified>
+    <LastTimeModified>1527</LastTimeModified>
+    <LastUserToModify>RICH</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>FT          </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>TAF-LONG PERIOD                         </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1703</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FU          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>FU          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Upper Air Prognostic Chart              </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1704</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FW          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>FW          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Winter Sports Forecast                  </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1704</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FX          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>FX          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Miscellaneous Forecast                  </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1704</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>FZ          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>FZ          </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Marine Forecast                         </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>02MAY97</LastDateModified>
+    <LastTimeModified>2150</LastTimeModified>
+    <LastUserToModify>KMMF</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>MET         </Identifier>
+    <CodeLength>03</CodeLength>
+    <AlternateCode>SA          </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>METARS                                  </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>24JAN95</LastDateModified>
+    <LastTimeModified>2320</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>ND          </Identifier>
+    <CodeLength>03</CodeLength>
+    <AlternateCode>ND          </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Dispatcher NOTAMs                       </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>14OCT98</LastDateModified>
+    <LastTimeModified>1723</LastTimeModified>
+    <LastUserToModify>DANA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>NO          </Identifier>
+    <CodeLength>04</CodeLength>
+    <AlternateCode>NO          </AlternateCode>
+    <InternalCode>MX</InternalCode>
+    <Description>Temporary Record to keep notams coming i</Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>09APR97</LastDateModified>
+    <LastTimeModified>1811</LastTimeModified>
+    <LastUserToModify>KMMF</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>NONA        </Identifier>
+    <CodeLength>04</CodeLength>
+    <AlternateCode>N           </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>NOTAMS                                  </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>30DEC98</LastDateModified>
+    <LastTimeModified>1907</LastTimeModified>
+    <LastUserToModify>BHAN</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>NOXX        </Identifier>
+    <CodeLength>04</CodeLength>
+    <AlternateCode>NO          </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>NOTAMS                                  </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>26AUG05</LastDateModified>
+    <LastTimeModified>2016</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>NOXX02      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>NI          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>international notam format              </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>24JAN95</LastDateModified>
+    <LastTimeModified>2320</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>NP          </Identifier>
+    <CodeLength>03</CodeLength>
+    <AlternateCode>NP          </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Pilot Only NOTAMs                       </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>09APR97</LastDateModified>
+    <LastTimeModified>1811</LastTimeModified>
+    <LastUserToModify>KMMF</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>NSNA        </Identifier>
+    <CodeLength>04</CodeLength>
+    <AlternateCode>N           </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>NOTAMS                                  </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>05AUG93</LastDateModified>
+    <LastTimeModified>1902</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>NT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>N           </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>NOTAMS                                  </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>10AUG94</LastDateModified>
+    <LastTimeModified>0145</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>RDR         </Identifier>
+    <CodeLength>03</CodeLength>
+    <AlternateCode>RADAR       </AlternateCode>
+    <InternalCode>11</InternalCode>
+    <Description>                                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>17JAN02</LastDateModified>
+    <LastTimeModified>0839</LastTimeModified>
+    <LastUserToModify>DRBA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>S           </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>SA          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>ACARS WEATHER REQUEST                   </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>06MAR97</LastDateModified>
+    <LastTimeModified>2153</LastTimeModified>
+    <LastUserToModify>zzzz</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>SA          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>SA          </AlternateCode>
+    <InternalCode>I </InternalCode>
+    <Description>SURFACE AVIATION OBSERVATIONS           </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1637</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>SD          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>RADAR       </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Radar                                   </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1638</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>SE          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>EARTHQUAKE  </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Seismograph Earthquake                  </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1638</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>SF          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>ATMOSPHERE  </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Atmospherics                            </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1639</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>SG          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>EARTHQUAKE  </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Micro-Seismograph                       </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1639</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>SI          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>SYNOPTIC    </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Intermediate Synoptic                   </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1640</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>SM          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>SYNOPTIC    </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>6-hourly Synoptic                       </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1641</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>SN          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>OCEANIC     </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Oceanographic BATHY Reports             </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>02MAY97</LastDateModified>
+    <LastTimeModified>2151</LastTimeModified>
+    <LastUserToModify>KMMF</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>SP          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>SA          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>SURFACE AVIATION OBSERVATIONS-SPECIALS  </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>22MAY98</LastDateModified>
+    <LastTimeModified>2049</LastTimeModified>
+    <LastUserToModify>KMMF</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>SPECI       </Identifier>
+    <CodeLength>05</CodeLength>
+    <AlternateCode>SA          </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>METARS                                  </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1641</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>SR          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>RIVER       </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>River and Special Service               </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>02MAY97</LastDateModified>
+    <LastTimeModified>2151</LastTimeModified>
+    <LastUserToModify>KMMF</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>SW          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>SA          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>SURFACE AVIATION OBSERVATIONS-SUPPLEMENT</Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1642</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>SX          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>MISC        </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Miscellaneous Surface                   </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>17JAN02</LastDateModified>
+    <LastTimeModified>0839</LastTimeModified>
+    <LastUserToModify>DRBA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>T           </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>FT          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>ACARS FORECAST                          </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>02MAY97</LastDateModified>
+    <LastTimeModified>2152</LastTimeModified>
+    <LastUserToModify>KMMF</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>TAF         </Identifier>
+    <CodeLength>03</CodeLength>
+    <AlternateCode>FT          </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>TAFORS                                  </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1643</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>TB          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>SATELLITE   </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Satellite Discussions and Orbits        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1643</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>TW          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>SATELLITE   </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Satellite Winds                         </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>02MAY97</LastDateModified>
+    <LastTimeModified>2152</LastTimeModified>
+    <LastUserToModify>KMMF</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>UA          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>UA          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>PILOT REPORTS-PIREP FORMAT              </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>02MAY97</LastDateModified>
+    <LastTimeModified>2152</LastTimeModified>
+    <LastUserToModify>KMMF</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>UB          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>UB          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>PILOT REPORTS-AIREP FORMAT              </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1644</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>UD          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>UPPERAIR    </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Maximum Wind                            </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1645</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>UE          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>UPPERAIR    </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Ship Temperatures                       </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1645</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>UF          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>UPPERAIR    </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Ship Temperatures                       </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1646</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>UG          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>UPPERAIR    </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Ship Pilots                             </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1646</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>UH          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>UPPERAIR    </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Ship Pilots                             </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1646</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>UI          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>UPPERAIR    </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Ship Pilots                             </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1646</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>UJ          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>UPPERAIR    </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Combined RAOB &amp; RAWIN                   </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1647</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>UK          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>UPPERAIR    </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Ship Temperatures                       </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1647</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>UL          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>UPPERAIR    </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Ship Temperatures                       </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1647</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>UM          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>UPPERAIR    </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Ship Temperatures                       </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1647</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>UN          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>UPPERAIR    </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Rocketsonde                             </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1648</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>UO          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>UPPERAIR    </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Tropopause                              </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1648</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>UP          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>UPPERAIR    </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Ship Pilots                             </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1648</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>UQ          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>UPPERAIR    </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Ship Pilots                             </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1648</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>UR          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>UPPERAIR    </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Reconniassance                          </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1649</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>US          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>UPPERAIR    </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Ship Temperatures                       </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1649</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>UT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>UPPERAIR    </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>CODAR                                   </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1649</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>UV          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>UPPERAIR    </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Vector and Differences                  </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1649</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>UW          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>UPPERAIR    </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>RAWIN                                   </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1651</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>UX          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>UPPERAIR    </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Miscellaneous Upper Air                 </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1650</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>UY          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>UPPERAIR    </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>Ship Pilots                             </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>02MAY97</LastDateModified>
+    <LastTimeModified>2152</LastTimeModified>
+    <LastUserToModify>KMMF</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WA          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>WA          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>AIRMETS                                 </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>22MAY98</LastDateModified>
+    <LastTimeModified>2135</LastTimeModified>
+    <LastUserToModify>BHAN</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WAAK1       </Identifier>
+    <CodeLength>05</CodeLength>
+    <AlternateCode>WA          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>AIRMETS                                 </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>22MAY98</LastDateModified>
+    <LastTimeModified>2135</LastTimeModified>
+    <LastUserToModify>BHAN</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WAUS1       </Identifier>
+    <CodeLength>05</CodeLength>
+    <AlternateCode>WA          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>AIRMETS                                 </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>13MAY05</LastDateModified>
+    <LastTimeModified>2112</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WC          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>WS          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>sigments                                </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1024</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WCNT        </Identifier>
+    <CodeLength>04</CodeLength>
+    <AlternateCode>NT          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>sigmets- NY,MIA,HOU,&amp;SanJuan Oceanic FIR</Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1025</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WCPA06      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>sigmets                                 </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1025</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WCPA07      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>sigmets                                 </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1025</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WCPA08      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>sigmets                                 </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1025</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WCPA09      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>sigmets                                 </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1025</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WCPA10      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>sigmets                                 </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1025</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WCPA11      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>sigmets                                 </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1025</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WCPA12      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>sigmets                                 </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1026</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WCPA13      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>sigmets                                 </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>02MAY97</LastDateModified>
+    <LastTimeModified>2152</LastTimeModified>
+    <LastUserToModify>KMMF</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WD          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>WD          </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>MILITARY TROPICAL ISLAND ADVISORY       </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>02MAY97</LastDateModified>
+    <LastTimeModified>2152</LastTimeModified>
+    <LastUserToModify>KMMF</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WH          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>WH          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>HURRICANE WARNINGS                      </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>02MAY97</LastDateModified>
+    <LastTimeModified>2152</LastTimeModified>
+    <LastUserToModify>KMMF</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WO          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>WO          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>TROPICAL DEPRESSIONS                    </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>02MAY97</LastDateModified>
+    <LastTimeModified>2153</LastTimeModified>
+    <LastUserToModify>KMMF</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WS          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>WS          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>SIGMETS                                 </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1027</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WSNT        </Identifier>
+    <CodeLength>04</CodeLength>
+    <AlternateCode>NT          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Sigmets- NY,MIA,HOU,&amp;SanJaun OceanicFIRs</Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1028</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WSPA06      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>international notam format              </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1029</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WSPA07      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>international notam format              </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1029</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WSPA08      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>international notam format              </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1029</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WSPA09      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>international notam format              </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1029</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WSPA10      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>international notam format              </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1029</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WSPA11      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>international notam format              </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1029</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WSPA12      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>international notam format              </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1029</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WSPA13      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>international notam format              </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>13MAY05</LastDateModified>
+    <LastTimeModified>2112</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WSUS31      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>WST         </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Convective Sigmets                      </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>13MAY05</LastDateModified>
+    <LastTimeModified>2113</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WSUS32      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>WST         </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Convective Sigmets                      </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>13MAY05</LastDateModified>
+    <LastTimeModified>2113</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WSUS33      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>WST         </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Convective Sigmets                      </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>01NOV93</LastDateModified>
+    <LastTimeModified>1222</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WSUS40      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>WST         </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Convective Sigmets                      </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>01NOV93</LastDateModified>
+    <LastTimeModified>1222</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WSUS41      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>WST         </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Convective Sigmets                      </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>01NOV93</LastDateModified>
+    <LastTimeModified>1222</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WSUS42      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>WST         </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Convective Sigmets                      </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>02MAY97</LastDateModified>
+    <LastTimeModified>2153</LastTimeModified>
+    <LastUserToModify>KMMF</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>WT          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>TROPICAL CYCLONES                       </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1031</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WV          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>WS          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>VOLCANIC ACTIVITY - do not change entry </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1032</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WVNT        </Identifier>
+    <CodeLength>04</CodeLength>
+    <AlternateCode>NT          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Sigmets- NY,MIA,HOU,&amp;SanJaun OceanicFIRs</Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1033</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WVPA01      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>WV          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>international notam format              </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1034</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WVPA02      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>WV          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>international notam format              </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1034</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WVPA03      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>international notam format              </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1034</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WVPA04      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>international notam format              </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1034</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WVPA05      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>international notam format              </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1034</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WVPA06      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>international notam format              </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1034</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WVPA07      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>international notam format              </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1035</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WVPA08      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>international notam format              </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1035</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WVPA09      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>international notam format              </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1035</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WVPA10      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>international notam format              </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1035</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WVPA11      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>international notam format              </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1035</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WVPA12      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>international notam format              </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1035</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WVPA13      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>XX</InternalCode>
+    <Description>international notam format              </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1119</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WVPN        </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>WV          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>sigmets - oakland oceanic FIR           </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>26JUL05</LastDateModified>
+    <LastTimeModified>2323</LastTimeModified>
+    <LastUserToModify>MGAL</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WW          </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>WW          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>WEATHER WARNINGS                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>22MAY98</LastDateModified>
+    <LastTimeModified>2048</LastTimeModified>
+    <LastUserToModify>KMMF</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WWUS40      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>WW          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>WEATHER WARNINGS                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>22MAY98</LastDateModified>
+    <LastTimeModified>2048</LastTimeModified>
+    <LastUserToModify>KMMF</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WWUS41      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>WW          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>WEATHER WARNINGS                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>22MAY98</LastDateModified>
+    <LastTimeModified>2048</LastTimeModified>
+    <LastUserToModify>KMMF</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WWUS42      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>WW          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>WEATHER WARNINGS                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25MAY00</LastDateModified>
+    <LastTimeModified>1723</LastTimeModified>
+    <LastUserToModify>BHAN</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXTYPE  </CodeType>
+    <Identifier>WWUS60      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>WW1         </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>WEATHER WARNINGS                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>09MAR95</LastDateModified>
+    <LastTimeModified>0915</LastTimeModified>
+    <LastUserToModify>DOMI</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>ZFW-LBS </CodeType>
+    <Identifier>ANA         </Identifier>
+    <CodeLength>04</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>A/C to Convert ZFW from KGS to LBS      </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>19OCT93</LastDateModified>
+    <LastTimeModified>2200</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>AK          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>AK          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Alaska                                  </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>26AUG03</LastDateModified>
+    <LastTimeModified>1627</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>CA          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Caribbean                               </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1711</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>CN          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Canada                                  </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>01FEB05</LastDateModified>
+    <LastTimeModified>1556</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>CS          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Central America                         </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>13MAY05</LastDateModified>
+    <LastTimeModified>2110</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>GX          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Gulf of Mexico                          </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1712</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>HW          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Hawaiian Islands                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1711</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>MX          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Mexico                                  </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>09APR97</LastDateModified>
+    <LastTimeModified>1812</LastTimeModified>
+    <LastUserToModify>KMMF</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>NA          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>WSI NOTAMS REGION                       </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>29SEP05</LastDateModified>
+    <LastTimeModified>1135</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>NT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Atlantic Region                         </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>13MAY05</LastDateModified>
+    <LastTimeModified>2110</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>PA          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Pacific Oceanic fir sigmets             </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>09FEB05</LastDateModified>
+    <LastTimeModified>1843</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>PM          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Central America                         </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>13MAY05</LastDateModified>
+    <LastTimeModified>2110</LastTimeModified>
+    <LastUserToModify>S.H.</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>PN          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Pacific Oceanic fir sigmets             </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>20SEP93</LastDateModified>
+    <LastTimeModified>1002</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>UB          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>USA-Contiguous 48-states alternate      </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>24APR98</LastDateModified>
+    <LastTimeModified>1620</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>UM          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>More USA forecasts?                     </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25JUL93</LastDateModified>
+    <LastTimeModified>1711</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>US          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>USA-Contiguous 48-states                </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>19OCT93</LastDateModified>
+    <LastTimeModified>2206</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>US50        </Identifier>
+    <CodeLength>04</CodeLength>
+    <AlternateCode>NE          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>New England States                      </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>19OCT93</LastDateModified>
+    <LastTimeModified>2206</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>US51        </Identifier>
+    <CodeLength>04</CodeLength>
+    <AlternateCode>EA          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Eastern Seaboard States                 </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>19OCT93</LastDateModified>
+    <LastTimeModified>2206</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>US52        </Identifier>
+    <CodeLength>04</CodeLength>
+    <AlternateCode>MA          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Mid-Atlantic States                     </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>19OCT93</LastDateModified>
+    <LastTimeModified>2206</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>US53        </Identifier>
+    <CodeLength>04</CodeLength>
+    <AlternateCode>SE          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>South Eastern States                    </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>19OCT93</LastDateModified>
+    <LastTimeModified>2207</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>US54        </Identifier>
+    <CodeLength>04</CodeLength>
+    <AlternateCode>GL          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Great Lake States                       </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>19OCT93</LastDateModified>
+    <LastTimeModified>2207</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>US55        </Identifier>
+    <CodeLength>04</CodeLength>
+    <AlternateCode>OV          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Ohio Valley States                      </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>19OCT93</LastDateModified>
+    <LastTimeModified>2207</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>US56        </Identifier>
+    <CodeLength>04</CodeLength>
+    <AlternateCode>NP          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Northern Plains States                  </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>19OCT93</LastDateModified>
+    <LastTimeModified>2208</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>US57        </Identifier>
+    <CodeLength>04</CodeLength>
+    <AlternateCode>GP          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Great Plains States                     </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>19OCT93</LastDateModified>
+    <LastTimeModified>2208</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>US58        </Identifier>
+    <CodeLength>04</CodeLength>
+    <AlternateCode>GC          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Gulf Coast States                       </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>19OCT93</LastDateModified>
+    <LastTimeModified>2208</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>US59        </Identifier>
+    <CodeLength>04</CodeLength>
+    <AlternateCode>NR          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Northern Rockies States                 </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>19OCT93</LastDateModified>
+    <LastTimeModified>2210</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>US60        </Identifier>
+    <CodeLength>04</CodeLength>
+    <AlternateCode>SW          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Southwestern States                     </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>19OCT93</LastDateModified>
+    <LastTimeModified>2209</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>US61        </Identifier>
+    <CodeLength>04</CodeLength>
+    <AlternateCode>PN          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Pacific Northwest States                </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>19OCT93</LastDateModified>
+    <LastTimeModified>2210</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>US62        </Identifier>
+    <CodeLength>04</CodeLength>
+    <AlternateCode>PA          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Pacific States                          </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>19OCT93</LastDateModified>
+    <LastTimeModified>2211</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>US63        </Identifier>
+    <CodeLength>04</CodeLength>
+    <AlternateCode>WM          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Western Military                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>19OCT93</LastDateModified>
+    <LastTimeModified>2211</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>US64        </Identifier>
+    <CodeLength>04</CodeLength>
+    <AlternateCode>EM          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Eastern Military                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>19SEP93</LastDateModified>
+    <LastTimeModified>2343</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXREGION</CodeType>
+    <Identifier>XX          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>USA-Contiguous 48-states                </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>19FEB90</LastDateModified>
+    <LastTimeModified>1919</LastTimeModified>
+    <LastUserToModify>WAKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXSVC   </CodeType>
+    <Identifier>AWOS        </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Automated Weather Observing System      </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>21JUL99</LastDateModified>
+    <LastTimeModified>2317</LastTimeModified>
+    <LastUserToModify>BHAN</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXWATCH     </Identifier>
+    <CodeLength>07</CodeLength>
+    <AlternateCode>ONEPERDESK  </AlternateCode>
+    <InternalCode>01</InternalCode>
+    <Description>Number of minutes between WXeye checks  </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>03JAN97</LastDateModified>
+    <LastTimeModified>2235</LastTimeModified>
+    <LastUserToModify>KMMA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXTEXTFMT   </Identifier>
+    <CodeLength>09</CodeLength>
+    <AlternateCode>WSI         </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Source of text data                     </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>09SEP97</LastDateModified>
+    <LastTimeModified>0032</LastTimeModified>
+    <LastUserToModify>RICH</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXFILECHECK </Identifier>
+    <CodeLength>11</CodeLength>
+    <AlternateCode>10          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>Checks for WX files if no files resets  </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>17JAN02</LastDateModified>
+    <LastTimeModified>0841</LastTimeModified>
+    <LastUserToModify>DRBA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXTIMEFILES </Identifier>
+    <CodeLength>12</CodeLength>
+    <AlternateCode>999         </AlternateCode>
+    <InternalCode>99</InternalCode>
+    <Description>ALT CODE IS NBR OF FILES TO CHECK IN LG </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>23JAN02</LastDateModified>
+    <LastTimeModified>1737</LastTimeModified>
+    <LastUserToModify>BHAN</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXCHARFILTER</Identifier>
+    <CodeLength>12</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>;,&lt;&gt;!@#$%^&amp;*_?|{}[]~`"+'                </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>10FEB98</LastDateModified>
+    <LastTimeModified>1324</LastTimeModified>
+    <LastUserToModify>MIKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXEYE   </CodeType>
+    <Identifier>FT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>                                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>10FEB98</LastDateModified>
+    <LastTimeModified>1324</LastTimeModified>
+    <LastUserToModify>MIKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXEYE   </CodeType>
+    <Identifier>FT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>                                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>10FEB98</LastDateModified>
+    <LastTimeModified>1324</LastTimeModified>
+    <LastUserToModify>MIKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXEYE   </CodeType>
+    <Identifier>FT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>                                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>10FEB98</LastDateModified>
+    <LastTimeModified>1324</LastTimeModified>
+    <LastUserToModify>MIKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXEYE   </CodeType>
+    <Identifier>FT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>                                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>10FEB98</LastDateModified>
+    <LastTimeModified>1324</LastTimeModified>
+    <LastUserToModify>MIKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXEYE   </CodeType>
+    <Identifier>FT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>                                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>10FEB98</LastDateModified>
+    <LastTimeModified>1324</LastTimeModified>
+    <LastUserToModify>MIKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXEYE   </CodeType>
+    <Identifier>FT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>                                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>10FEB98</LastDateModified>
+    <LastTimeModified>1324</LastTimeModified>
+    <LastUserToModify>MIKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXEYE   </CodeType>
+    <Identifier>FT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>                                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>10FEB98</LastDateModified>
+    <LastTimeModified>1324</LastTimeModified>
+    <LastUserToModify>MIKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXEYE   </CodeType>
+    <Identifier>FT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>                                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>10FEB98</LastDateModified>
+    <LastTimeModified>1324</LastTimeModified>
+    <LastUserToModify>MIKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXEYE   </CodeType>
+    <Identifier>FT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>                                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>10FEB98</LastDateModified>
+    <LastTimeModified>1324</LastTimeModified>
+    <LastUserToModify>MIKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXEYE   </CodeType>
+    <Identifier>FT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>                                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>10FEB98</LastDateModified>
+    <LastTimeModified>1324</LastTimeModified>
+    <LastUserToModify>MIKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXEYE   </CodeType>
+    <Identifier>FT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>                                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>10FEB98</LastDateModified>
+    <LastTimeModified>1324</LastTimeModified>
+    <LastUserToModify>MIKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXEYE   </CodeType>
+    <Identifier>FT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>                                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>10FEB98</LastDateModified>
+    <LastTimeModified>1324</LastTimeModified>
+    <LastUserToModify>MIKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXEYE   </CodeType>
+    <Identifier>FT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>                                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>10FEB98</LastDateModified>
+    <LastTimeModified>1324</LastTimeModified>
+    <LastUserToModify>MIKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXEYE   </CodeType>
+    <Identifier>FT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>                                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>10FEB98</LastDateModified>
+    <LastTimeModified>1324</LastTimeModified>
+    <LastUserToModify>MIKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXEYE   </CodeType>
+    <Identifier>FT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>                                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>10FEB98</LastDateModified>
+    <LastTimeModified>1324</LastTimeModified>
+    <LastUserToModify>MIKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXEYE   </CodeType>
+    <Identifier>FT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>                                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>10FEB98</LastDateModified>
+    <LastTimeModified>1324</LastTimeModified>
+    <LastUserToModify>MIKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXEYE   </CodeType>
+    <Identifier>FT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>                                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>10FEB98</LastDateModified>
+    <LastTimeModified>1324</LastTimeModified>
+    <LastUserToModify>MIKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXEYE   </CodeType>
+    <Identifier>FT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>                                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>10FEB98</LastDateModified>
+    <LastTimeModified>1324</LastTimeModified>
+    <LastUserToModify>MIKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXEYE   </CodeType>
+    <Identifier>FT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>                                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>10FEB98</LastDateModified>
+    <LastTimeModified>1324</LastTimeModified>
+    <LastUserToModify>MIKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXEYE   </CodeType>
+    <Identifier>FT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>                                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>10FEB98</LastDateModified>
+    <LastTimeModified>1324</LastTimeModified>
+    <LastUserToModify>MIKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXEYE   </CodeType>
+    <Identifier>FT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>                                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>10FEB98</LastDateModified>
+    <LastTimeModified>1324</LastTimeModified>
+    <LastUserToModify>MIKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXEYE   </CodeType>
+    <Identifier>FT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>                                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>10FEB98</LastDateModified>
+    <LastTimeModified>1324</LastTimeModified>
+    <LastUserToModify>MIKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXEYE   </CodeType>
+    <Identifier>FT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>                                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>10FEB98</LastDateModified>
+    <LastTimeModified>1324</LastTimeModified>
+    <LastUserToModify>MIKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXEYE   </CodeType>
+    <Identifier>FT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>                                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>04AUG99</LastDateModified>
+    <LastTimeModified>1819</LastTimeModified>
+    <LastUserToModify>SEGU</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXSASTARTPOS</Identifier>
+    <CodeLength>12</CodeLength>
+    <AlternateCode>07          </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>## column number to start 2nd line      </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>21AUG02</LastDateModified>
+    <LastTimeModified>1437</LastTimeModified>
+    <LastUserToModify>BHAN</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXKEEPMXDAYS</Identifier>
+    <CodeLength>12</CodeLength>
+    <AlternateCode>999         </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>"999" max days to keep wxkeep running   </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>19MAR02</LastDateModified>
+    <LastTimeModified>1401</LastTimeModified>
+    <LastUserToModify>BHAN</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXKEEPSTART </Identifier>
+    <CodeLength>11</CodeLength>
+    <AlternateCode>0000        </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>TIME TO START SAVING TEXT SOURCE FILES  </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>11AUG02</LastDateModified>
+    <LastTimeModified>2041</LastTimeModified>
+    <LastUserToModify>BHAN</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXKEEPEND   </Identifier>
+    <CodeLength>09</CodeLength>
+    <AlternateCode>2359        </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>TIME TO STOP SAVING TEXT SOURCE FILES   </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25MAY06</LastDateModified>
+    <LastTimeModified>1641</LastTimeModified>
+    <LastUserToModify>DRBA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXKEEPDIR   </Identifier>
+    <CodeLength>09</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>C:\FLTCTRL\WXFILES\TXT\KEEP\            </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId></AbsoluteId>
+    <RecordStatus></RecordStatus>
+    <LastDateModified></LastDateModified>
+    <LastTimeModified></LastTimeModified>
+    <LastUserToModify></LastUserToModify>
+    <CompanyCode></CompanyCode>
+    <CodeType></CodeType>
+    <Identifier></Identifier>
+    <CodeLength></CodeLength>
+    <AlternateCode></AlternateCode>
+    <InternalCode></InternalCode>
+    <Description></Description>
+    <RecordType></RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25MAY06</LastDateModified>
+    <LastTimeModified>1640</LastTimeModified>
+    <LastUserToModify>DRBA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXSOURCEDIR </Identifier>
+    <CodeLength>12</CodeLength>
+    <AlternateCode>SEE DESC    </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>C:\FLTCTRL\WXFILES\TXT\                 </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25MAY06</LastDateModified>
+    <LastTimeModified>1640</LastTimeModified>
+    <LastUserToModify>DRBA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXSOURCEDIR </Identifier>
+    <CodeLength>12</CodeLength>
+    <AlternateCode>SEE DESC    </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>C:\FLTCTRL\WXFILES\TXT\                 </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25MAY06</LastDateModified>
+    <LastTimeModified>1640</LastTimeModified>
+    <LastUserToModify>DRBA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXSOURCEDIR </Identifier>
+    <CodeLength>12</CodeLength>
+    <AlternateCode>SEE DESC    </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>C:\FLTCTRL\WXFILES\TXT\                 </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25MAY06</LastDateModified>
+    <LastTimeModified>1640</LastTimeModified>
+    <LastUserToModify>DRBA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXSOURCEDIR </Identifier>
+    <CodeLength>12</CodeLength>
+    <AlternateCode>SEE DESC    </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>C:\FLTCTRL\WXFILES\TXT\                 </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25MAY06</LastDateModified>
+    <LastTimeModified>1640</LastTimeModified>
+    <LastUserToModify>DRBA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXSOURCEDIR </Identifier>
+    <CodeLength>12</CodeLength>
+    <AlternateCode>SEE DESC    </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>C:\FLTCTRL\WXFILES\TXT\                 </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25MAY06</LastDateModified>
+    <LastTimeModified>1640</LastTimeModified>
+    <LastUserToModify>DRBA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXSOURCEDIR </Identifier>
+    <CodeLength>12</CodeLength>
+    <AlternateCode>SEE DESC    </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>C:\FLTCTRL\WXFILES\TXT\                 </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25MAY06</LastDateModified>
+    <LastTimeModified>1640</LastTimeModified>
+    <LastUserToModify>DRBA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXSOURCEDIR </Identifier>
+    <CodeLength>12</CodeLength>
+    <AlternateCode>SEE DESC    </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>C:\FLTCTRL\WXFILES\TXT\                 </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25MAY06</LastDateModified>
+    <LastTimeModified>1640</LastTimeModified>
+    <LastUserToModify>DRBA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXSOURCEDIR </Identifier>
+    <CodeLength>12</CodeLength>
+    <AlternateCode>SEE DESC    </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>C:\FLTCTRL\WXFILES\TXT\                 </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25MAY06</LastDateModified>
+    <LastTimeModified>1640</LastTimeModified>
+    <LastUserToModify>DRBA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXSOURCEDIR </Identifier>
+    <CodeLength>12</CodeLength>
+    <AlternateCode>SEE DESC    </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>C:\FLTCTRL\WXFILES\TXT\                 </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25MAY06</LastDateModified>
+    <LastTimeModified>1640</LastTimeModified>
+    <LastUserToModify>DRBA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXSOURCEDIR </Identifier>
+    <CodeLength>12</CodeLength>
+    <AlternateCode>SEE DESC    </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>C:\FLTCTRL\WXFILES\TXT\                 </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25MAY06</LastDateModified>
+    <LastTimeModified>1641</LastTimeModified>
+    <LastUserToModify>DRBA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXKEEPDIR   </Identifier>
+    <CodeLength>09</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>C:\FLTCTRL\WXFILES\TXT\KEEP\            </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25MAY06</LastDateModified>
+    <LastTimeModified>1641</LastTimeModified>
+    <LastUserToModify>DRBA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXKEEPDIR   </Identifier>
+    <CodeLength>09</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>C:\FLTCTRL\WXFILES\TXT\KEEP\            </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>25MAY06</LastDateModified>
+    <LastTimeModified>1640</LastTimeModified>
+    <LastUserToModify>DRBA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXSOURCEDIR </Identifier>
+    <CodeLength>12</CodeLength>
+    <AlternateCode>SEE DESC    </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>C:\FLTCTRL\WXFILES\TXT\                 </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>17JAN02</LastDateModified>
+    <LastTimeModified>0841</LastTimeModified>
+    <LastUserToModify>DRBA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXTIMEFILES </Identifier>
+    <CodeLength>12</CodeLength>
+    <AlternateCode>999         </AlternateCode>
+    <InternalCode>99</InternalCode>
+    <Description>ALT CODE IS NBR OF FILES TO CHECK IN LG </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId></AbsoluteId>
+    <RecordStatus></RecordStatus>
+    <LastDateModified></LastDateModified>
+    <LastTimeModified></LastTimeModified>
+    <LastUserToModify></LastUserToModify>
+    <CompanyCode></CompanyCode>
+    <CodeType></CodeType>
+    <Identifier></Identifier>
+    <CodeLength></CodeLength>
+    <AlternateCode></AlternateCode>
+    <InternalCode></InternalCode>
+    <Description></Description>
+    <RecordType></RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>13AUG97</LastDateModified>
+    <LastTimeModified>2040</LastTimeModified>
+    <LastUserToModify>RICH</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>MSSENDDESK  </Identifier>
+    <CodeLength>10</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>DM</InternalCode>
+    <Description>                                        </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>10FEB98</LastDateModified>
+    <LastTimeModified>1324</LastTimeModified>
+    <LastUserToModify>MIKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXEYE   </CodeType>
+    <Identifier>FT          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>                                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>13NOV97</LastDateModified>
+    <LastTimeModified>2156</LastTimeModified>
+    <LastUserToModify>MIKE</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXEYE   </CodeType>
+    <Identifier>SA          </Identifier>
+    <CodeLength>02</CodeLength>
+    <AlternateCode>            </AlternateCode>
+    <InternalCode>T </InternalCode>
+    <Description>                                        </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>20MAR01</LastDateModified>
+    <LastTimeModified>1039</LastTimeModified>
+    <LastUserToModify>BHAN</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>WXEYEO  </CodeType>
+    <Identifier>ORIGIN      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>YES         </AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>includes origin in list for wxeye       </Description>
+    <RecordType>C</RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>21JUL99</LastDateModified>
+    <LastTimeModified>2317</LastTimeModified>
+    <LastUserToModify>BHAN</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXWATCH     </Identifier>
+    <CodeLength>07</CodeLength>
+    <AlternateCode>ONEPERDESK  </AlternateCode>
+    <InternalCode>01</InternalCode>
+    <Description>Number of minutes between WXeye checks  </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>30MAY06</LastDateModified>
+    <LastTimeModified>1119</LastTimeModified>
+    <LastUserToModify>DRBA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXDECODE    </Identifier>
+    <CodeLength>08</CodeLength>
+    <AlternateCode>30111950</AlternateCode>
+    <InternalCode>NY</InternalCode>
+    <Description>verifies WXDECODE is working            </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>30MAY06</LastDateModified>
+    <LastTimeModified>1120</LastTimeModified>
+    <LastUserToModify>DRBA</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>WXDECODE    </Identifier>
+    <CodeLength>08</CodeLength>
+    <AlternateCode>30112036</AlternateCode>
+    <InternalCode>NY</InternalCode>
+    <Description>verifies WXDECODE is working            </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>27JAN06</LastDateModified>
+    <LastTimeModified>1100</LastTimeModified>
+    <LastUserToModify>RICH</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>GRIBLOAD    </Identifier>
+    <CodeLength>08</CodeLength>
+    <AlternateCode>27110000</AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>                                        </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>27JAN06</LastDateModified>
+    <LastTimeModified>1103</LastTimeModified>
+    <LastUserToModify>zzzz</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>FDWATCH     </Identifier>
+    <CodeLength>07</CodeLength>
+    <AlternateCode>27110302</AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>                                        </Description>
+    <RecordType> </RecordType>
+  </code>
+  <code>
+    <AbsoluteId>      </AbsoluteId>
+    <RecordStatus> </RecordStatus>
+    <LastDateModified>27JAN06</LastDateModified>
+    <LastTimeModified>1103</LastTimeModified>
+    <LastUserToModify>zzzz</LastUserToModify>
+    <CompanyCode>CLX</CompanyCode>
+    <CodeType>SYSTEM  </CodeType>
+    <Identifier>FDRECV      </Identifier>
+    <CodeLength>06</CodeLength>
+    <AlternateCode>27110312</AlternateCode>
+    <InternalCode>  </InternalCode>
+    <Description>                                        </Description>
+    <RecordType> </RecordType>
+  </code>
+</codes>

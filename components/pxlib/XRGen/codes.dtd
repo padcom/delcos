@@ -1,0 +1,33 @@
+<!ELEMENT codes (code, test)>
+<!ELEMENT code (
+  AbsoluteId,
+  RecordStatus,
+  LastDateModified,
+  LastTimeModified,
+  LastUserToModify,
+  CompanyCode,
+  CodeType,
+  Identifier,
+  CodeLength,
+  AlternateCode,
+  InternalCode,
+  Description,
+  RecordType
+)>
+<!ELEMENT AbsoluteId       (#PCDATA)>
+<!ELEMENT RecordStatus     (#PCDATA)>
+<!ELEMENT LastDateModified (#PCDATA)>
+<!ELEMENT LastTimeModified (#PCDATA)>
+<!ELEMENT LastUserToModify (#PCDATA)>
+<!ELEMENT CompanyCode      (#PCDATA)>
+<!ELEMENT CodeType         (#PCDATA)>
+<!ELEMENT Identifier       (#PCDATA)>
+<!ELEMENT CodeLength       (#PCDATA)>
+<!ELEMENT AlternateCode    (#PCDATA)>
+<!ELEMENT InternalCode     (#PCDATA)>
+<!ELEMENT Description      (#PCDATA)>
+<!ELEMENT RecordType       (#PCDATA)>
+
+<!ELEMENT test (test1, test2, code)>
+<!ELEMENT test1 (#PCDATA)>
+<!ELEMENT test2 (#PCDATA)>

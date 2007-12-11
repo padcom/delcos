@@ -1,0 +1,10 @@
+<!ELEMENT options     (unit, class, option+) >
+<!ELEMENT unit        (#PCDATA) >
+<!ELEMENT class       (#PCDATA) >
+<!ELEMENT option      (name, short, long, explanation) >
+<!ELEMENT name        (#PCDATA) >
+<!ELEMENT short       (#PCDATA) >
+<!ELEMENT long        (#PCDATA) >
+<!ELEMENT explanation (#PCDATA) >
+<!ATTLIST option      
+  type (bool | string) #REQUIRED>

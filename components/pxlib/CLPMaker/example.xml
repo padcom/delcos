@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE options SYSTEM "clpmaker.dtd">
+
+<options>
+  <unit>Example</unit>
+  <class>TOptions</class>
+  
+  <option type="bool">
+    <name>Help</name>
+    <short>h</short>
+    <long>help</long>
+    <explanation>Show help</explanation>
+  </option>
+  
+  <option type="string">
+    <name>InputFile</name>
+    <short>i</short>
+    <long>input-file</long>
+    <explanation>Input file name</explanation>
+  </option>
+</options>

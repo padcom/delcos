@@ -1,0 +1,187 @@
+# PxLib default language file.
+# Copyright (C) 2005 Matthias Hryniszak
+# This file is distributed under the same license as the PxLib package.
+# Matthias Hryniszak <matthias@hryniszak.de>, 2005
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"POT-Creation-Date: 2005-09-27 11:00\n"
+"PO-Revision-Date: 2005-08-03 23:52\n"
+"Last-Translator: Matthias Hryniszak <matthias@hryniszak.de>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: dxgettext 1.2\n"
+
+#. Programmer's name for it: SDuplicateIdentRecordIDs
+#: PxResources.pas:6
+msgid "Duplicate IIdentRecord ID: %d"
+msgstr ""
+
+#. Programmer's name for it: SErrorMaxIdExceeded
+#: PxResources.pas:7
+msgid "Max ID exceeded: $%.8x"
+msgstr ""
+
+#. Programmer's name for it: SOleError
+#: PxResources.pas:8
+msgid "OLE error %.8x"
+msgstr ""
+
+#. Programmer's name for it: SShowMessageTitle
+#: PxResources.pas:9
+msgid "Information"
+msgstr ""
+
+#. Programmer's name for it: SWindowNotCreated
+#: PxResources.pas:10
+msgid "Window not created"
+msgstr ""
+
+#. Programmer's name for it: SParseNotCramp
+#. Programmer's name for it: SParseSyntaxError
+#: PxResources.pas:11 PxResources.pas:12
+msgid "Syntax error"
+msgstr ""
+
+#. Programmer's name for it: SParseDivideByZero
+#: PxResources.pas:13
+msgid "Division by zero"
+msgstr ""
+
+#. Programmer's name for it: SParseLogError
+#: PxResources.pas:14
+msgid "Log error"
+msgstr ""
+
+#. Programmer's name for it: SParseSqrError
+#: PxResources.pas:15
+msgid "Sqr error"
+msgstr ""
+
+#. Programmer's name for it: SParseInvalidFloatOperation
+#: PxResources.pas:16
+msgid "Invalid floating point operation"
+msgstr ""
+
+#. Programmer's name for it: SAtLeastOneUnitMustBeSpecified
+#: PxResources.pas:17
+msgid "At least one unit must be specified for conversion"
+msgstr ""
+
+#. Programmer's name for it: SErrorWhileListeningOnServerSocket
+#: PxResources.pas:18
+msgid "Error while listening on server socket"
+msgstr ""
+
+#. Programmer's name for it: SProfilingResults
+#: PxResources.pas:19
+msgid "Profiling results"
+msgstr ""
+
+#. Programmer's name for it: STotalTime
+#: PxResources.pas:20
+msgid "Total time"
+msgstr ""
+
+#. Programmer's name for it: SErrorWhileConnecting
+#: PxResources.pas:21
+msgid "Error while connecting: %s"
+msgstr ""
+
+#. Programmer's name for it: SErrorWhileSettingStreamSize
+#: PxResources.pas:22
+msgid "Error while setting stream size: %s"
+msgstr ""
+
+#. Programmer's name for it: SErrorWhileClosingStream
+#: PxResources.pas:23
+msgid "Error while closing stream: %s"
+msgstr ""
+
+#. Programmer's name for it: SErrorWhileGettingFileAge
+#: PxResources.pas:24
+msgid "Error while getting file age: %s"
+msgstr ""
+
+#. Programmer's name for it: SErrorWhileReadingData
+#: PxResources.pas:25
+msgid "Error while reading data"
+msgstr ""
+
+#. Programmer's name for it: SErrorWhileSeeking
+#: PxResources.pas:26
+msgid "Error while seeking: %s"
+msgstr ""
+
+#. Programmer's name for it: SErrorWhileWritingData
+#: PxResources.pas:27
+msgid "Error while writing data: %s"
+msgstr ""
+
+#. Programmer's name for it: SErrorWhileCreatingServerSocket
+#: PxResources.pas:28
+msgid "Error while creating remote stream server socket"
+msgstr ""
+
+#. Programmer's name for it: SErrorWhileBindingServerSocket
+#: PxResources.pas:29
+msgid ""
+"Error while binding remote stream server socket (another instance already "
+"running?)"
+msgstr ""
+
+#. Programmer's name for it: SErrorWhileListeningServerSocket
+#: PxResources.pas:30
+msgid "Error while listening on the remote stream server socket"
+msgstr ""
+
+#. Programmer's name for it: SErrorWhileSendingResponse
+#: PxResources.pas:31
+msgid "Error while sending response: Sent=%d, Expected=%d. ErrorStr=%s"
+msgstr ""
+
+#. Programmer's name for it: SCannotOpenSerialPort
+#: PxResources.pas:32
+msgid ""
+"Cannot open serial port.\n"
+"\n"
+"%s"
+msgstr ""
+
+#. Programmer's name for it: SErrorWhileRetrivingSerialPortSettings
+#: PxResources.pas:33
+msgid ""
+"Cannot retrive serial port settings.\n"
+"\n"
+"%s"
+msgstr ""
+
+#. Programmer's name for it: SErrorWhileSettingSerialPortSettings
+#: PxResources.pas:34
+msgid ""
+"Cannot store serial port settings.\n"
+"\n"
+"%s"
+msgstr ""
+
+#. Programmer's name for it: SInvalidByteSize
+#: PxResources.pas:35
+msgid "Invalid byte size %d"
+msgstr ""
+
+#. Programmer's name for it: SInvalidParity
+#: PxResources.pas:36
+msgid "Invalid parity %d"
+msgstr ""
+
+#. Programmer's name for it: SInvalidStopBits
+#: PxResources.pas:37
+msgid "Invalid stop bits %d"
+msgstr ""
+
+#. Programmer's name for it: SWideStringOutOfBounds
+#: PxResources.pas:38
+msgid "WideString-Index out of bounds"
+msgstr ""

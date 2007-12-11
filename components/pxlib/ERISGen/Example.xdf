@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="Windows-1250" ?>
+
+<DataFile Name="ExampleFile" Signature="EXAM" Version="1.00" XmlMethods="1">
+
+  <DataRecord Id="1" Name="TestRecData">
+    <Field Name="Id" Type="Integer" />
+    <Field Name="Flags" Type="Word" />
+    <Field Name="Test" Type="TDateTime" />
+  </DataRecord>
+
+  <DataRecord Id="2" Name="TestStringData">
+    <Field Name="Test" Type="array[0..4000] of char" />
+  </DataRecord>
+
+  <DataRecordEx Id="3" Name="TestStringData">
+    <String Id="1" Name="FirstName"/>
+  </DataRecordEx>
+
+<!--
+
+KIND(2 bytes)|SIZE(4 bytes)DATA(SIZE bytes)....
+
+<ExampleFile>
+  <TestRecData>
+    <Id Value="1"/>
+    <Flags Value="23"/>
+    <Test Value="2006-02-22 12:23"/>
+  </TestRecData>
+</ExampleFile>
+
+
+[1 14] ID Flags Test [1 14] ID Flags Test 0 0 [2 6] WALKER [2 6] MACIEJ
+[3 ?] <9 6 1> WALKER
+[3 12] ....
+
+PHONEBOOK & CONTACTS
+
+PHONEBOOK: FIRST NAME, LAST NAME and TELEPHONE
+CONSTACTS: FIRST NAME, LAST NAME and ADDRESS
+
+
+
+-->
+
+</DataFile>

@@ -1,0 +1,27 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Test application\n"
+"POT-Creation-Date: 2004-11-20 12:38\n"
+"PO-Revision-Date: 2005-03-02 00:25+0100\n"
+"Last-Translator: Matthias Hryniszak <matthias@hryniszak.de>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: dxgettext 1.1.1\n"
+"Language-Team: \n"
+
+msgid "Action1"
+msgstr "Action1 hehehe"
+
+msgid "Button1"
+msgstr "And this is button"
+
+msgid "Form1"
+msgstr "ывпывпывпа"
+
+msgid "GroupBox1"
+msgstr "That would be a group box..."
+
+msgid "Label1"
+msgstr "Heh..."
+

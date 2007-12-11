@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+
+<refentry>
+  <refentryinfo>
+    <title>CLPMaker manual</title>
+    <copyright>
+      <year>2004</year>
+      <year>2005</year>
+    </copyright>
+    <author>
+      <firstname>Matthias</firstname>
+      <surname>Hryniszak</surname>
+    </author>
+    <address><email>matthias@hryniszak.de</email></address>
+    <releaseinfo>This is release 0.1.0 of the CLPMaker manual.</releaseinfo>
+  </refentryinfo>
+  
+  <refmeta>
+    <refentrytitle>clpmaker</refentrytitle>
+    <manvolnum>1</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>CLPMake.exe</refname>
+    <refpurpose>command line <acronym>PxCommandLine</acronym> ObjectPascal generator</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <title>Synopsis</title>
+    <cmdsynopsis>
+      <command>clpmaker.exe</command>
+      <arg><option><replaceable>&lt;options&gt;</replaceable></option></arg>
+      <arg><option><replaceable>input-file</replaceable></option></arg>
+      <arg><option><replaceable>output-file</replaceable></option></arg>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1 id="clpm.descr">
+    <title>Description</title>
+    <para>
+    CLPMaker is a command line utility to automatically generate an ObjectPascal 
+    unit to parse and manage command line parameters. The generated unit is based
+    on PxCommandLine utilities.
+    </para>
+  </refsect1>
+
+  <refsect1 id="clpm.options">
+    <title>Options</title>
+
+    <variablelist>
+      <varlistentry>
+        <term><option>-h</option></term>
+        <listitem>
+          <simpara>Show usage information for <application>CLPMaker</application>.</simpara>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-q</option></term>
+        <listitem>
+          <simpara>Be quiet (no logo or program informations are displayed).</simpara>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-v</option></term>
+        <listitem>
+          <simpara>Display the version of <application>CLPMaker</application>.</simpara>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-i</option></term>
+        <listitem>
+          <simpara>Input file (.xml). This parameter can be used to explicitly declare input file name.</simpara>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-o</option></term>
+        <listitem>
+          <simpara>Output file (.pas) - if not specified the content of generated unit is dumped on standard output.</simpara>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+
+</refentry>
+  

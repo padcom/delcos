@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<root>
+  <item>data</item>
+  <element/>
+  <item2 param="123">data</item2>
+  <element param="321"/>
+  <sect>
+    <item>data</item>
+    <element/>
+    <item2 param="123">data</item2>
+    <element param="321"/>
+  </sect>
+</root>
+
