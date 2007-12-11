@@ -10,6 +10,8 @@ uses
   SourceTreeWalker in 'core\SourceTreeWalker.pas',
   SourceTreeDumperVisitor in 'core\SourceTreeDumperVisitor.pas',
   UnitRegistry in 'core\UnitRegistry.pas',
+  CommentRemovalVisitor in 'core\CommentRemovalVisitor.pas',
+  WhitespaceRemovalVisitor in 'core\WhitespaceRemovalVisitor.pas',
   IncludeParser in 'core\IncludeParser.pas',
   ProjectUnitsRegistratorVisitor in 'core\ProjectUnitsRegistratorVisitor.pas',
   UsesTreeBuilderVisitor in 'core\UsesTreeBuilderVisitor.pas',
@@ -116,5 +118,6 @@ begin
     end;
   end;
 end.
+
 
 

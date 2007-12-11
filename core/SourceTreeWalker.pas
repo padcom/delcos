@@ -52,7 +52,7 @@ end;
 
 procedure TSourceTreeWalker.Walk(Root: TParseTreeNode; Visitor: INodeVisitor);
 var
-  I: Integer;
+  OldCount, I: Integer;
   Parent, Node: TParseTreeNode;
 begin
   if not Assigned(Root) then
@@ -67,12 +67,15 @@ begin
     while I < Root.ChildNodeCount do
     begin
       Node := Root.ChildNodes[I];
+      OldCount := Root.ChildNodeCount;
       Walk(Node, Visitor);
-      if ContainsNode(Root, Node) then
+      if OldCount = Root.ChildNodeCount then
+//      if ContainsNode(Root, Node) then
         Inc(I);
     end;
   end;
 end;
 
 end.
+
 

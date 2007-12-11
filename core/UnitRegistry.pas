@@ -10,6 +10,7 @@ type
   TUnitRegistry = class (TObject)
   private
     FUnits: TStrings;
+    FUsesList: TStrings;
     FIncludes: TStrings;
     function GetUnitParser(UnitName: String): TPascalParser;
     function FindUnitSource(UnitName: String): String;
@@ -21,9 +22,12 @@ type
     class function Instance: TUnitRegistry;
     constructor Create;
     destructor Destroy; override;
+    function IsUnitRegistered(UnitName: String): Boolean;
     function RegisterUnit(UnitName, FileName: String; IncludedInProject: Boolean = False): TPascalParser;
+    procedure AddUsedUnit(UnitName, UsedUnit: String);
     procedure GetProjectRegisteredUnitsNames(Units: TStrings);
     procedure GetAllRegisteredUnitsNames(Units: TStrings);
+    procedure GetUnitUsesList(UnitName: String; UsesList: TStrings);
     procedure GetUnitIncludes(UnitName: String; Includes: TStrings);
     property UnitParser[UnitName: String]: TPascalParser read GetUnitParser;
   end;
@@ -33,7 +37,7 @@ implementation
 uses
   Options,
   SourceTreeWalker, 
-  IncludeParser;
+  IncludeParser, CommentRemovalVisitor, WhitespaceRemovalVisitor;
 
 { TUnitRegistry }
 
@@ -108,6 +112,7 @@ begin
 
   inherited Create;
   FUnits := TStringList.Create;
+  FUsesList := TStringList.Create;
   FIncludes := TStringList.Create;
 end;
 
@@ -118,15 +123,24 @@ begin
   for I := 0 to Units.Count - 1 do
     Units.Objects[I].Free;
   FreeAndNil(FUnits);
+  for I := 0 to FUsesList.Count - 1 do
+    FUsesList.Objects[I].Free;
+  FreeAndNil(FUsesList);
   for I := 0 to FIncludes.Count - 1 do
     FIncludes.Objects[I].Free;
   FreeAndNil(FIncludes);
   inherited Destroy;
 end;
 
+function TUnitRegistry.IsUnitRegistered(UnitName: String): Boolean;
+begin
+  Result := Units.IndexOf(UnitName) <> -1;
+end;
+
 function TUnitRegistry.RegisterUnit(UnitName, FileName: String; IncludedInProject: Boolean = False): TPascalParser;
 var
   Source: TStrings;
+  UsesList: TStrings;
   Includes: TStrings;
   IncludeParser: TIncludeParser;
 begin
@@ -134,8 +148,8 @@ begin
   Assert(Units.IndexOf(UnitName) = -1, Format('Error: unit "%s" already registered', [UnitName]));
   Assert(FileExists(FileName), Format('Error: file "%s" not found', [FileName]));
   Result := TPascalParser.Create;
-  Result.PreserveWhiteSpaces := False;
-  Result.PreserveComments := False;
+  Result.PreserveWhiteSpaces := True;
+  Result.PreserveComments := True;
   Source := TStringList.Create;
   try
     Source.LoadFromFile(FileName);
@@ -149,11 +163,24 @@ begin
       IncludeParser.Free;
     end;
     Result.Parse(Source);
+    UsesList := TStringList.Create;
+    FUsesList.AddObject(UnitName, UsesList);
+    TSourceTreeWalker.Create.Walk(Result.Root, TCommentRemovalVisitor.Create);
+    TSourceTreeWalker.Create.Walk(Result.Root, TWhitespaceRemovalVisitor.Create);
   finally
     Source.Free;
   end;
   Result.Tag := Integer(IncludedInProject);
   Units.AddObject(UnitName, Result);
+end;
+
+procedure TUnitRegistry.AddUsedUnit(UnitName, UsedUnit: String);
+var
+  Index: Integer;
+begin
+  Index := FUsesList.IndexOf(UnitName);
+  Assert(Index <> -1, 'Error: unit not registered!');
+  TStrings(FUsesList.Objects[Index]).Add(UsedUnit);
 end;
 
 procedure TUnitRegistry.GetProjectRegisteredUnitsNames(Units: TStrings);
@@ -171,6 +198,13 @@ begin
   Units.Assign(Self.Units);
 end;
 
+procedure TUnitRegistry.GetUnitUsesList(UnitName: String; UsesList: TStrings);
+begin
+  UsesList.Clear;
+  if FUsesList.IndexOf(UnitName) <> -1 then
+    UsesList.Assign(TStrings(FUsesList.Objects[FUsesList.IndexOf(UnitName)]));
+end;
+
 procedure TUnitRegistry.GetUnitIncludes(UnitName: String; Includes: TStrings);
 begin
   Includes.Clear;
@@ -185,5 +219,6 @@ finalization
   TUnitRegistry.Shutdown;
 
 end.
+
 
 

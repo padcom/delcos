@@ -17,6 +17,7 @@ type
     function GetDumpUsesTree: Boolean;
     function GetDumpAdvancedUsesTree: Boolean;
     function GetDumpCyclomaticComplexity: Boolean;
+    function GetRecuseIntoUnits: Boolean;
   protected
     class procedure Initialize;
     class procedure Shutdown;
@@ -33,7 +34,8 @@ type
     property DumpDebugTree: Boolean read GetDumpDebugTree;
     property DumpUsesTree: Boolean read GetDumpUsesTree;
     property DumpAdvancedUsesTree: Boolean read GetDumpAdvancedUsesTree;
-    property DumpCyclomaticComplexity: Boolean read GetDumpCyclomaticComplexity; 
+    property DumpCyclomaticComplexity: Boolean read GetDumpCyclomaticComplexity;
+    property RecurseIntoUnits: Boolean read GetRecuseIntoUnits;
   end;
 
 implementation
@@ -85,6 +87,11 @@ begin
   Result := ByName['dump-cyclomatic-complexity'].Value;
 end;
 
+function TOptions.GetRecuseIntoUnits: Boolean;
+begin
+  Result := ByName['recurse-units'].Value;
+end;
+
 { Protected declarations }
 
 var
@@ -123,6 +130,8 @@ begin
     Explanation := 'Dump advanced uses tree';
   with AddOption(TPxBoolOption.Create('c', 'dump-cyclomatic-complexity')) do
     Explanation := 'Dump Cyclomatic Complexity of methods';
+  with AddOption(TPxBoolOption.Create(#0, 'recurse-units')) do
+    Explanation := 'Recurse into units (very slow!)';
 end;
 
 procedure TOptions.AfterParseOptions;
@@ -170,5 +179,6 @@ finalization
   TOptions.Shutdown;
 
 end.
+
 
 

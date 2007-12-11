@@ -100,7 +100,7 @@ Conditionals=
 DebugSourceDirs=
 UsePackages=0
 [Parameters]
-RunParams=-i ..\..\tests\test.pas -a
+RunParams=-i ..\..\delcos.dpr -a
 HostApplication=
 Launcher=
 UseLauncher=0
