@@ -4,8 +4,9 @@
 	<property environment="env"/> 
 	<target name="all" depends="clean,compile"/>
 	<target name="prepare_version_info">
-		<exec executable="svnversion" outputproperty="build.revision">
-			<arg value="-n" />
+		<exec executable="git.cmd" outputproperty="build.revision">
+			<arg value="rev-parse" />
+			<arg value="HEAD" />
 		</exec>
 		<echo file="cui/revision.inc">const REVISION='${build.revision}';</echo>
 	</target>
