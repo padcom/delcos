@@ -1,2 +1,7 @@
 build
 cui/revision.inc
+*.ppu
+*.~*
+*.o
+*.rst
+*.exe
