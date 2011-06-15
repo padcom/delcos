@@ -57,20 +57,15 @@ begin
   Result := (Tag and ULONG($20000000)) <> 0;
 end;
 
-{$IFNDEF CLR}
-
 // IMAGE_FIRST_SECTION by Nico Bendlin - supplied by Markus Fuchs
 
-function FieldOffset(const Struc; const Field): Cardinal;
-begin
-  Result := Cardinal(@Field) - Cardinal(@Struc);
-end;
-
 function IMAGE_FIRST_SECTION(NtHeader: PImageNtHeaders): PImageSectionHeader;
+var
+  OptionalHeaderAddr: PByte;
 begin
-  Result := PImageSectionHeader(Cardinal(NtHeader) +
-    FieldOffset(NtHeader^, NtHeader^.OptionalHeader) +
-    NtHeader^.FileHeader.SizeOfOptionalHeader);
+  OptionalHeaderAddr := @NtHeader^.OptionalHeader;
+  Inc(OptionalHeaderAddr, NtHeader^.FileHeader.SizeOfOptionalHeader);
+  Result := PImageSectionHeader(OptionalHeaderAddr);
 end;
 
 // line 9204
@@ -104,5 +99,3 @@ function IMAGE_SNAP_BY_ORDINAL(Ordinal: DWORD): Boolean;
 begin
   Result := ((Ordinal and IMAGE_ORDINAL_FLAG32) <> 0);
 end;
-
-{$ENDIF ~CLR}

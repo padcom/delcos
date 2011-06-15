@@ -102,7 +102,7 @@ uses
  { delphi }
  Forms, SysUtils,
  { jcl }
- JclStrings;
+ JclAnsiStrings;
 
 const
   codepage_Chinese = 950;

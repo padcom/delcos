@@ -20,11 +20,11 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Unit owner: Florent Ouchet                                                                       }
-{ Last modified: $Date: 2007-06-17 13:33:14 +0200 (dim., 17 juin 2007) $                              }
+{ Last modified: $Date:: 2010-09-01 21:48:55 +0200 (mer., 01 sept. 2010)                         $ }
+{ Revision:      $Rev:: 3321                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
 {                                                                                                  }
 {**************************************************************************************************}
-
 unit JclOtaUtils;
 
 interface
@@ -35,16 +35,30 @@ interface
 uses
   SysUtils, Classes, Windows,
   Controls, ComCtrls, ActnList, Menus,
+  {$IFNDEF COMPILER8_UP}
+  Idemenuaction, // dependency walker reports a class TPopupAction in
+  // unit Idemenuaction in designide.bpl used by the IDE to display tool buttons
+  // with a drop down menu, this class seems to have the same interface
+  // as TControlAction defined in Controls.pas for newer versions of Delphi
+  {$ENDIF COMPILER8_UP}
+  JclBase,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   JclDebug,
   {$ENDIF MSWINDOWS}
-  JclBorlandTools,
+  JclIDEUtils,
   ToolsAPI;
 
-const
-  MapFileOptionDetailed = 3;
-
 type
+  // class of actions with a drop down menu on tool bars
+  {$IFDEF COMPILER8_UP}
+  TDropDownAction = TControlAction;
+  {$ELSE COMPILER8_UP}
+  TDropDownAction = TPopupAction;
+  {$ENDIF COMPILER8_UP}
+
 // note to developers
 // to avoid JCL exceptions to be reported as Borland's exceptions in automatic
 // bug reports, all entry points should be protected with this code model:
@@ -56,7 +70,6 @@ type
 //   on ExceptionObj: TObject do
 //   begin
 //     JclExpertShowExceptionDialog(ExceptionObj);
-//     raise;
 //   end;
 // end;
 // entry points for experts are usually:
@@ -73,11 +86,9 @@ type
   {$IFDEF MSWINDOWS}
   private
     FStackInfo: TJclStackInfoList;
-  {$ENDIF MSWINDOWS}
   public
-    constructor CreateTrace(const Msg: string);
-  {$IFDEF MSWINDOWS}
     destructor Destroy; override;
+    procedure AfterConstruction; override;
     property StackInfo: TJclStackInfoList read FStackInfo;
   {$ENDIF MSWINDOWS}
   end;
@@ -117,26 +128,37 @@ type
 
   TJclOTAExpertBase = class(TInterfacedObject, IJclOTAOptionsCallback)
   private
-    FEnvVariables: TStringList;
     FRootDir: string;
-    FServices: IOTAServices;
-    FNTAServices: INTAServices;
-    FOTAModuleServices: IOTAModuleServices;
+    FJCLRootDir: string;
     FSettings: TJclOTASettings;
-    {$IFDEF BDS}
-    FOTAPersonalityServices: IOTAPersonalityServices;
-    {$ENDIF BDS}
-    FOTAMessageServices: IOTAMessageServices;
+    FJCLSettings: TStrings;
     function GetModuleHInstance: Cardinal;
-    function GetActiveProject: IOTAProject;
-    function GetProjectGroup: IOTAProjectGroup;
     function GetRootDir: string;
-    procedure ReadEnvVariables;
+    function GetJCLRootDir: string;
+    function GetJCLSettings: TStrings;
+    procedure ReadEnvVariables(EnvVariables: TStrings);
     procedure ConfigurationActionUpdate(Sender: TObject);
     procedure ConfigurationActionExecute(Sender: TObject);
     function GetActivePersonality: TJclBorPersonality;
     function GetDesigner: string;
   public
+    class function GetNTAServices: INTAServices;
+    class function GetOTAServices: IOTAServices;
+    class function GetOTADebuggerServices: IOTADebuggerServices;
+    class function GetOTAModuleServices: IOTAModuleServices;
+    class function GetOTAPackageServices: IOTAPackageServices;
+    {$IFDEF BDS}
+    class function GetOTAPersonalityServices: IOTAPersonalityServices;
+    class function GetOTAGalleryCategoryManager: IOTAGalleryCategoryManager;
+    {$ENDIF BDS}
+    {$IFDEF BDS4_UP}
+    class function GetOTAProjectManager: IOTAProjectManager;
+    {$ENDIF BDS4_UP}
+    class function GetOTAMessageServices: IOTAMessageServices;
+    class function GetOTAWizardServices: IOTAWizardServices;
+    class function GetActiveProject: IOTAProject;
+    class function GetProjectGroup: IOTAProjectGroup;
+    class function IsPersonalityLoaded(const PersonalityName: string): Boolean;
     class procedure AddExpert(AExpert: TJclOTAExpertBase);
     class procedure RemoveExpert(AExpert: TJclOTAExpertBase);
     class function GetExpertCount: Integer;
@@ -151,16 +173,16 @@ type
     destructor Destroy; override;
     procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
-    
-    function FindExecutableName(const MapFileName, OutputDirectory: string;
-      var ExecutableFileName: string): Boolean;
-    function GetDrcFileName(const Project: IOTAProject): string;
-    function GetMapFileName(const Project: IOTAProject): string;
+
+    function FindExecutableName(const MapFileName: TFileName; const OutputDirectory: string;
+      var ExecutableFileName: TFileName): Boolean;
+    function GetDrcFileName(const Project: IOTAProject): TFileName;
+    function GetMapFileName(const Project: IOTAProject): TFileName;
     function GetOutputDirectory(const Project: IOTAProject): string;
     function IsInstalledPackage(const Project: IOTAProject): Boolean;
     function IsPackage(const Project: IOTAProject): Boolean;
-    function SubstitutePath(const Path: string): string;
 
+    { IJclOTAOptionsCallback }
     procedure AddConfigurationPages(AddPageFunc: TJclOTAAddPageFunc); virtual;
     procedure ConfigurationClosed(AControl: TControl; SaveChanges: Boolean); virtual;
 
@@ -169,18 +191,10 @@ type
     procedure RegisterAction(Action: TCustomAction);
     procedure UnregisterAction(Action: TCustomAction);
 
-    property ActiveProject: IOTAProject read GetActiveProject;
     property Settings: TJclOTASettings read FSettings;
-    property NTAServices: INTAServices read FNTAServices;
-    property ProjectGroup: IOTAProjectGroup read GetProjectGroup;
+    property JCLRootDir: string read GetJCLRootDir;
+    property JCLSettings: TStrings read GetJCLSettings;
     property RootDir: string read GetRootDir;
-    property Services: IOTAServices read FServices;
-    property OTAModuleServices: IOTAModuleServices read FOTAModuleServices;
-    {$IFDEF BDS}
-    property OTAPersonalityServices: IOTAPersonalityServices read FOTAPersonalityServices;
-    {$ENDIF BDS}
-    property OTAMessageServices: IOTAMessageServices read FOTAMessageServices;
-
     property ActivePersonality: TJclBorPersonality read GetActivePersonality;
     property Designer: string read GetDesigner;
 
@@ -188,16 +202,81 @@ type
   end;
 
   TJclOTAExpert = class(TJclOTAExpertBase, IOTAWizard, IOTANotifier)
-  protected
+  public
+    { IOTANotifier }
     procedure AfterSave; virtual;
     procedure BeforeSave; virtual;
     procedure Destroyed; virtual;
     procedure Modified; virtual;
+    { IOTAWizard }
     procedure Execute; virtual;
     function GetIDString: string; virtual;
     function GetName: string; virtual;
     function GetState: TWizardState; virtual;
   end;
+
+  {$IFDEF BDS7_UP}
+  TJclOTALocalMenu = class(TInterfacedObject, IOTANotifier, IOTALocalMenu)
+  private
+    FCaption: string;
+    FChecked: Boolean;
+    FEnabled: Boolean;
+    FHelpContext: Integer;
+    FName: string;
+    FParent: string;
+    FPosition: Integer;
+    FVerb: string;
+  public
+    { IOTANotifier }
+    procedure AfterSave;
+    procedure BeforeSave;
+    procedure Destroyed;
+    procedure Modified;
+  public
+    { IOTALocalMenu }
+    function GetCaption: string;
+    function GetChecked: Boolean;
+    function GetEnabled: Boolean;
+    function GetHelpContext: Integer;
+    function GetName: string;
+    function GetParent: string;
+    function GetPosition: Integer;
+    function GetVerb: string;
+    procedure SetCaption(const Value: string);
+    procedure SetChecked(Value: Boolean);
+    procedure SetEnabled(Value: Boolean);
+    procedure SetHelpContext(Value: Integer);
+    procedure SetName(const Value: string);
+    procedure SetParent(const Value: string);
+    procedure SetPosition(Value: Integer);
+    procedure SetVerb(const Value: string);
+    property Caption: string read GetCaption write SetCaption;
+    property Checked: Boolean read GetChecked write SetChecked;
+    property Enabled: Boolean read GetEnabled write SetEnabled;
+    property HelpContext: Integer read GetHelpContext write SetHelpContext;
+    property Name: string read GetName write SetName;
+    property Parent: string read GetParent write SetParent;
+    property Position: Integer read GetPosition write SetPosition;
+    property Verb: string read GetVerb write SetVerb;
+  end;
+
+  TJclProjectManagerMenuExecuteEvent = procedure (const MenuContextList: IInterfaceList) of object;
+
+  TJclOTAProjectManagerMenu = class(TJclOTALocalMenu, IOTANotifier, IOTALocalMenu, IOTAProjectManagerMenu)
+  private
+    FIsMultiSelectable: Boolean;
+    FOnExecute: TJclProjectManagerMenuExecuteEvent;
+  public
+    { IOTAProjectManagerMenu }
+    function GetIsMultiSelectable: Boolean;
+    procedure SetIsMultiSelectable(Value: Boolean);
+    procedure Execute(const MenuContextList: IInterfaceList); overload;
+    function PreExecute(const MenuContextList: IInterfaceList): Boolean;
+    function PostExecute(const MenuContextList: IInterfaceList): Boolean;
+    property IsMultiSelectable: Boolean read GetIsMultiSelectable write SetIsMultiSelectable;
+    property OnExecute: TJclProjectManagerMenuExecuteEvent read FOnExecute write FOnExecute;
+  end;
+  {$ENDIF BDS7_UP}
 
 // procedure SaveOptions(const Options: IOTAOptions; const FileName: string);
 function JclExpertShowExceptionDialog(AExceptionObj: TObject): Boolean;
@@ -210,19 +289,43 @@ procedure RegisterSplashScreen;
 procedure RegisterAboutBox;
 {$ENDIF BDS}
 
+// properties are stored as "// PropID PropValue" in project file
+// they have to be placed before any identifiers and after comments at the beginning of the file
+function GetProjectProperties(const AProject: IOTAProject; const PropIDs: TDynAnsiStringArray): TDynAnsiStringArray;
+function SetProjectProperties(const AProject: IOTAProject; const PropIDs, PropValues: TDynAnsiStringArray): Integer;
+
+// set to true to temporary disable experts that alter compiled files after they were compiled
+var
+  JclDisablePostCompilationProcess: Boolean = False;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/experts/common/JclOtaUtils.pas $';
+    Revision: '$Revision: 3321 $';
+    Date: '$Date: 2010-09-01 21:48:55 +0200 (mer., 01 sept. 2010) $';
+    LogPath: 'JCL\experts\common';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  Forms, Graphics, Dialogs, ActiveX,
+  Forms, Graphics, Dialogs, ActiveX, FileCtrl, IniFiles,
+  JediRegInfo,
   {$IFDEF MSWINDOWS}
   ImageHlp, JclRegistry,
   {$ENDIF MSWINDOWS}
-  JclFileUtils, JclStrings, JclSysInfo, JclSimpleXml,
+  {$IFDEF BDS8_UP}
+  JclOtaAddinOptions,
+  {$ENDIF BDS8_UP}
+  JclFileUtils, JclStrings, JclSysInfo, JclSimpleXml, JclCompilerUtils,
   JclOtaConsts, JclOtaResources, JclOtaExceptionForm, JclOtaConfigurationForm,
-  JclOtaActionConfigureSheet, JclOtaWizardForm, JclOtaWizardFrame;
+  JclOtaActionConfigureSheet, JclOtaUnitVersioningSheet,
+  JclOtaWizardForm, JclOtaWizardFrame;
 
 {$R 'JclImages.res'}
 
@@ -233,17 +336,15 @@ var
   ConfigurationAction: TAction = nil;
   ConfigurationMenuItem: TMenuItem = nil;
   ActionConfigureSheet: TJclOtaActionConfigureFrame = nil;
-  {$IFNDEF COMPILER6_UP}
-  OldFindGlobalComponentProc: TFindGlobalComponent = nil;
-  {$ENDIF COMPILER6_UP}
+  UnitVersioningSheet: TJclOtaUnitVersioningFrame = nil;
 
 function FindActions(const Name: string): TComponent;
 var
   Index: Integer;
   TestAction: TCustomAction;
 begin
+  Result := nil;
   try
-    Result := nil;
     if Assigned(GlobalActionList) then
       for Index := 0 to GlobalActionList.Count-1 do
       begin
@@ -251,15 +352,10 @@ begin
         if (CompareText(Name,TestAction.Name) = 0) then
           Result := TestAction;
       end;
-    {$IFNDEF COMPILER6_UP}
-    if (not Assigned(Result)) and Assigned(OldFindGlobalComponentProc) then
-      Result := OldFindGlobalComponentProc(Name)
-    {$ENDIF COMPILER6_UP}
   except
     on ExceptionObj: TObject do
     begin
       JclExpertShowExceptionDialog(ExceptionObj);
-      raise;
     end;
   end;
 end;
@@ -299,17 +395,283 @@ begin
 end;
 {$ENDIF BDS}
 
-//=== { EJclExpertException } ================================================
-
-constructor EJclExpertException.CreateTrace(const Msg: string);
+// result[] > 0: the property was found, result is the position of the first char of the property value
+// result[] <= 0: the property was not found, -result is the position where the property could be inserted
+function InternalLocateProperties(const AReader: IOTAEditReader; const PropIDs: TDynAnsiStringArray): TDynIntegerArray;
+const
+  BufferSize = 4096;
+var
+  Buffer, Line: AnsiString;
+  BufferStart, BufferCount, BufferPosition, LineStart, Position, PropIndex, PropCount, PropMatches: Integer;
+  InsideLineComment, InsideComment, InsideBrace: Boolean;
+  procedure LoadNextBuffer;
+  begin
+    BufferStart := Position;
+    BufferCount := AReader.GetText(BufferStart, PAnsiChar(Buffer), BufferSize);
+    BufferPosition := Position - BufferStart;
+  end;
 begin
-  inherited Create(Msg);
-  {$IFDEF MSWINDOWS}
-  FStackInfo := JclCreateStackList(False, 0, nil, False);
-  {$ENDIF MSWINDOWS}
+  BufferStart := 0;
+  BufferCount := 0;
+  LineStart := 0;
+  Position := 0;
+  PropMatches := 0;
+  InsideLineComment := False;
+  InsideComment := False;
+  InsideBrace := False;
+  PropCount := Length(PropIDs);
+  SetLength(Result, PropCount);
+  for PropIndex := 0 to PropCount - 1 do
+    Result[PropIndex] := -1;
+
+  SetLength(Buffer, BufferSize);
+  repeat
+    BufferPosition := Position - BufferStart;
+
+    if BufferPosition >= BufferCount then
+      LoadNextBuffer;
+
+    case Buffer[BufferPosition + 1] of
+      NativeLineFeed,
+      NativeCarriageReturn:
+        begin
+          if InsideLineComment and not (InsideComment or InsideBrace) then
+          begin
+            // process line
+            InsideLineComment := False;
+            if (LineStart - BufferStart) < 0 then
+              raise EJclExpertException.CreateRes(@RsELineTooLong);
+            Line := Copy(Buffer, LineStart - BufferStart + 1, Position - LineStart);
+            for PropIndex := 0 to PropCount - 1 do
+              if Pos(PropIDs[PropIndex], Line) = 4 then
+            begin
+              Result[PropIndex] := LineStart + Length(PropIDs[PropIndex]) + 4;
+              Inc(PropMatches);
+            end;
+          end;
+          LineStart := Position + 1;
+        end;
+      '/':
+        begin
+          if BufferPosition >= BufferCount then
+            LoadNextBuffer;
+          if (BufferPosition + 1) < BufferCount then
+          begin
+            if not (InsideLineComment or InsideComment or InsideBrace) then
+            begin
+              if (Buffer[BufferPosition + 2] = '/') then
+              begin
+                Inc(Position);
+                InsideLineComment := True;
+              end
+              else
+                // end of comments
+                Break;
+            end;
+          end
+          else
+            // end of file
+            Break;
+        end;
+      '(':
+        begin
+          if BufferPosition >= BufferCount then
+            LoadNextBuffer;
+          if (BufferPosition + 1) < BufferCount then
+          begin
+            if not (InsideLineComment or InsideComment or InsideBrace) then
+            begin
+              if (Buffer[BufferPosition + 2] = '*') then
+              begin
+                Inc(Position);
+                InsideComment := True;
+              end
+              else
+                // end of comments
+                Break;
+            end;
+          end
+          else
+            // end of file
+            Break;
+        end;
+      '*':
+        begin
+          if BufferPosition >= BufferCount then
+            LoadNextBuffer;
+          if (BufferPosition + 1) < BufferCount then
+          begin
+            if InsideComment then
+            begin
+              if (Buffer[BufferPosition + 2] = ')') then
+              begin
+                Inc(Position);
+                InsideComment := False;
+              end;
+            end
+            else
+            if not (InsideLineComment or InsideBrace) then
+              // end of comments
+              Break;
+          end
+          else
+            // end of file
+            Break;
+        end;
+      '{':
+        if not (InsideLineComment or InsideComment or InsideBrace) then
+          InsideBrace := True;
+      '}':
+        if InsideBrace then
+          InsideBrace := False
+        else
+        if not (InsideLineComment or InsideComment) then
+          // end of comments
+          Break;
+    else
+      if not CharIsWhiteSpace(Char(Buffer[BufferPosition + 1])) and not InsideLineComment
+        and not InsideComment and not InsideBrace then
+        // end of comments
+        Break;
+    end;
+    Inc(Position);
+  until (BufferCount = 0) or (PropMatches = PropCount);
+  if InsideLineComment or InsideComment or InsideBrace then
+    raise EJclExpertException.CreateRes(@RsEUnterminatedComment);
+  for PropIndex := 0 to PropCount - 1 do
+    if Result[PropIndex] = -1 then
+      Result[PropIndex] := -Position;
 end;
 
+function GetProjectProperties(const AProject: IOTAProject; const PropIDs: TDynAnsiStringArray): TDynAnsiStringArray;
+const
+  BufferSize = 4096;
+var
+  FileIndex, PropCount, PropIndex, BufferIndex: Integer;
+  AEditor: IOTAEditor;
+  FileExtension: string;
+  PropLocations: TDynIntegerArray;
+  AReader: IOTAEditReader;
+begin
+  PropCount := Length(PropIDs);
+  SetLength(Result, PropCount);
+  SetLength(PropLocations, 0);
+  for FileIndex := 0 to AProject.GetModuleFileCount - 1 do
+  begin
+    AEditor := AProject.GetModuleFileEditor(FileIndex);
+    FileExtension := ExtractFileExt(AEditor.FileName);
+    if AnsiSameText(FileExtension, '.dpr') or AnsiSameText(FileExtension, '.dpk')
+      or AnsiSameText(FileExtension, '.bpf') or AnsiSameText(FileExtension, '.cpp') then
+    begin
+      AReader := (AEditor as IOTASourceEditor).CreateReader;
+      try
+        PropLocations := InternalLocateProperties(AReader, PropIDs);
+        for PropIndex := 0 to PropCount - 1 do
+          if PropLocations[PropIndex] > 0 then
+        begin
+          SetLength(Result[PropIndex], BufferSize);
+          SetLength(Result[PropIndex], AReader.GetText(PropLocations[PropIndex], PAnsiChar(Result[PropIndex]), BufferSize));
+          for BufferIndex := 1 to Length(Result[PropIndex]) do
+            if CharIsWhiteSpace(Char(Result[PropIndex][BufferIndex])) then
+          begin
+            SetLength(Result[PropIndex], BufferIndex - 1);
+            Break;
+          end;
+        end;
+      finally
+        AReader := nil;
+      end;
+      Break;
+    end;
+  end;
+end;
+
+function SetProjectProperties(const AProject: IOTAProject; const PropIDs, PropValues: TDynAnsiStringArray): Integer;
+const
+  BufferSize = 4096;
+var
+  FileIndex, PropCount, PropIndex, BufferIndex, PropSize: Integer;
+  AEditor: IOTAEditor;
+  ASourceEditor: IOTASourceEditor;
+  FileExtension: string;
+  Buffer: AnsiString;
+  PropLocations: TDynIntegerArray;
+  AReader: IOTAEditReader;
+  AWriter: IOTAEditWriter;
+  S: AnsiString;
+  ABuffer: IOTAEditBuffer;
+begin
+  PropCount := Length(PropIDs);
+  Result := 0;
+  for FileIndex := 0 to AProject.GetModuleFileCount - 1 do
+  begin
+    AEditor := AProject.GetModuleFileEditor(FileIndex);
+    FileExtension := ExtractFileExt(AEditor.FileName);
+    if AnsiSameText(FileExtension, '.dpr') or AnsiSameText(FileExtension, '.dpk')
+      or AnsiSameText(FileExtension, '.bpf') or AnsiSameText(FileExtension, '.cpp') then
+    begin
+      ASourceEditor := AEditor as IOTASourceEditor;
+      ABuffer := ASourceEditor as IOTAEditBuffer;
+      if not ABuffer.IsReadOnly then
+      begin
+        for PropIndex := 0 to PropCount - 1 do
+        begin
+          SetLength(PropLocations, 0);
+          PropSize := 0;
+          AReader := ASourceEditor.CreateReader;
+          try
+            PropLocations := InternalLocateProperties(AReader, Copy(PropIDs, PropIndex, 1));
+            if PropLocations[0] > 0 then
+            begin
+              SetLength(Buffer, BufferSize);
+              SetLength(Buffer, AReader.GetText(PropLocations[0], PAnsiChar(Buffer), BufferSize));
+              for BufferIndex := 1 to Length(Buffer) do
+                if CharIsWhiteSpace(Char(Buffer[BufferIndex])) then
+              begin
+                PropSize := BufferIndex - 1;
+                Break;
+              end;
+            end;
+          finally
+            // release the reader before allocating the writer
+            AReader := nil;
+          end;
+
+          AWriter := ASourceEditor.CreateUndoableWriter;
+          try
+            if PropLocations[0] > 0 then
+            begin
+              AWriter.CopyTo(PropLocations[0]);
+              AWriter.DeleteTo(PropLocations[0] + PropSize);
+              AWriter.Insert(PAnsiChar(PropValues[PropIndex]));
+            end
+            else
+            begin
+              AWriter.CopyTo(-PropLocations[0]);
+              S := AnsiString(Format('// %s %s%s', [PropIDs[PropIndex], PropValues[PropIndex], NativeLineBreak]));
+              AWriter.Insert(PAnsiChar(S));
+            end;
+          finally
+            // release the writter before allocating the reader
+            AWriter := nil;
+          end;
+          Inc(Result);
+        end;
+      end;
+      Break;
+    end;
+  end;
+end;
+
+//=== { EJclExpertException } ================================================
+
 {$IFDEF MSWINDOWS}
+procedure EJclExpertException.AfterConstruction;
+begin
+  inherited AfterConstruction;
+  FStackInfo := JclCreateStackList(True, 0, nil, False);
+end;
+
 destructor EJclExpertException.Destroy;
 begin
   FreeAndNil(FStackInfo);
@@ -317,7 +679,7 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-{ TJclOTASettings }
+//=== { TJclOTASettings } ====================================================
 
 constructor TJclOTASettings.Create(ExpertName: string);
 var
@@ -327,9 +689,9 @@ begin
 
   Supports(BorlandIDEServices,IOTAServices,OTAServices);
   if not Assigned(OTAServices) then
-    raise EJclExpertException.CreateTrace(RsENoIDEServices);
+    raise EJclExpertException.CreateRes(@RsENoOTAServices);
 
-  FBaseKeyName := StrEnsureSuffix(AnsiBackSlash, OTAServices.GetBaseRegistryKey);
+  FBaseKeyName := StrEnsureSuffix(NativeBackSlash, OTAServices.GetBaseRegistryKey);
   
   FKeyName := BaseKeyName + RegJclIDEKey + ExpertName;
 end;
@@ -407,6 +769,20 @@ var
   OptionsForm: TJclOtaOptionsForm;
   Index: Integer;
 begin
+  {$IFDEF BDS8_UP}
+  //no resourcestring here, because this message will be removed
+  if MessageBox(0, 'The JCL options can now be found in the Third party section of the environment options and ' +
+    'this menu item will be removed some time in the future.' + #13#10#13#10 +
+    'Press ENTER/Yes to open the enviroment options or No to open the old options dialog.',
+    'JCL', MB_ICONASTERISK or MB_YESNO or MB_DEFBUTTON1) = IDYES then
+  begin
+    (BorlandIDEServices as IOTAServices).GetEnvironmentOptions.EditOptions('',
+      RsProjectJEDIJclAddinOptionsCaption);
+    Result := True;
+  end
+  else
+  begin
+  {$ENDIF BDS8_UP}
   OptionsForm := TJclOtaOptionsForm.Create(nil);
   try
     for Index := 0 to GetExpertCount - 1 do
@@ -415,6 +791,9 @@ begin
   finally
     OptionsForm.Free;
   end;
+  {$IFDEF BDS8_UP}
+  end;
+  {$ENDIF BDS8_UP}
 end;
 
 class function TJclOTAExpertBase.GetExpert(Index: Integer): TJclOTAExpertBase;
@@ -431,6 +810,68 @@ begin
     Result := GlobalExpertList.Count
   else
     Result := 0;
+end;
+
+function TJclOTAExpertBase.GetJCLRootDir: string;
+var
+  IDERegKey, JclVersion, JclDcpDir, JclBplDir: string;
+begin
+  if FJCLRootDir = '' then
+  begin
+    IDERegKey := StrEnsureNoSuffix('\', GetOTAServices.GetBaseRegistryKey);
+    if not ReadJediRegInformation(IDERegKey, 'JCL', JclVersion, JclDcpDir, JclBplDir, FJCLRootDir)
+       or (FJCLRootDir = '') then
+    begin
+      if SelectDirectory(LoadResString(@RsBrowseToJCLRootDir), '', FJCLRootDir)
+         and DirectoryExists(FJCLRootDir) then
+      begin
+        FJCLRootDir := PathRemoveSeparator(FJCLRootDir);
+        JclVersion := Format('%d.%d.%d.%d', [JclVersionMajor, JclVersionMinor, JclVersionRelease, JclVersionBuild]);
+        JclDcpDir := JCLSettings.Values['DCP-Path'];
+        JclBplDir := JCLSettings.Values['BPL-Path'];
+        InstallJediRegInformation(IDERegKey, 'JCL', JclVersion, JclDcpDir, JclBplDir, FJCLRootDir);
+      end
+      else
+        raise EJclExpertException.CreateRes(@RsENoRootDir);
+    end;
+  end;
+  Result := FJCLRootDir;
+end;
+
+function TJclOTAExpertBase.GetJCLSettings: TStrings;
+var
+  Installations: TJclBorRADToolInstallations;
+  Installation: TJclBorRADToolInstallation;
+  I: Integer;
+  IDERegKey: string;
+  ConfigIni: TIniFile;
+const
+  JclConfigIni = 'bin\JCL-install.ini';
+begin
+  if not Assigned(FJCLSettings) then
+  begin
+    IDERegKey := StrEnsureNoSuffix('\', GetOTAServices.GetBaseRegistryKey);
+    Installations := TJclBorRADToolInstallations.Create;
+    try
+      for I := 0 to Installations.Count - 1 do
+      begin
+        Installation := Installations.Installations[I];
+        if StrSame(IDERegKey, StrEnsureNoSuffix('\', Installation.ConfigDataLocation)) then
+        begin
+          ConfigIni := TIniFile.Create(PathAddSeparator(FJCLRootDir) + JclConfigIni);
+          try
+            FJCLSettings := TStringList.Create;
+            ConfigIni.ReadSectionValues(Installation.Name, FJCLSettings);
+          finally
+            ConfigIni.Free;
+          end;
+        end;
+      end;
+    finally
+      Installations.Free;
+    end;
+  end;
+  Result := FJCLSettings;
 end;
 
 class procedure TJclOTAExpertBase.AddExpert(AExpert: TJclOTAExpertBase);
@@ -513,7 +954,6 @@ begin
     on ExceptionObj: TObject do
     begin
       JclExpertShowExceptionDialog(ExceptionObj);
-      raise;
     end;
   end;
 end;
@@ -526,7 +966,6 @@ begin
     on ExceptionObj: TObject do
     begin
       JclExpertShowExceptionDialog(ExceptionObj);
-      raise;
     end;
   end;
 end;
@@ -538,7 +977,12 @@ begin
   if not Assigned(ActionConfigureSheet) then
   begin
     ActionConfigureSheet := TJclOtaActionConfigureFrame.Create(Application);
-    AddPageFunc(ActionConfigureSheet, RsActionSheet, Self);
+    AddPageFunc(ActionConfigureSheet, LoadResString(@RsActionSheet), Self);
+  end;
+  if not Assigned(UnitVersioningSheet) then
+  begin
+    UnitVersioningSheet := TJclOtaUnitVersioningFrame.Create(Application);
+    AddPageFunc(UnitVersioningSheet, LoadResString(@RsUnitVersioningSheet), Self);
   end;
   // override to customize
 end;
@@ -553,6 +997,9 @@ begin
     FreeAndNil(ActionConfigureSheet);
   end
   else
+  if Assigned(AControl) and (AControl = UnitVersioningSheet) then
+    FreeAndNil(UnitVersioningSheet)
+  else
     AControl.Free;
   // override to customize
 end;
@@ -565,50 +1012,36 @@ begin
   RegisterSplashScreen;
   RegisterAboutBox;
   {$ENDIF BDS}
-  
-  Supports(BorlandIDEServices, IOTAServices, FServices);
-  if not Assigned(FServices) then
-    raise EJclExpertException.CreateTrace(RsENoIDEServices);
 
-  Supports(BorlandIDEServices, INTAServices, FNTAServices);
-  if not Assigned(FNTAServices) then
-    raise EJclExpertException.CreateTrace(RsENoNTAServices);
-
-  {$IFDEF BDS}
-  Supports(BorlandIDEServices, IOTAPersonalityServices, FOTAPersonalityServices);
-  if not Assigned(FOTAPersonalityServices) then
-    raise EJclExpertException.CreateTrace(RsENoPersonalityServices);
-  {$ENDIF BDS}
-
-  Supports(BorlandIDEServices, IOTAModuleServices, FOTAModuleServices);
-  if not Assigned(FOTAModuleServices) then
-    raise EJclExpertException.CreateTrace(RsENoModuleServices);
-
-  Supports(BorlandIDEServices, IOTAMessageServices, FOTAMessageServices);
-  if not Assigned(FOTAMessageServices) then
-    raise EJclExpertException.CreateTrace(RsENoMessageServices);
-
-  FEnvVariables := TStringList.Create;
   FSettings := TJclOTASettings.Create(AName);
+  {$IFDEF BDS8_UP}
+  JclRegisterCommonAddinOptions;
+  {$ENDIF BDS8_UP}
 end;
 
 destructor TJclOTAExpertBase.Destroy;
 begin
+  { TODO -cFulcrum: Check why the class destructor isn't executed. When it gets
+    executed then use class constructor/destructor for JclRegisterCommonAddinOptions
+    and JclUnregisterCommonAddinOptions }
+  {$IFDEF BDS8_UP}
+  JclUnregisterCommonAddinOptions;
+  {$ENDIF BDS8_UP}
   FreeAndNil(FSettings);
-  FreeAndNil(FEnvVariables);
-
-  FServices := nil;
-  FNTAServices := nil;
-
+  FreeAndNil(FJCLSettings);
   inherited Destroy;
 end;
 
-function TJclOTAExpertBase.FindExecutableName(const MapFileName, OutputDirectory: string;
-  var ExecutableFileName: string): Boolean;
+function TJclOTAExpertBase.FindExecutableName(const MapFileName: TFileName;
+  const OutputDirectory: string; var ExecutableFileName: TFileName): Boolean;
 var
   Se: TSearchRec;
   Res: Integer;
+  {$IFDEF RTL220_UP}
+  LatestTime: TDateTime;
+  {$ELSE ~RTL220_UP}
   LatestTime: Integer;
+  {$ENDIF ~RTL220_UP}
   FileName: TFileName;
   {$IFDEF MSWINDOWS}
   LI: LoadedImage;
@@ -622,13 +1055,22 @@ begin
   begin
     FileName := PathAddSeparator(OutputDirectory) + Se.Name;
     {$IFDEF MSWINDOWS}
-    if MapAndLoad(PChar(FileName), nil, @LI, False, True) then
+    // possible loss of data
+    if MapAndLoad(PAnsiChar(AnsiString(FileName)), nil, @LI, False, True) then
     begin
+      {$IFDEF RTL220_UP}
+      if (not LI.fDOSImage) and (Se.TimeStamp > LatestTime) then
+      begin
+        ExecutableFileName := FileName;
+        LatestTime := Se.TimeStamp;
+      end;
+      {$ELSE ~RTL220_UP}
       if (not LI.fDOSImage) and (Se.Time > LatestTime) then
       begin
         ExecutableFileName := FileName;
         LatestTime := Se.Time;
       end;
+      {$ENDIF ~RTL220_UP}
       UnMapAndLoad(@LI);
     end;
     {$ELSE}
@@ -644,16 +1086,18 @@ begin
   Result := (ExecutableFileName <> '');
 end;
 
-function TJclOTAExpertBase.GetActiveProject: IOTAProject;
+class function TJclOTAExpertBase.GetActiveProject: IOTAProject;
 var
-  TempProjectGroup: IOTAProjectGroup;
+  ProjectGroup: IOTAProjectGroup;
+  OTAModuleServices: IOTAModuleServices;
   Index: Integer;
 begin
   Result := nil;
-  TempProjectGroup := ProjectGroup;
+  ProjectGroup := GetProjectGroup;
+  OTAModuleServices := GetOTAModuleServices;
 
-  if Assigned(TempProjectGroup) then
-    Result := TempProjectGroup.ActiveProject
+  if Assigned(ProjectGroup) then
+    Result := ProjectGroup.ActiveProject
   else
     for Index := 0 to OTAModuleServices.ModuleCount - 1 do
       if Supports(OTAModuleServices.Modules[Index], IOTAProject, Result) then
@@ -662,43 +1106,39 @@ end;
 
 function TJclOTAExpertBase.GetDesigner: string;
 begin
-  {$IFDEF COMPILER6_UP}
-  Result := Services.GetActiveDesignerType;
-  {$ELSE COMPILER6_UP}
-  Result := JclDesignerAny;
-  {$ENDIF COMPILER6_UP}
+  Result := GetOTAServices.GetActiveDesignerType;
 end;
 
-function TJclOTAExpertBase.GetDrcFileName(const Project: IOTAProject): string;
+function TJclOTAExpertBase.GetDrcFileName(const Project: IOTAProject): TFileName;
 begin
   if not Assigned(Project) then
-    raise EJclExpertException.CreateTrace(RsENoActiveProject);
+    raise EJclExpertException.CreateRes(@RsENoActiveProject);
     
   Result := ChangeFileExt(Project.FileName, CompilerExtensionDRC);
 end;
 
-function TJclOTAExpertBase.GetMapFileName(const Project: IOTAProject): string;
+function TJclOTAExpertBase.GetMapFileName(const Project: IOTAProject): TFileName;
 var
-  ProjectFileName, OutputDirectory, LibPrefix, LibSuffix: string;
+  ProjectFileName: TFileName;
+  OutputDirectory, LibPrefix, LibSuffix: string;
 begin
   if not Assigned(Project) then
-    raise EJclExpertException.CreateTrace(RsENoActiveProject);
+    raise EJclExpertException.CreateRes(@RsENoActiveProject);
 
   ProjectFileName := Project.FileName;
   OutputDirectory := GetOutputDirectory(Project);
-  {$IFDEF RTL140_UP}
   if not Assigned(Project.ProjectOptions) then
-    raise EJclExpertException.CreateTrace(RsENoProjectOptions);
+    raise EJclExpertException.CreateRes(@RsENoProjectOptions);
   LibPrefix := Trim(VarToStr(Project.ProjectOptions.Values[LIBPREFIXOptionName]));
   LibSuffix := Trim(VarToStr(Project.ProjectOptions.Values[LIBSUFFIXOptionName]));
-  if LibPrefix = 'false' then
+  {$IFDEF BDS}
+  if Project.Personality = JclCBuilderPersonality then
+  begin
+    // C++Builder 2007 does not support lib prefix and lib suffix
     LibPrefix := '';
-  if LibSuffix = 'false' then
     LibSuffix := '';
-  {$ELSE ~RTL140_UP}
-  LibPrefix := '';
-  LibSuffix := '';
-  {$ENDIF ~RTL140_UP}
+  end;
+  {$ENDIF BDS}
   Result := PathAddSeparator(OutputDirectory) + LibPrefix +
     PathExtractFileNameNoExt(ProjectFileName) + LibSuffix + CompilerExtensionMAP;
 end;
@@ -707,40 +1147,180 @@ function TJclOTAExpertBase.GetModuleHInstance: Cardinal;
 begin
   Result := FindClassHInstance(ClassType);
   if Result = 0 then
-    raise EJclExpertException.CreateTrace(RsBadModuleHInstance);
+    raise EJclExpertException.CreateRes(@RsBadModuleHInstance);
+end;
+
+class function TJclOTAExpertBase.GetNTAServices: INTAServices;
+begin
+  Supports(BorlandIDEServices, INTAServices, Result);
+  if not Assigned(Result) then
+    raise EJclExpertException.CreateRes(@RsENoNTAServices);
+end;
+
+{$IFDEF BDS}
+class function TJclOTAExpertBase.GetOTAGalleryCategoryManager: IOTAGalleryCategoryManager;
+begin
+  Supports(BorlandIDEServices, IOTAGalleryCategoryManager, Result);
+  if not Assigned(Result) then
+    raise EJclExpertException.CreateRes(@RsENoOTAGalleryCategoryManager);
+end;
+{$ENDIF BDS}
+
+class function TJclOTAExpertBase.GetOTADebuggerServices: IOTADebuggerServices;
+begin
+  Supports(BorlandIDEServices, IOTADebuggerServices, Result);
+  if not Assigned(Result) then
+    raise EJclExpertException.CreateRes(@RsENoDebuggerServices);
+end;
+
+class function TJclOTAExpertBase.GetOTAMessageServices: IOTAMessageServices;
+begin
+  Supports(BorlandIDEServices, IOTAMessageServices, Result);
+  if not Assigned(Result) then
+    raise EJclExpertException.CreateRes(@RsENoOTAMessageServices);
+end;
+
+class function TJclOTAExpertBase.GetOTAModuleServices: IOTAModuleServices;
+begin
+  Supports(BorlandIDEServices, IOTAModuleServices, Result);
+  if not Assigned(Result) then
+    raise EJclExpertException.CreateRes(@RsENoOTAModuleServices);
+end;
+
+class function TJclOTAExpertBase.GetOTAPackageServices: IOTAPackageServices;
+begin
+  Supports(BorlandIDEServices, IOTAPackageServices, Result);
+  if not Assigned(Result) then
+    raise EJclExpertException.CreateRes(@RsENoOTAPackageServices);
+end;
+
+{$IFDEF BDS}
+class function TJclOTAExpertBase.GetOTAPersonalityServices: IOTAPersonalityServices;
+begin
+  Supports(BorlandIDEServices, IOTAPersonalityServices, Result);
+  if not Assigned(Result) then
+    raise EJclExpertException.CreateRes(@RsENoOTAPersonalityServices);
+end;
+{$ENDIF BDS}
+
+{$IFDEF BDS4_UP}
+class function TJclOTAExpertBase.GetOTAProjectManager: IOTAProjectManager;
+begin
+  Supports(BorlandIDEServices, IOTAProjectManager, Result);
+  if not Assigned(Result) then
+    raise EJclExpertException.CreateRes(@RsENoOTAProjectManager);
+end;
+{$ENDIF BDS4_UP}
+
+class function TJclOTAExpertBase.GetOTAServices: IOTAServices;
+begin
+  Supports(BorlandIDEServices, IOTAServices, Result);
+  if not Assigned(Result) then
+    raise EJclExpertException.CreateRes(@RsENoOTAServices);
+end;
+
+class function TJclOTAExpertBase.GetOTAWizardServices: IOTAWizardServices;
+begin
+  Supports(BorlandIDEServices, IOTAWizardServices, Result);
+  if not Assigned(Result) then
+    raise EJclExpertException.CreateRes(@RsENoOTAWizardServices);
 end;
 
 function TJclOTAExpertBase.GetOutputDirectory(const Project: IOTAProject): string;
+var
+  {$IFDEF BDS8_UP}
+  Configurations: IOTAProjectOptionsConfigurations;
+  {$ENDIF BDS8_UP}
+  EnvironmentOptions: IOTAEnvironmentOptions;
+  OptionValue: Variant;
+  EnvVariables: TStrings;
+  Name: string;
+  I: Integer;
 begin
   if not Assigned(Project) then
-    raise EJclExpertException.CreateTrace(RsENoActiveProject);
+    raise EJclExpertException.CreateRes(@RsENoActiveProject);
   if not Assigned(Project.ProjectOptions) then
-      raise EJclExpertException.CreateTrace(RsENoProjectOptions);
+      raise EJclExpertException.CreateRes(@RsENoProjectOptions);
+
+  Result := '';
 
   if IsPackage(Project) then
   begin
-    Result := VarToStr(Project.ProjectOptions.Values[PkgDllDirOptionName]);
+    OptionValue := Project.ProjectOptions.Values[PkgDllDirOptionName];
 
-    if Result = 'false' then
+    if VarIsStr(OptionValue) then
+      Result := VarToStr(OptionValue);
+
+    {$IFDEF BDS5}
+    if (Project.Personality = JclCBuilderPersonality) and (Result = 'false') then
       Result := '';
+    {$ENDIF BDS5}
 
     if Result = '' then
     begin
-      if not Assigned(FServices.GetEnvironmentOptions) then
-        raise EJclExpertException.CreateTrace(RsENoEnvironmentOptions);
-      Result := FServices.GetEnvironmentOptions.Values[BPLOutputDirOptionName];
+      EnvironmentOptions := GetOTAServices.GetEnvironmentOptions;
+      if not Assigned(EnvironmentOptions) then
+        raise EJclExpertException.CreateRes(@RsENoEnvironmentOptions);
+      OptionValue := EnvironmentOptions.Values[BPLOutputDirOptionName];
+      if VarIsStr(OptionValue) then
+        Result := VarToStr(OptionValue);
     end;
   end
   else
-    Result := VarToStr(Project.ProjectOptions.Values[OutputDirOptionName]);
+  begin
+    OptionValue := Project.ProjectOptions.Values[OutputDirOptionName];
 
-  if Result = 'false' then
+    if VarIsStr(OptionValue) then
+      Result := VarToStr(OptionValue);
+
+    {$IFDEF BDS5}
+    if (Project.Personality = JclCBuilderPersonality) and (Result = 'false') then
+      Result := '';
+    {$ENDIF BDS5}
+
+    if Result = '' then
+    begin
+      OptionValue := Project.ProjectOptions.Values[FinalOutputDirOptionName];
+      if VarIsStr(OptionValue) then
+        Result := VarToStr(OptionValue);
+    end;
+  end;
+
+  {$IFDEF BDS5}
+  if (Project.Personality = JclCBuilderPersonality) and (Result = 'false') then
     Result := '';
+  {$ENDIF BDS5}
 
-  Result := SubstitutePath(Trim(Result));
+  Result := Trim(Result);
+
+  EnvVariables := TStringList.Create;
+  try
+    ReadEnvVariables(EnvVariables);
+    {$IFDEF BDS8_UP}
+    // add the config environment variable
+    if Supports(Project.ProjectOptions, IOTAProjectOptionsConfigurations, Configurations) then
+      EnvVariables.Values['Config'] := Configurations.ActiveConfigurationName;
+    {$ENDIF BDS8_UP}
+    while Pos('$(', Result) > 0 do
+    begin
+      for I := 0 to EnvVariables.Count - 1 do
+      begin
+        Name := EnvVariables.Names[I];
+        Result := StringReplace(Result, Format('$(%s)', [Name]),
+          EnvVariables.Values[Name], [rfReplaceAll, rfIgnoreCase]);
+      end;
+    end;
+  finally
+    EnvVariables.Free;
+  end;
+
+  while Pos('\\', Result) > 0 do
+    Result := StringReplace(Result, '\\', DirDelimiter, [rfReplaceAll]);
+
   if Result = '' then
     Result := ExtractFilePath(Project.FileName)
-  else if not PathIsAbsolute(Result) then
+  else
+  if not PathIsAbsolute(Result) then
     Result := PathGetRelativePath(ExtractFilePath(Project.FileName), Result);
 end;
 
@@ -748,53 +1328,51 @@ function TJclOTAExpertBase.GetActivePersonality: TJclBorPersonality;
 {$IFDEF BDS}
 var
   PersonalityText: string;
+  OTAPersonalityServices: IOTAPersonalityServices;
   {$IFDEF COMPILER9_UP}
-  CurrentProject: IOTAProject;
+  ActiveProject: IOTAProject;
   {$ENDIF COMPILER9_UP}
-{$ENDIF BDS}
 begin
-{$IFDEF BDS}
   {$IFDEF COMPILER9_UP}
-  CurrentProject := ActiveProject;
-  if Assigned(CurrentProject) then
-    PersonalityText := CurrentProject.Personality
+  ActiveProject := ActiveProject;
+  if Assigned(ActiveProject) then
+    PersonalityText := ActiveProject.Personality
   else
   {$ENDIF COMPILER9_UP}
-    PersonalityText := OTAPersonalityServices.CurrentPersonality;
+  OTAPersonalityServices := GetOTAPersonalityServices;
+  PersonalityText := OTAPersonalityServices.CurrentPersonality;
   Result := PersonalityTextToId(PersonalityText);
-{$ELSE BDS}
-{$IFDEF DELPHI}
-  Result := bpDelphi32;
-{$ENDIF DELPHI}
-{$IFDEF BCB}
-  Result := bpBCBuilder32;
-{$ENDIF BCB}
-{$ENDIF BDS}
 end;
+{$ELSE BDS}
+begin
+  {$IFDEF DELPHI}
+  Result := bpDelphi32;
+  {$ENDIF DELPHI}
+  {$IFDEF BCB}
+  Result := bpBCBuilder32;
+  {$ENDIF BCB}
+end;
+{$ENDIF BDS}
 
-function TJclOTAExpertBase.GetProjectGroup: IOTAProjectGroup;
+class function TJclOTAExpertBase.GetProjectGroup: IOTAProjectGroup;
 var
+  OTAModuleServices: IOTAModuleServices;
   AModule: IOTAModule;
   I: Integer;
 begin
+  OTAModuleServices := GetOTAModuleServices;
   for I := 0 to OTAModuleServices.ModuleCount - 1 do
   begin
     AModule := OTAModuleServices.Modules[I];
     if not Assigned(AModule) then
-      raise EJclExpertException.CreateTrace(RsENoModule);
+      raise EJclExpertException.CreateRes(@RsENoModule);
     if AModule.QueryInterface(IOTAProjectGroup, Result) = S_OK then
       Exit;
   end;
-
   Result := nil;
 end;
 
 function TJclOTAExpertBase.GetRootDir: string;
-{$IFDEF KYLIX}
-var
-  RADToolsInstallations: TJclBorRADToolInstallations;
-  RADToolInstallation: TJclBorRADToolInstallation;
-{$ENDIF KYLIX}
 begin
   if FRootDir = '' then
   begin
@@ -805,38 +1383,20 @@ begin
     if FRootDir = '' then
       FRootDir := RegReadStringDef(HKEY_CURRENT_USER, Settings.BaseKeyName, DelphiRootDirKeyValue, '');
     {$ENDIF MSWINDOWS}
-    {$IFDEF KYLIX}
-    RADToolsInstallations := TJclBorRADToolInstallations.Create;
-    try
-      {$IFDEF KYLIX3}
-      {$IFDEF BCB}
-      RADToolInstallation := RADToolsInstallations.BCBInstallationFromVersion[3];
-      {$ELSE}
-      RADToolInstallation := RADToolsInstallations.DelphiInstallationFromVersion[3];
-      {$ENDIF BCB}
-      {$ELSE}
-      RADToolInstallation := nil;
-      {$ENDIF KYLIX3}
-      if Assigned(RADToolInstallation) then
-        FRootDir := RADToolInstallation.RootDir;
-    finally
-      RADToolsInstallations.Free;
-    end;
-    {$ENDIF KYLIX}
     if FRootDir = '' then
-      raise EJclExpertException.CreateTrace(RsENoRootDir);
+      raise EJclExpertException.CreateRes(@RsENoRootDir);
   end;
   Result := FRootDir;
 end;
 
 function TJclOTAExpertBase.IsInstalledPackage(const Project: IOTAProject): Boolean;
 var
-  PackageFileName, ExecutableNameNoExt: string;
-  APackageServices: IOTAPackageServices;
+  PackageFileName, ExecutableNameNoExt: TFileName;
+  OTAPackageServices: IOTAPackageServices;
   I: Integer;
 begin
   if not Assigned(Project) then
-    raise EJclExpertException.CreateTrace(RsENoActiveProject);
+    raise EJclExpertException.CreateRes(@RsENoActiveProject);
 
   Result := IsPackage(Project);
   if Result then
@@ -844,20 +1404,16 @@ begin
     Result := False;
 
     if not Assigned(Project.ProjectOptions) then
-      raise EJclExpertException.CreateTrace(RsENoProjectOptions);
+      raise EJclExpertException.CreateRes(@RsENoProjectOptions);
 
     if not Project.ProjectOptions.Values[RuntimeOnlyOptionName] then
     begin
       ExecutableNameNoExt := ChangeFileExt(GetMapFileName(Project), '');
+      OTAPackageServices := GetOTAPackageServices;
 
-      Supports(BorlandIDEServices, IOTAPackageServices, APackageServices);
-
-      if not Assigned(APackageServices) then
-        raise EJclExpertException.CreateTrace(RsENoPackageServices);
-
-      for I := 0 to APackageServices.PackageCount - 1 do
+      for I := 0 to OTAPackageServices.PackageCount - 1 do
       begin
-        PackageFileName := ChangeFileExt(APackageServices.PackageNames[I], BinaryExtensionPackage);
+        PackageFileName := ChangeFileExt(OTAPackageServices.PackageNames[I], BinaryExtensionPackage);
         PackageFileName := GetModulePath(GetModuleHandle(PChar(PackageFileName)));
         if AnsiSameText(ChangeFileExt(PackageFileName, ''), ExecutableNameNoExt) then
         begin
@@ -871,14 +1427,15 @@ end;
 
 function TJclOTAExpertBase.IsPackage(const Project: IOTAProject): Boolean;
 var
-  FileName, FileExtension: string;
+  FileName: TFileName;
+  FileExtension: string;
   Index: Integer;
   ProjectFile: TJclSimpleXML;
   PersonalityNode, SourceNode, ProjectExtensions, ProjectTypeNode: TJclSimpleXMLElem;
   NameProp: TJclSimpleXMLProp;
 begin
   if not Assigned(Project) then
-    raise EJclExpertException.CreateTrace(RsENoActiveProject);
+    raise EJclExpertException.CreateRes(@RsENoActiveProject);
 
   FileName := Project.FileName;
   FileExtension := ExtractFileExt(FileName);
@@ -938,27 +1495,43 @@ begin
     Result := AnsiSameText(FileExtension, SourceExtensionDelphiPackage);
 end;
 
-procedure TJclOTAExpertBase.ReadEnvVariables;
-{$IFDEF COMPILER6_UP}
+class function TJclOTAExpertBase.IsPersonalityLoaded(
+  const PersonalityName: string): Boolean;
+{$IFDEF BDS}
+var
+  OTAPersonalityServices: IOTAPersonalityServices;
+  Index: Integer;
+begin
+  OTAPersonalityServices := GetOTAPersonalityServices;
+  Result := False;
+
+  for Index := 0 to OTAPersonalityServices.PersonalityCount - 1 do
+    if SameText(OTAPersonalityServices.Personalities[Index], PersonalityName) then
+  begin
+    Result := True;
+    Break;
+  end;
+end;
+{$ELSE BDS}
+begin
+  Result := True;
+end;
+{$ENDIF BDS}
+
+procedure TJclOTAExpertBase.ReadEnvVariables(EnvVariables: TStrings);
 var
   I: Integer;
   EnvNames: TStringList;
   {$IFDEF MSWINDOWS}
   EnvVarKeyName: string;
   {$ENDIF MSWINDOWS}
-  {$IFDEF KYLIX}
-  RADToolsInstallations: TJclBorRADToolInstallations;
-  RADToolInstallation: TJclBorRADToolInstallation;
-  {$ENDIF KYLIX}
-{$ENDIF COMPÏLER6_UP}
 begin
-  FEnvVariables.Clear;
+  EnvVariables.Clear;
 
   // read user and system environment variables
-  GetEnvironmentVars(FEnvVariables, False);
+  GetEnvironmentVars(EnvVariables, False);
 
   // read Delphi environment variables
-  {$IFDEF COMPILER6_UP}
   EnvNames := TStringList.Create;
   try
     {$IFDEF MSWINDOWS}
@@ -966,59 +1539,15 @@ begin
     if RegKeyExists(HKEY_CURRENT_USER, EnvVarKeyName) and
       RegGetValueNames(HKEY_CURRENT_USER, EnvVarKeyName, EnvNames) then
       for I := 0 to EnvNames.Count - 1 do
-        FEnvVariables.Values[EnvNames[I]] :=
+        EnvVariables.Values[EnvNames[I]] :=
           RegReadStringDef(HKEY_CURRENT_USER, EnvVarKeyName, EnvNames[I], '');
     {$ENDIF MSWINDOWS}
-    {$IFDEF KYLIX}
-    RADToolsInstallations := TJclBorRADToolInstallations.Create;
-    try
-      {$IFDEF KYLIX3}
-      {$IFDEF BCB}
-      RADToolInstallation := RADToolsInstallations.BCBInstallationFromVersion[3];
-      {$ELSE}
-      RADToolInstallation := RADToolsInstallations.DelphiInstallationFromVersion[3];
-      {$ENDIF BCB}
-      {$ELSE}
-      RADToolInstallation := nil;
-      {$ENDIF KYLIX3}
-      if Assigned(RADToolInstallation) then
-      begin
-        for I := 0 to RADToolInstallation.EnvironmentVariables.Count - 1 do
-          EnvNames.Add(RADToolInstallation.EnvironmentVariables.Names[I]);
-        for I := 0 to EnvNames.Count - 1 do
-          FEnvVariables.Values[EnvNames[I]] :=
-            RADToolInstallation.EnvironmentVariables.Values[EnvNames[I]];
-      end;
-    finally
-      RADToolsInstallations.Free;
-    end;
-    {$ENDIF KYLIX}
   finally
     EnvNames.Free;
   end;
-  {$ENDIF COMPILER6_UP}
 
   // add the Delphi directory
-  FEnvVariables.Values[DelphiEnvironmentVar] := RootDir;
-end;
-
-function TJclOTAExpertBase.SubstitutePath(const Path: string): string;
-var
-  I: Integer;
-  Name: string;
-begin
-  if FEnvVariables.Count = 0 then
-    ReadEnvVariables;
-  Result := Path;
-  while Pos('$(', Result) > 0 do
-    for I := 0 to FEnvVariables.Count - 1 do
-    begin
-      Name := FEnvVariables.Names[I];
-      Result := StringReplace(Result, Format('$(%s)', [Name]),
-        FEnvVariables.Values[Name], [rfReplaceAll, rfIgnoreCase]);
-    end;
-  While Pos('\\', Result) > 0 do
-    Result := StringReplace(Result, '\\', DirDelimiter, [rfReplaceAll]);
+  EnvVariables.Values[DelphiEnvironmentVar] := RootDir;
 end;
 
 procedure TJclOTAExpertBase.RegisterAction(Action: TCustomAction);
@@ -1032,48 +1561,39 @@ begin
   if not Assigned(GlobalActionList) then
   begin
     GlobalActionList := TList.Create;
-    {$IFDEF COMPILER6_UP}
     RegisterFindGlobalComponentProc(FindActions);
-    {$ELSE COMPILER6_UP}
-    if not Assigned(OldFindGlobalComponentProc) then
-    begin
-      OldFindGlobalComponentProc := FindGlobalComponent;
-      FindGlobalComponent := FindActions;
-    end;
-    {$ENDIF COMPILER6_UP}
   end;
 
   GlobalActionList.Add(Action);
 end;
 
 procedure TJclOTAExpertBase.UnregisterAction(Action: TCustomAction);
+var
+  NTAServices: INTAServices;
 begin
   if Action.Name <> '' then
     ActionSettings.SaveInteger(Action.Name, Action.ShortCut);
-    
+
   if Assigned(GlobalActionList) then
   begin
     GlobalActionList.Remove(Action);
     if (GlobalActionList.Count = 0) then
     begin
       FreeAndNil(GlobalActionList);
-      {$IFDEF COMPILER6_UP}
       UnRegisterFindGlobalComponentProc(FindActions);
-      {$ELSE COMPILER6_UP}
-      FindGlobalComponent := OldFindGlobalComponentProc;
-      {$ENDIF COMPILER6_UP}
     end;
   end;
 
+  NTAServices := GetNTAServices;
   // remove action from toolbar to avoid crash when recompile package inside the IDE.
-  CheckToolBarButton(FNTAServices.ToolBar[sCustomToolBar], Action);
-  CheckToolBarButton(FNTAServices.ToolBar[sStandardToolBar], Action);
-  CheckToolBarButton(FNTAServices.ToolBar[sDebugToolBar], Action);
-  CheckToolBarButton(FNTAServices.ToolBar[sViewToolBar], Action);
-  CheckToolBarButton(FNTAServices.ToolBar[sDesktopToolBar], Action);
+  CheckToolBarButton(NTAServices.ToolBar[sCustomToolBar], Action);
+  CheckToolBarButton(NTAServices.ToolBar[sStandardToolBar], Action);
+  CheckToolBarButton(NTAServices.ToolBar[sDebugToolBar], Action);
+  CheckToolBarButton(NTAServices.ToolBar[sViewToolBar], Action);
+  CheckToolBarButton(NTAServices.ToolBar[sDesktopToolBar], Action);
   {$IFDEF COMPILER7_UP}
-  CheckToolBarButton(FNTAServices.ToolBar[sInternetToolBar], Action);
-  CheckToolBarButton(FNTAServices.ToolBar[sCORBAToolBar], Action);
+  CheckToolBarButton(NTAServices.ToolBar[sInternetToolBar], Action);
+  CheckToolBarButton(NTAServices.ToolBar[sCORBAToolBar], Action);
   {$ENDIF COMPILER7_UP}
 end;
 
@@ -1083,7 +1603,10 @@ var
   Category: string;
   Index: Integer;
   IDEMenuItem, ToolsMenuItem: TMenuItem;
+  NTAServices: INTAServices;
 begin
+  NTAServices := GetNTAServices;
+  
   if not Assigned(ConfigurationAction) then
   begin
     Category := '';
@@ -1100,7 +1623,7 @@ begin
     finally
       JclIcon.Free;
     end;
-    ConfigurationAction.Caption := RsJCLOptions;
+    ConfigurationAction.Caption := LoadResString(@RsJCLOptions);
     ConfigurationAction.Name := JclConfigureActionName;
     ConfigurationAction.Category := Category;
     ConfigurationAction.Visible := True;
@@ -1115,14 +1638,14 @@ begin
   begin
     IDEMenuItem := NTAServices.MainMenu.Items;
     if not Assigned(IDEMenuItem) then
-      raise EJclExpertException.CreateTrace(RsENoIDEMenu);
+      raise EJclExpertException.CreateRes(@RsENoIDEMenu);
 
     ToolsMenuItem := nil;
     for Index := 0 to IDEMenuItem.Count - 1 do
       if CompareText(IDEMenuItem.Items[Index].Name, 'ToolsMenu') = 0 then
         ToolsMenuItem := IDEMenuItem.Items[Index];
     if not Assigned(ToolsMenuItem) then
-      raise EJclExpertException.CreateTrace(RsENoToolsMenu);
+      raise EJclExpertException.CreateRes(@RsENoToolsMenu);
 
     ConfigurationMenuItem := TMenuItem.Create(nil);
     ConfigurationMenuItem.Name := JclConfigureMenuName;
@@ -1184,6 +1707,140 @@ begin
 
 end;
 
+{$IFDEF BDS7_UP}
+
+//=== { TJclOTALocalMenu } ===================================================
+
+procedure TJclOTALocalMenu.AfterSave;
+begin
+
+end;
+
+procedure TJclOTALocalMenu.BeforeSave;
+begin
+
+end;
+
+procedure TJclOTALocalMenu.Destroyed;
+begin
+
+end;
+
+procedure TJclOTALocalMenu.Modified;
+begin
+
+end;
+
+function TJclOTALocalMenu.GetCaption: string;
+begin
+  Result := FCaption;
+end;
+
+function TJclOTALocalMenu.GetChecked: Boolean;
+begin
+  Result := FChecked;
+end;
+
+function TJclOTALocalMenu.GetEnabled: Boolean;
+begin
+  Result := FEnabled;
+end;
+
+function TJclOTALocalMenu.GetHelpContext: Integer;
+begin
+  Result := FHelpContext;
+end;
+
+function TJclOTALocalMenu.GetName: string;
+begin
+  Result := FName;
+end;
+
+function TJclOTALocalMenu.GetParent: string;
+begin
+  Result := FParent;
+end;
+
+function TJclOTALocalMenu.GetPosition: Integer;
+begin
+  Result := FPosition;
+end;
+
+function TJclOTALocalMenu.GetVerb: string;
+begin
+  Result := FVerb;
+end;
+
+procedure TJclOTALocalMenu.SetCaption(const Value: string);
+begin
+  FCaption := Value;
+end;
+
+procedure TJclOTALocalMenu.SetChecked(Value: Boolean);
+begin
+  FChecked := Value;
+end;
+
+procedure TJclOTALocalMenu.SetEnabled(Value: Boolean);
+begin
+  FEnabled := Value;
+end;
+
+procedure TJclOTALocalMenu.SetHelpContext(Value: Integer);
+begin
+  FHelpContext := Value;
+end;
+
+procedure TJclOTALocalMenu.SetName(const Value: string);
+begin
+  FName := Value;
+end;
+
+procedure TJclOTALocalMenu.SetParent(const Value: string);
+begin
+  FParent := Value;
+end;
+
+procedure TJclOTALocalMenu.SetPosition(Value: Integer);
+begin
+  FPosition := Value;
+end;
+
+procedure TJclOTALocalMenu.SetVerb(const Value: string);
+begin
+  FVerb := Value;
+end;
+
+//=== { TJclOTAProjectManagerMenu } ==========================================
+
+function TJclOTAProjectManagerMenu.GetIsMultiSelectable: Boolean;
+begin
+  Result := FIsMultiSelectable;
+end;
+
+procedure TJclOTAProjectManagerMenu.SetIsMultiSelectable(Value: Boolean);
+begin
+  FIsMultiSelectable := Value;
+end;
+
+procedure TJclOTAProjectManagerMenu.Execute(const MenuContextList: IInterfaceList);
+begin
+  if Assigned(FOnExecute) then
+    FOnExecute(MenuContextList);
+end;
+
+function TJclOTAProjectManagerMenu.PreExecute(const MenuContextList: IInterfaceList): Boolean;
+begin
+  Result := True;
+end;
+
+function TJclOTAProjectManagerMenu.PostExecute(const MenuContextList: IInterfaceList): Boolean;
+begin
+  Result := True;
+end;
+
+{$ENDIF BDS7_UP}
+
 {$IFDEF BDS}
 var
   AboutBoxServices: IOTAAboutBoxServices = nil;
@@ -1198,12 +1855,12 @@ begin
   begin
     Supports(BorlandIDEServices,IOTAAboutBoxServices, AboutBoxServices);
     if not Assigned(AboutBoxServices) then
-      raise EJclExpertException.CreateTrace(RsENoAboutServices);
+      raise EJclExpertException.CreateRes(@RsENoOTAAboutServices);
     ProductImage := LoadBitmap(FindResourceHInstance(HInstance), 'JCLSPLASH');
     if ProductImage = 0 then
-      raise EJclExpertException.CreateTrace(RsENoBitmapResources);
-    AboutBoxIndex := AboutBoxServices.AddPluginInfo(RsAboutTitle, RsAboutDescription, 
-      ProductImage, False, RsAboutLicenceStatus);
+      raise EJclExpertException.CreateRes(@RsENoBitmapResources);
+    AboutBoxIndex := AboutBoxServices.AddPluginInfo(LoadResString(@RsAboutTitle), LoadResString(@RsAboutDescription),
+      ProductImage, False, LoadResString(@RsAboutLicenceStatus));
   end;
 end;
 
@@ -1225,12 +1882,9 @@ begin
   begin
     ProductImage := LoadBitmap(FindResourceHInstance(HInstance), 'JCLSPLASH');
     if ProductImage = 0 then
-      raise EJclExpertException.CreateTrace(RsENoBitmapResources);
-    // C#Builder 1 doesn't display AddProductBitmap
-    //SplashScreenServices.AddProductBitmap(RsAboutDialogTitle, ProductImage,
-    //  False, RsAboutLicenceStatus);
-    SplashScreenServices.AddPluginBitmap(RsAboutDialogTitle, ProductImage,
-      False, RsAboutLicenceStatus);
+      raise EJclExpertException.CreateRes(@RsENoBitmapResources);
+    SplashScreenServices.AddPluginBitmap(LoadResString(@RsAboutDialogTitle), ProductImage,
+      False, LoadResString(@RsAboutLicenceStatus));
     SplashScreenInitialized := True;
   end;
 end;
@@ -1239,12 +1893,25 @@ end;
 
 initialization
 
-Classes.RegisterClass(TJclWizardForm);
-Classes.RegisterClass(TJclWizardFrame);
+try
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+  Classes.RegisterClass(TJclWizardForm);
+  Classes.RegisterClass(TJclWizardFrame);
+except
+  on ExceptionObj: TObject do
+  begin
+    JclExpertShowExceptionDialog(ExceptionObj);
+  end;
+end;
 
 finalization
 
 try
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
   {$IFDEF BDS}
   UnregisterAboutBox;
   {$ENDIF BDS}
@@ -1255,28 +1922,7 @@ except
   on ExceptionObj: TObject do
   begin
     JclExpertShowExceptionDialog(ExceptionObj);
-    raise;
   end;
 end;
-
-//=== Helper routines ========================================================
-
-{ (rom) disabled, unused
-procedure SaveOptions(const Options: IOTAOptions; const FileName: string);
-var
-  OptArray: TOTAOptionNameArray;
-  I: Integer;
-begin
-  OptArray := Options.GetOptionNames;
-  with TStringList.Create do
-  try
-    for I := Low(OptArray) to High(OptArray) do
-      Add(OptArray[I].Name + '=' + VarToStr(Options.Values[OptArray[I].Name]));
-    SaveToFile(FileName);
-  finally
-    Free;
-  end;
-end;
-}
 
 end.

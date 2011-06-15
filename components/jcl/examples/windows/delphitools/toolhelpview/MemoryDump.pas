@@ -19,7 +19,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date: 2006-05-30 00:02:45 +0200 (mar., 30 mai 2006) $                                                      }
+{ Last modified: $Date: 2008-09-09 21:32:17 +0200 (mar., 09 sept. 2008) $                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -389,7 +389,11 @@ begin
           for I := 0 to FDumpBytesPerLine div 2 - 1 do
           begin
             SetLength(S, 1);
-            WideCharToMultiByte(CP_ACP, 0, W, 1, PChar(S), 1, nil, nil);
+            {$IFDEF SUPPORTS_UNICODE}
+            S := WideString(W^);
+            {$ELSE ~SUPPORTS_UNICODE}
+            WideCharToMultiByte(CP_ACP, 0, W, 1, PAnsiChar(S), 1, nil, nil);
+            {$ENDIF ~SUPPORTS_UNICODE}
             S := PChar(S);
             if Length(S) = 0 then S := '.';
             Ascii := Ascii + S;

@@ -52,19 +52,18 @@
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
     <LINKER value="ilink32"/>
-    <USERDEFINES value="_DEBUG;BCB"/>
+    <USERDEFINES value="%DEFINES%"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="%NAME%.cpp"/>
-    <INCLUDEPATH value="..\..\source\common;..\..\source\windows;..\..\source\vcl;..\..\source\visclx;..\..\experts\common;$(BCB)\include;$(BCB)\include\vcl"/>
+    <INCLUDEPATH value="..\..\source\common;..\..\source\windows;..\..\source\vcl;..\..\experts\common;$(BCB)\include;$(BCB)\include\vcl"/>
     <LIBPATH value="%PATHLIB%..\..\lib\c6;..\..\lib\c6;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c -tWM
-                  "/>
-    <PFLAGS value="-U..\..\lib\c6 -N0..\..\lib\c6 -N2..\..\lib\c6 -I..\..\source -$YD -$W -$O- -$A8 -v -JPHNE -M
-                   %C6PFLAGS%
+    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c -tWM %COMPILERDEFINES%"/>
+    <PFLAGS value="-U..\..\lib\c6 -N0..\..\lib\c6 -N2..\..\lib\c6 -I..\..\source\include -$YD -$W -$O- -$A8 -v -JPHNE -M
+                   %C6PFLAGS% %COMPILERDEFINES%
                   "/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>

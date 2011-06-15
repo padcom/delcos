@@ -13,13 +13,17 @@
 { The Original Code is JclWin32Ex.pas.                                                             }
 {                                                                                                  }
 { The Initial Developer of the Original Code is Virgo P‰rna (virgo dott parna att mail dott ee).   }
-{ Portions created by Virgo P‰rna are Copyright (C) 2006 Virgo P‰rna. All Rights Reserved.   }
+{ Portions created by Virgo P‰rna are Copyright (C) 2006 Virgo P‰rna. All Rights Reserved.         }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date: 2007-06-28 22:06:21 +0200 (jeu., 28 juin 2007) $
+{                                                                                                  }
+{ Last modified: $Date:: 2009-08-25 20:22:46 +0200 (mar., 25 ao√ªt 2009)                         $ }
+{ Revision:      $Rev:: 2969                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclWin32Ex;
 
@@ -55,7 +59,7 @@ function JclInitializeCriticalSectionAndSpinCount(lpCriticalSection: TRTLCritica
 function JclGetFileAttributesEx(const lpFileName: string;
   fInfoLevelId: TGetFileExInfoLevels; lpFileInformation: Pointer): Boolean;
 function JclCreateWaitableTimer(lpTimerAttributes: PSecurityAttributes;
-  bManualReset: Boolean; const lpTimerName: string): THandle;
+  bManualReset: Boolean; const lpTimerName: AnsiString): THandle;
 function JclCancelWaitableTimer(hTimer: THandle): Boolean;
 
 function JclglGetString(name: Cardinal): PChar;
@@ -74,10 +78,12 @@ procedure JclCheckAndInitializeOpenGL;
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jcl.svn.sourceforge.net/svnroot/jcl/tags/JCL-1.101-Build2725/jcl/source/windows/JclWin32Ex.pas $';
-    Revision: '$Revision: 2056 $';
-    Date: '$Date: 2007-06-28 22:06:21 +0200 (jeu., 28 juin 2007) $';
-    LogPath: 'JCL\source\windows'
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/source/windows/JclWin32Ex.pas $';
+    Revision: '$Revision: 2969 $';
+    Date: '$Date: 2009-08-25 20:22:46 +0200 (mar., 25 ao√ªt 2009) $';
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -129,6 +135,7 @@ type
 const
   Glu32 = 'glu32.dll';
 
+var
   Win32ExFunctions: array [TJclWin32ExFunction] of TDllFunctionRec =
    ( // jwfTryEnterCriticalSection
      (FunctionName: 'TryEnterCriticalSection'; FunctionAddr: nil;
@@ -171,7 +178,7 @@ const
       DllName: opengl32; DllHandle: @OpenGl32DllHandle),
      // jwfgluErrorString
      (FunctionName: 'gluErrorString'; FunctionAddr: nil;
-      DllName: opengl32; DllHandle: @Glu32DllHandle)
+      DllName: Glu32; DllHandle: @Glu32DllHandle)
    );
 
 function LoadWin32ExFunction(const Win32ExFunction: TJclWin32ExFunction): Pointer;
@@ -212,7 +219,7 @@ begin
   if not Assigned(FunctionAddr) then
     FunctionAddr := LoadWin32ExFunction(jwfSignalObjectAndWait);
 
-  Result := TSignalObjectAndWaitProc(FunctionAddr)(hObjectToSignal, hObjectToSignal, dwMilliseconds, bAlertable);
+  Result := TSignalObjectAndWaitProc(FunctionAddr)(hObjectToSignal, hObjectToWaitOn, dwMilliseconds, bAlertable);
 end;
 
 function JclSetCriticalSectionSpinCount(lpCriticalSection: TRTLCriticalSection; dwSpinCount: Cardinal): Cardinal;
@@ -259,7 +266,7 @@ begin
   Result := TGetFileAttributesExAProc(FunctionAddr)(PChar(lpFileName), fInfoLevelId, lpFileInformation);
 end;
 
-function JclCreateWaitableTimer(lpTimerAttributes: PSecurityAttributes; bManualReset: Boolean; const lpTimerName: string): THandle;
+function JclCreateWaitableTimer(lpTimerAttributes: PSecurityAttributes; bManualReset: Boolean; const lpTimerName: AnsiString): THandle;
 var
   FunctionAddr: Pointer;
 begin
@@ -267,7 +274,7 @@ begin
   if not Assigned(FunctionAddr) then
     FunctionAddr := LoadWin32ExFunction(jwfCreateWaitableTimer);
 
-  Result := TCreateWaitableTimerAProc(FunctionAddr)(lpTimerAttributes, bManualReset, PChar(lpTimerAttributes));
+  Result := TCreateWaitableTimerAProc(FunctionAddr)(lpTimerAttributes, bManualReset, PAnsiChar(lpTimerName));
 end;
 
 function JclCancelWaitableTimer(hTimer: THandle): Boolean;

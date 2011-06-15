@@ -1,37 +1,42 @@
-{****************************************************************************}
-{                                                                            }
-{ Project JEDI Code Library (JCL)                                            }
-{                                                                            }
-{ The contents of this file are subject to the Mozilla Public License        }
-{ Version 1.1 (the "License");                                               }
-{ you may not use this file except in compliance with the License. You may   }
-{ obtain a copy of the License at http://www.mozilla.org/MPL/                }
-{                                                                            }
-{ Software distributed under the License is distributed on an "AS IS" basis, }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License   }
-{ for the specific language governing rights and limitations under the       }
-{ License.                                                                   }
-{                                                                            }
-{ The Original Code is JclOtaActionConfigureSheet.pas.                       }
-{                                                                            }
-{ The Initial Developer of the Original Code is Florent Ouchet               }
-{         <outchy att users dott sourceforge dott net>                       }
-{ Portions created by Florent Ouchet are Copyright (C) of Florent Ouchet.    }
-{                                                                            }
-{ Contributors:                                                              }
-{                                                                            }
-{****************************************************************************}
-{                                                                            }
-{ Last modified: $Date: 2006-05-18 18:04:47 +0200 (jeu., 18 mai 2006) $                                                    }
-{                                                                            }
-{****************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclOtaActionConfigureSheet.pas.                                             }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is Florent Ouchet                                     }
+{         <outchy att users dott sourceforge dott net>                                             }
+{ Portions created by Florent Ouchet are Copyright (C) of Florent Ouchet. All rights reserved.     }
+{                                                                                                  }
+{ Contributors:                                                                                    }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date:: 2009-09-14 18:00:50 +0200 (lun., 14 sept. 2009)                         $ }
+{ Revision:      $Rev:: 3012                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclOtaActionConfigureSheet;
+
+{$I jcl.inc}
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Dialogs, ComCtrls, StdCtrls;
 
 type
@@ -50,6 +55,18 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure SaveChanges;
   end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/experts/common/JclOtaActionConfigureSheet.pas $';
+    Revision: '$Revision: 3012 $';
+    Date: '$Date: 2009-09-14 18:00:50 +0200 (lun., 14 sept. 2009) $';
+    LogPath: 'JCL\experts\common';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -85,15 +102,15 @@ var
 begin
   inherited Create(AOwner);
 
-  ButtonRestore.Caption := RsRestore;
-  LabelActions.Caption := RsActions;
-  LabelShortcut.Caption := RsShortcut;
-  ListViewActions.Columns.Items[0].Caption := RsCaption;
-  ListViewActions.Columns.Items[1].Caption := RsShortcut;
+  ButtonRestore.Caption := LoadResString(@RsRestore);
+  LabelActions.Caption := LoadResString(@RsActions);
+  LabelShortcut.Caption := LoadResString(@RsShortcut);
+  ListViewActions.Columns.Items[0].Caption := LoadResString(@RsCaption);
+  ListViewActions.Columns.Items[1].Caption := LoadResString(@RsShortcut);
 
   Supports(BorlandIDEServices, INTAServices, ANTAServices);
   if not Assigned(ANTAServices) then
-    raise EJclExpertException.CreateTrace(RsENoNTAServices);
+    raise EJclExpertException.CreateRes(@RsENoNTAServices);
 
   ListViewActions.SmallImages := ANTAServices.ImageList;
 
@@ -142,5 +159,13 @@ begin
         TShortcut(ListViewActions.Items.Item[Index].Data);
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

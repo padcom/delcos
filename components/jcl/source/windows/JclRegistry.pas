@@ -36,8 +36,12 @@
 { directly call the registry API they do not suffer from the resource overhead as TRegistry does.  }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date: 2007-05-01 07:17:05 +0200 (mar., 01 mai 2007) $
+{                                                                                                  }
+{ Last modified: $Date:: 2010-09-01 21:48:55 +0200 (mer., 01 sept. 2010)                         $ }
+{ Revision:      $Rev:: 3321                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclRegistry;
 
@@ -50,7 +54,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Classes,
-  JclBase, JclStrings, JclWideStrings;
+  JclBase, JclStrings;
 
 type
   DelphiHKEY = Longword;
@@ -129,13 +133,13 @@ function RegReadExtended(const RootKey: DelphiHKEY; const Key, Name: string): Ex
 function RegReadExtendedDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Extended): Extended;
 
 function RegReadStringEx(const RootKey: DelphiHKEY; const Key, Name: string;
-  out RetValue: AnsiString; RaiseException: Boolean = False): Boolean;
+  out RetValue: string; RaiseException: Boolean = False): Boolean;
 function RegReadString(const RootKey: DelphiHKEY; const Key, Name: string): string;
 function RegReadStringDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: string): string;
-function RegReadAnsiStringEx(const RootKey: DelphiHKEY; const Key, Name: AnsiString;
+function RegReadAnsiStringEx(const RootKey: DelphiHKEY; const Key, Name: string;
   out RetValue: AnsiString; RaiseException: Boolean = False): Boolean;
-function RegReadAnsiString(const RootKey: DelphiHKEY; const Key, Name: AnsiString): AnsiString;
-function RegReadAnsiStringDef(const RootKey: DelphiHKEY; const Key, Name: AnsiString; Def: AnsiString): AnsiString;
+function RegReadAnsiString(const RootKey: DelphiHKEY; const Key, Name: string): AnsiString;
+function RegReadAnsiStringDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: AnsiString): AnsiString;
 function RegReadWideStringEx(const RootKey: DelphiHKEY; const Key, Name: string;
   out RetValue: WideString; RaiseException: Boolean = False): Boolean;
 function RegReadWideString(const RootKey: DelphiHKEY; const Key, Name: string): WideString;
@@ -149,6 +153,17 @@ procedure RegReadMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; Val
 function RegReadMultiSz(const RootKey: DelphiHKEY; const Key, Name: string): PMultiSz; overload;
 procedure RegReadMultiSzDef(const RootKey: DelphiHKEY; const Key, Name: string; Value, Def: TStrings); overload;
 function RegReadMultiSzDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: PMultiSz): PMultiSz; overload;
+
+function RegReadAnsiMultiSzEx(const RootKey: DelphiHKEY; const Key, Name: string; Value: TAnsiStrings;
+  RaiseException: Boolean = False): Boolean; overload;
+function RegReadAnsiMultiSzEx(const RootKey: DelphiHKEY; const Key, Name: string; out RetValue: PAnsiMultiSz;
+  RaiseException: Boolean = False): Boolean; overload;
+procedure RegReadAnsiMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; Value: TAnsiStrings); overload;
+function RegReadAnsiMultiSz(const RootKey: DelphiHKEY; const Key, Name: string): PAnsiMultiSz; overload;
+procedure RegReadAnsiMultiSzDef(const RootKey: DelphiHKEY; const Key, Name: string;
+  Value, Def: TAnsiStrings); overload;
+function RegReadAnsiMultiSzDef(const RootKey: DelphiHKEY; const Key, Name: string;
+  Def: PAnsiMultiSz): PAnsiMultiSz; overload;
 
 function RegReadWideMultiSzEx(const RootKey: DelphiHKEY; const Key, Name: string; Value: TWideStrings;
   RaiseException: Boolean = False): Boolean; overload;
@@ -198,13 +213,13 @@ procedure RegWriteExtended(const RootKey: DelphiHKEY; const Key, Name: string; D
 
 procedure RegWriteString(const RootKey: DelphiHKEY; const Key, Name, Value: string); overload;
 procedure RegWriteString(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal;
-  Value: string); overload;
-procedure RegWriteAnsiString(const RootKey: DelphiHKEY; const Key, Name, Value: AnsiString); overload;
-procedure RegWriteAnsiString(const RootKey: DelphiHKEY; const Key, Name: AnsiString; DataType: Cardinal;
-  Value: AnsiString); overload;
-procedure RegWriteWideString(const RootKey: DelphiHKEY; const Key, Name: string; Value: WideString); overload;
+  const Value: string); overload;
+procedure RegWriteAnsiString(const RootKey: DelphiHKEY; const Key, Name: string; const Value: AnsiString); overload;
+procedure RegWriteAnsiString(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal;
+  const Value: AnsiString); overload;
+procedure RegWriteWideString(const RootKey: DelphiHKEY; const Key, Name: string; const Value: WideString); overload;
 procedure RegWriteWideString(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal;
-  Value: WideString); overload;
+  const Value: WideString); overload;
 
 procedure RegWriteMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; Value: PMultiSz); overload;
 procedure RegWriteMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; const Value: TStrings); overload;
@@ -212,6 +227,15 @@ procedure RegWriteMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; Da
   Value: PMultiSz); overload;
 procedure RegWriteMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal;
   const Value: TStrings); overload;
+
+procedure RegWriteAnsiMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; Value: PAnsiMultiSz); overload;
+procedure RegWriteAnsiMultiSz(const RootKey: DelphiHKEY; const Key, Name: string;
+  const Value: TAnsiStrings); overload;
+procedure RegWriteAnsiMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal;
+  Value: PAnsiMultiSz); overload;
+procedure RegWriteAnsiMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal;
+  const Value: TAnsiStrings); overload;
+
 procedure RegWriteWideMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; Value: PWideMultiSz); overload;
 procedure RegWriteWideMultiSz(const RootKey: DelphiHKEY; const Key, Name: string;
   const Value: TWideStrings); overload;
@@ -224,9 +248,13 @@ procedure RegWriteBinary(const RootKey: DelphiHKEY; const Key, Name: string; con
 
 function RegGetValueNames(const RootKey: DelphiHKEY; const Key: string; const List: TStrings): Boolean;
 function RegGetKeyNames(const RootKey: DelphiHKEY; const Key: string; const List: TStrings): Boolean;
+function RegGetValueNamesAndValues(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
 function RegHasSubKeys(const RootKey: DelphiHKEY; const Key: string): Boolean;
 
 function AllowRegKeyForEveryone(const RootKey: DelphiHKEY; Path: string): Boolean;
+
+function RegAutoExecEnabled(const ExecKind: TExecKind; const Name: string; out CmdLine: string): Boolean;
+
 {
 From: Jean-Fabien Connault [cycocrew att worldnet dott fr]
 Descr: Test whether a registry key exists as a subkey of RootKey
@@ -265,13 +293,74 @@ function RegLoadList(const RootKey: DelphiHKEY; const Key: string; const ListNam
   const SaveTo: TStrings): Boolean;
 function RegDelList(const RootKey: DelphiHKEY; const Key: string; const ListName: string): Boolean;
 
+const
+  HKCRLongName = 'HKEY_CLASSES_ROOT';
+  HKCULongName = 'HKEY_CURRENT_USER';
+  HKLMLongName = 'HKEY_LOCAL_MACHINE';
+  HKUSLongName = 'HKEY_USERS';
+  HKPDLongName = 'HKEY_PERFORMANCE_DATA';
+  HKCCLongName = 'HKEY_CURRENT_CONFIG';
+  HKDDLongName = 'HKEY_DYN_DATA';
+  HKCRShortName = 'HKCR';
+  HKCUShortName = 'HKCU';
+  HKLMShortName = 'HKLM';
+  HKUSShortName = 'HKUS';
+  HKPDShortName = 'HKPD';
+  HKCCShortName = 'HKCC';
+  HKDDShortName = 'HKDD';
+
+type
+  TRootKey = record
+    Key: DelphiHKEY;
+    AnsiName: AnsiString;
+    WideName: WideString;
+  end;
+
+const
+  RootKeys: array [0..13] of TRootKey =
+   (
+    (Key: HKCR; AnsiName: HKCRLongName; WideName: HKCRLongName),
+    (Key: HKCU; AnsiName: HKCULongName; WideName: HKCULongName),
+    (Key: HKLM; AnsiName: HKLMLongName; WideName: HKLMLongName),
+    (Key: HKUS; AnsiName: HKUSLongName; WideName: HKUSLongName),
+    (Key: HKPD; AnsiName: HKPDLongName; WideName: HKPDLongName),
+    (Key: HKCC; AnsiName: HKCCLongName; WideName: HKCCLongName),
+    (Key: HKDD; AnsiName: HKDDLongName; WideName: HKDDLongName),
+    (Key: HKCR; AnsiName: HKCRShortName; WideName: HKCRShortName),
+    (Key: HKCU; AnsiName: HKCUShortName; WideName: HKCUShortName),
+    (Key: HKLM; AnsiName: HKLMShortName; WideName: HKLMShortName),
+    (Key: HKUS; AnsiName: HKUSShortName; WideName: HKUSShortName),
+    (Key: HKPD; AnsiName: HKPDShortName; WideName: HKPDShortName),
+    (Key: HKCC; AnsiName: HKCCShortName; WideName: HKCCShortName),
+    (Key: HKDD; AnsiName: HKDDShortName; WideName: HKDDShortName)
+   );
+
+type
+  { clRegWOW64Access allows the user to switch all registry functions to the 64 bit registry
+    key on a 64bit system.
+
+    OS/Application   32bit/32bit   64bit/32bit   64bit/64bit
+    raDefault        Software      Wow6432Node   Software
+    raNative         Software      Software      Software
+    ra32Key          Software      Wow6432Node   Wow6432Node
+    ra64Key          Software      Software      Software
+  }
+  TJclRegWOW64Access = (raDefault, raNative, ra32Key, ra64Key);
+
+// cannot access variable JclRegWOW64Access from outside package
+// so these helper functions can be used.
+function RegGetWOW64AccessMode: TJclRegWOW64Access;
+procedure RegSetWOW64AccessMode(Access: TJclRegWOW64Access);
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jcl.svn.sourceforge.net/svnroot/jcl/tags/JCL-1.101-Build2725/jcl/source/windows/JclRegistry.pas $';
-    Revision: '$Revision: 2004 $';
-    Date: '$Date: 2007-05-01 07:17:05 +0200 (mar., 01 mai 2007) $';
-    LogPath: 'JCL\source\windows'
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/source/windows/JclRegistry.pas $';
+    Revision: '$Revision: 3321 $';
+    Date: '$Date: 2010-09-01 21:48:55 +0200 (mer., 01 sept. 2010) $';
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -280,11 +369,13 @@ implementation
 uses
   SysUtils,
   {$IFDEF FPC}
-  JwaAccCtrl,
-  {$ELSE}
+//  JwaAccCtrl,
+  {$ELSE ~FPC}
   AccCtrl,
-  {$ENDIF FPC}
-  JclResources, JclSysUtils, JclWin32;
+  JclSysUtils,
+  {$ENDIF ~FPC}
+  JclResources, JclWin32, JclSysInfo,
+  JclAnsiStrings, JclWideStrings;
 
 type
   TRegKind = REG_NONE..REG_QWORD;
@@ -294,24 +385,63 @@ const
   cItems = 'Items';
   cRegBinKinds = [REG_SZ..REG_QWORD];  // all types
 
+var
+  CachedIsWindows64: Integer = -1;
+
+threadvar
+  JclRegWOW64Access: TJclRegWOW64Access {= raDefault};
+
+function RegGetWOW64AccessMode: TJclRegWOW64Access;
+begin
+  Result := JclRegWOW64Access;
+end;
+
+procedure RegSetWOW64AccessMode(Access: TJclRegWOW64Access);
+begin
+  JclRegWOW64Access := Access;
+end;
+
 //=== Internal helper routines ===============================================
+
+function GetWOW64AccessMode(samDesired: REGSAM): REGSAM;
+const
+  KEY_WOW64_32KEY = $0200;
+  KEY_WOW64_64KEY = $0100;
+  KEY_WOW64_RES = $0300;
+  RegWOW64Accesses: array[Boolean, TJclRegWOW64Access] of HKEY = (
+    (HKEY(0), HKEY(0), HKEY(0), HKEY(0)),
+    (HKEY(0), KEY_WOW64_64KEY, KEY_WOW64_32KEY, KEY_WOW64_64KEY)
+  );
+begin
+  Result := samDesired;
+  if (Win32Platform = VER_PLATFORM_WIN32_NT) and (samDesired and KEY_WOW64_RES = 0) then
+  begin
+    if CachedIsWindows64 = -1 then
+      if IsWindows64 then
+        CachedIsWindows64 := 1
+      else
+        CachedIsWindows64 := 0;
+
+    Result := Result or RegWOW64Accesses[CachedIsWindows64 = 1, JclRegWOW64Access];
+  end;
+end;
 
 function RootKeyName(const RootKey: THandle): string;
 begin
   case RootKey of
-    HKCR : Result := RsHKCRLong;
-    HKCU : Result := RsHKCULong;
-    HKLM : Result := RsHKLMLong;
-    HKUS : Result := RsHKUSLong;
-    HKPD : Result := RsHKPDLong;
-    HKCC : Result := RsHKCCLong;
-    HKDD : Result := RsHKDDLong;
-    else
+    HKCR : Result := HKCRLongName;
+    HKCU : Result := HKCULongName;
+    HKLM : Result := HKLMLongName;
+    HKUS : Result := HKUSLongName;
+    HKPD : Result := HKPDLongName;
+    HKCC : Result := HKCCLongName;
+    HKDD : Result := HKDDLongName;
+  else
     {$IFDEF DELPHICOMPILER}
-      Result := Format('$%.8x', [RootKey]);
+    Result := Format('$%.8x', [RootKey]);
     {$ENDIF DELPHICOMPILER}
     {$IFDEF BCB}
-      Result := Format('0x%.8x', [RootKey]);
+    Result := Format('0x%.8x', [RootKey]);
     {$ENDIF BCB}
   end;
 end;
@@ -336,7 +466,7 @@ begin
   raise EJclRegistryError.CreateResFmt(@RsWrongDataType, [RootKeyName(RootKey), Key, Name]);
 end;
 
-function GetKeyAndPath(ExecKind: TExecKind; var Key: HKEY; out RegPath: string): Boolean;
+function GetKeyAndPath(ExecKind: TExecKind; out Key: HKEY; out RegPath: string): Boolean;
 begin
   Result := False;
   if (ExecKind in [ekServiceRun, ekServiceRunOnce]) and (Win32Platform = VER_PLATFORM_WIN32_NT) then
@@ -359,30 +489,7 @@ begin
   Result := True;
 end;
 
-function RelativeKey(const RootKey: DelphiHKEY; Key: PChar): PChar;
-type
-  TRootKey = record
-    Key: DelphiHKEY;
-    Name: string;
-  end;
-const
-  RootKeys: array [0..13] of TRootKey =
-   (
-    (Key: HKCR; Name: RsHKCRLong),
-    (Key: HKCU; Name: RsHKCULong),
-    (Key: HKLM; Name: RsHKLMLong),
-    (Key: HKUS; Name: RsHKUSLong),
-    (Key: HKPD; Name: RsHKPDLong),
-    (Key: HKCC; Name: RsHKCCLong),
-    (Key: HKDD; Name: RsHKDDLong),
-    (Key: HKCR; Name: RsHKCRShort),
-    (Key: HKCU; Name: RsHKCUShort),
-    (Key: HKLM; Name: RsHKLMShort),
-    (Key: HKUS; Name: RsHKUSShort),
-    (Key: HKPD; Name: RsHKPDShort),
-    (Key: HKCC; Name: RsHKCCShort),
-    (Key: HKDD; Name: RsHKDDShort)
-   );
+function RelativeKey(const RootKey: DelphiHKEY; Key: PAnsiChar): PAnsiChar; overload;
 var
   I: Integer;
 begin
@@ -390,59 +497,86 @@ begin
   if Result^ = RegKeyDelimiter then
     Inc(Result);
   for I := Low(RootKeys) to High(RootKeys) do
-    if StrPos(Key, PChar(RootKeys[I].Name + RegKeyDelimiter)) = Result then
+    if StrPos(Key, PAnsiChar(RootKeys[I].AnsiName + RegKeyDelimiter)) = Result then
     begin
       if RootKey <> RootKeys[I].Key then
         raise EJclRegistryError.CreateResFmt(@RsInconsistentPath, [Key])
       else
-        Inc(Result, Length(RootKeys[I].Name));
+        Inc(Result, Length(RootKeys[I].AnsiName));
       Break;
     end;
 end;
 
-function InternalRegOpenKeyEx(Key: HKEY; SubKey: PChar;
-  ulOptions: DWORD; samDesired: REGSAM; var RegKey: HKEY): Longint;
+function RelativeKey(const RootKey: DelphiHKEY; Key: PWideChar): PWideChar; overload;
 var
-  WideKey: WideString;
+  I: Integer;
+begin
+  Result := Key;
+  if Result^ = RegKeyDelimiter then
+    Inc(Result);
+  for I := Low(RootKeys) to High(RootKeys) do
+    if StrPosW(Key, PWideChar(RootKeys[I].WideName + RegKeyDelimiter)) = Result then
+    begin
+      if RootKey <> RootKeys[I].Key then
+        raise EJclRegistryError.CreateResFmt(@RsInconsistentPath, [Key])
+      else
+        Inc(Result, Length(RootKeys[I].WideName));
+      Break;
+    end;
+end;
+
+function InternalRegOpenKeyEx(Key: HKEY; SubKey: PWideChar;
+  ulOptions: DWORD; samDesired: REGSAM; var RegKey: HKEY): Longint; overload;
+var
+  RelKey: AnsiString;
 begin
   if Win32Platform = VER_PLATFORM_WIN32_NT then
+    Result := RegOpenKeyExW(Key, RelativeKey(Key, SubKey), ulOptions, GetWOW64AccessMode(samDesired), RegKey)
+  else
   begin
-    WideKey := RelativeKey(Key, SubKey);
-    Result := RegOpenKeyExW(Key, PWideChar(WideKey), ulOptions, samDesired, RegKey);
-  end
+    RelKey := AnsiString(WideString(RelativeKey(Key, SubKey)));
+    Result := RegOpenKeyExA(Key, PAnsiChar(RelKey), ulOptions, samDesired, RegKey);
+  end;
+end;
+
+function InternalRegOpenKeyEx(Key: HKEY; SubKey: PAnsiChar;
+  ulOptions: DWORD; samDesired: REGSAM; var RegKey: HKEY): Longint; overload;
+begin
+  if Win32Platform = VER_PLATFORM_WIN32_NT then
+    Result := RegOpenKeyExA(Key, RelativeKey(Key, SubKey), ulOptions, GetWOW64AccessMode(samDesired), RegKey)
   else
     Result := RegOpenKeyExA(Key, RelativeKey(Key, SubKey), ulOptions, samDesired, RegKey);
 end;
 
-function InternalRegQueryValueEx(Key: HKEY; ValueName: PChar;
-  lpReserved: Pointer; lpType: PDWORD; lpData: PByte; lpcbData: PDWORD): Longint;
+function InternalRegQueryValueEx(Key: HKEY; ValueName: PWideChar;
+  lpReserved: Pointer; lpType: PDWORD; lpData: Pointer; lpcbData: PDWORD): Longint;
 var
-  WideName: WideString;
+  ValName: AnsiString;
 begin
   if Win32Platform = VER_PLATFORM_WIN32_NT then
-  begin
-    WideName := ValueName;
-    Result := RegQueryValueExW(Key, PWideChar(WideName), lpReserved, lpType, lpData, lpcbData);
-  end
+    Result := RegQueryValueExW(Key, ValueName, lpReserved, lpType, lpData, lpcbData)
   else
-    Result := RegQueryValueExA(Key, ValueName, lpReserved, lpType, lpData, lpcbData);
+  begin
+    ValName := AnsiString(WideString(ValueName));
+    Result := RegQueryValueExA(Key, PAnsiChar(ValName), lpReserved, lpType, lpData, lpcbData);
+  end;
 end;
 
-function InternalRegSetValueEx(Key: HKEY; ValueName: PChar;
+function InternalRegSetValueEx(Key: HKEY; ValueName: PWideChar;
   Reserved: DWORD; dwType: DWORD; lpData: Pointer; cbData: DWORD): Longint; stdcall;
 var
-  WideName: WideString;
+  ValName: AnsiString;
 begin
   if Win32Platform = VER_PLATFORM_WIN32_NT then
-  begin
-    WideName := ValueName;
-    Result := RegSetValueExW(Key, PWideChar(WideName), Reserved, dwType, lpData, cbData);
-  end
+    Result := RegSetValueExW(Key, ValueName, Reserved, dwType, lpData, cbData)
   else
-    Result := RegSetValueExA(Key, PChar(ValueName), Reserved, dwType, lpData, cbData);
+  begin
+    ValName := AnsiString(WideString(ValueName));
+    Result := RegSetValueExA(Key, PAnsiChar(ValName), Reserved, dwType, lpData, cbData);
+  end;
 end;
 
-function InternalGetData(const RootKey: DelphiHKEY; const Key, Name: string;
+function InternalGetData(const RootKey: DelphiHKEY; const Key, Name: WideString;
   RegKinds: TRegKinds; ExpectedSize: DWORD;
   out DataType: DWORD; Data: Pointer; out DataSize: DWORD; RaiseException: Boolean): Boolean;
 var
@@ -451,16 +585,17 @@ begin
   Result := True;
   DataType := REG_NONE;
   DataSize := 0;
-  if InternalRegOpenKeyEx(RootKey, PChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  RegKey := 0;
+  if InternalRegOpenKeyEx(RootKey, PWideChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
     try
-      if InternalRegQueryValueEx(RegKey, PChar(Name), nil, @DataType, nil, @DataSize) = ERROR_SUCCESS then
+      if InternalRegQueryValueEx(RegKey, PWideChar(Name), nil, @DataType, nil, @DataSize) = ERROR_SUCCESS then
       begin
         if not (DataType in RegKinds) or (DataSize > ExpectedSize) then
           if RaiseException then
             DataError(RootKey, Key, Name)
           else
             Result := False;
-        if InternalRegQueryValueEx(RegKey, PChar(Name), nil, nil, Data, @DataSize) <> ERROR_SUCCESS then
+        if InternalRegQueryValueEx(RegKey, PWideChar(Name), nil, nil, Data, @DataSize) <> ERROR_SUCCESS then
           if RaiseException then
             ValueError(RootKey, Key, Name)
           else
@@ -481,39 +616,63 @@ begin
       Result := False;
 end;
 
-function InternalGetString(const RootKey: DelphiHKEY; const Key, Name: string; MultiFlag: Boolean;
-  out RetValue: string; RaiseException: Boolean): Boolean;
+function InternalGetAnsiString(const RootKey: DelphiHKEY; const Key, Name: WideString; MultiFlag: Boolean;
+  out RetValue: AnsiString; RaiseException: Boolean): Boolean;
 var
   RegKey: HKEY;
   DataType, DataSize: DWORD;
+  TmpRet: WideString;
+  DataLength: Integer;
   RegKinds: TRegKinds;
 begin
   Result := True;
   DataType := REG_NONE;
   DataSize := 0;
   RetValue := '';
-  if RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  RegKey := 0;
+  if InternalRegOpenKeyEx(RootKey, PWideChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
     try
-      if RegQueryValueEx(RegKey, PChar(Name), nil, @DataType, nil, @DataSize) = ERROR_SUCCESS then
+      if InternalRegQueryValueEx(RegKey, PWideChar(Name), nil, @DataType, nil, @DataSize) = ERROR_SUCCESS then
       begin
-        RegKinds := [REG_BINARY, REG_SZ, REG_EXPAND_SZ];
         if MultiFlag then
-          RegKinds := RegKinds + [REG_MULTI_SZ];
-        if not (DataType in RegKinds) then
-          DataError(RootKey, Key, Name);
-        SetLength(RetValue, DataSize div SizeOf(Char) + 1);
-        if RegQueryValueEx(RegKey, PChar(Name), nil, nil, Pointer(RetValue), @DataSize) <> ERROR_SUCCESS then
+          RegKinds := [REG_BINARY, REG_SZ, REG_EXPAND_SZ, REG_MULTI_SZ]
+        else
+          RegKinds := [REG_BINARY, REG_SZ, REG_EXPAND_SZ];
+        if DataType in RegKinds then
+        begin
+          if Win32Platform = VER_PLATFORM_WIN32_NT then
+          begin
+            DataLength := DataSize div SizeOf(WideChar);
+            SetLength(TmpRet, DataLength);
+            Result := InternalRegQueryValueEx(RegKey, PWideChar(Name), nil, nil, PWideChar(TmpRet), @DataSize) = ERROR_SUCCESS;
+            if Result then
+              RetValue := AnsiString(Copy(TmpRet, 1, DataLength - 1));
+          end
+          else
+          begin
+            DataLength := DataSize div SizeOf(AnsiChar);
+            SetLength(RetValue, DataLength);
+            Result := InternalRegQueryValueEx(RegKey, PWideChar(Name), nil, nil, PAnsiChar(RetValue), @DataSize) = ERROR_SUCCESS;
+            if Result then
+              SetLength(RetValue, DataLength - 1);
+          end;
+          if not Result then
+          begin
+            RetValue := '';
+            if RaiseException then
+              ValueError(RootKey, Key, Name)
+            else
+              Result := False;
+          end;
+        end
+        else
         begin
           RetValue := '';
           if RaiseException then
-            ValueError(RootKey, Key, Name)
+            DataError(RootKey, Key, Name)
           else
-          begin
             Result := False;
-            DataSize := 1; // => empty string
-          end;
         end;
-        SetLength(RetValue, (DataSize - 1) div SizeOf(Char));
       end
       else
         if RaiseException then
@@ -530,20 +689,22 @@ begin
       Result := False;
 end;
 
-function InternalGetWideString(const RootKey: DelphiHKEY; const Key, Name: string; MultiFlag: Boolean;
+function InternalGetWideString(const RootKey: DelphiHKEY; const Key, Name: WideString; MultiFlag: Boolean;
   out RetValue: WideString; RaiseException: Boolean): Boolean;
 var
   RegKey: HKEY;
   DataType, DataSize: DWORD;
   RegKinds: TRegKinds;
+  DataLength: Integer;
 begin
   Result := True;
   DataType := REG_NONE;
   DataSize := 0;
   RetValue := '';
-  if InternalRegOpenKeyEx(RootKey, PChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  RegKey := 0;
+  if InternalRegOpenKeyEx(RootKey, PWideChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
     try
-      if InternalRegQueryValueEx(RegKey, PChar(Name), nil, @DataType, nil, @DataSize) = ERROR_SUCCESS then
+      if InternalRegQueryValueEx(RegKey, PWideChar(Name), nil, @DataType, nil, @DataSize) = ERROR_SUCCESS then
       begin
         if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
           RegKinds := [REG_BINARY]
@@ -552,21 +713,29 @@ begin
           RegKinds := [REG_BINARY, REG_SZ, REG_EXPAND_SZ, REG_MULTI_SZ]
         else
           RegKinds := [REG_BINARY, REG_SZ, REG_EXPAND_SZ];
-        if not (DataType in RegKinds) then
-          DataError(RootKey, Key, Name);
-        SetLength(RetValue, DataSize div SizeOf(WideChar) + 1);
-        if InternalRegQueryValueEx(RegKey, PChar(Name), nil, nil, Pointer(RetValue), @DataSize) <> ERROR_SUCCESS then
+        if DataType in RegKinds then
+        begin
+          DataLength := DataSize div SizeOf(WideChar);
+          SetLength(RetValue, DataLength);
+          if InternalRegQueryValueEx(RegKey, PWideChar(Name), nil, nil, PWideChar(RetValue), @DataSize) = ERROR_SUCCESS then
+            SetLength(RetValue, DataLength - 1)
+          else
+          begin
+            RetValue := '';
+            if RaiseException then
+              ValueError(RootKey, Key, Name)
+            else
+              Result := False;
+          end;
+        end
+        else
         begin
           RetValue := '';
           if RaiseException then
-            ValueError(RootKey, Key, Name)
+            DataError(RootKey, Key, Name)
           else
-          begin
             Result := False;
-            DataSize := 1; // => empty string
-          end;
         end;
-        SetLength(RetValue, (DataSize - 1) div SizeOf(WideChar));
       end
       else
         if RaiseException then
@@ -583,34 +752,17 @@ begin
       Result := False;
 end;
 
-procedure InternalSetData(const RootKey: DelphiHKEY; const Key, Name: string;
+procedure InternalSetData(const RootKey: DelphiHKEY; const Key, Name: WideString;
   RegKind: TRegKind; Value: Pointer; ValueSize: Cardinal);
 var
   RegKey: HKEY;
 begin
   if not RegKeyExists(RootKey, Key) then
     RegCreateKey(RootKey, Key);
-  if RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_WRITE, RegKey) = ERROR_SUCCESS then
+  RegKey := 0;
+  if InternalRegOpenKeyEx(RootKey, RelativeKey(RootKey, PWideChar(Key)), 0, KEY_WRITE, RegKey) = ERROR_SUCCESS then
     try
-      if RegSetValueEx(RegKey, PChar(Name), 0, RegKind, Value, ValueSize) <> ERROR_SUCCESS then
-      WriteError(RootKey, Key);
-    finally
-      RegCloseKey(RegKey);
-    end
-  else
-    WriteError(RootKey, Key);
-end;
-
-procedure InternalSetWideData(const RootKey: DelphiHKEY; const Key, Name: string;
-  RegKind: TRegKind; Value: Pointer; ValueSize: Cardinal);
-var
-  RegKey: HKEY;
-begin
-  if not RegKeyExists(RootKey, Key) then
-    RegCreateKey(RootKey, Key);
-  if InternalRegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_WRITE, RegKey) = ERROR_SUCCESS then
-    try
-      if InternalRegSetValueEx(RegKey, PChar(Name), 0, RegKind, Value, ValueSize) <> ERROR_SUCCESS then
+      if InternalRegSetValueEx(RegKey, PWideChar(Name), 0, RegKind, Value, ValueSize) <> ERROR_SUCCESS then
         WriteError(RootKey, Key);
     finally
       RegCloseKey(RegKey);
@@ -619,13 +771,41 @@ begin
     WriteError(RootKey, Key);
 end;
 
+procedure InternalSetAnsiData(const RootKey: DelphiHKEY; const Key, Name: WideString;
+  RegKind: TRegKind; Value: Pointer; ValueSize: Cardinal);
+var
+  Source: AnsiString;
+  Dest: WideString;
+begin
+  if Win32Platform = VER_PLATFORM_WIN32_NT then
+  begin
+    // destination must be wide data
+    SetLength(Source, ValueSize div SizeOf(AnsiChar));
+    Move(Value^,Source[1],ValueSize * SizeOf(AnsiChar));
+    Dest := WideString(Source);
+    InternalSetData(RootKey, Key, Name, RegKind, PWideChar(Dest), SizeOf(WideChar) * ValueSize);
+  end
+  else
+    InternalSetData(RootKey, Key, Name, RegKind, Value, ValueSize);
+end;
+
+procedure InternalSetWideData(const RootKey: DelphiHKEY; const Key, Name: string;
+  RegKind: TRegKind; Value: Pointer; ValueSize: Cardinal);
+begin
+  if (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) and (RegKind in [REG_SZ, REG_MULTI_SZ, REG_EXPAND_SZ]) then
+    RegKind := REG_BINARY;
+  InternalSetData(RootKey, Key, Name, RegKind, Value, ValueSize);
+end;
+
 //=== Registry ===============================================================
 
 function RegCreateKey(const RootKey: DelphiHKEY; const Key: string): Longint;
 var
   RegKey: HKEY;
 begin
-  Result := Windows.RegCreateKey(RootKey, RelativeKey(RootKey, PChar(Key)), RegKey);
+  RegKey := 0;
+  Result := Windows.RegCreateKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, nil, 0,
+    GetWOW64AccessMode(KEY_ALL_ACCESS), nil, RegKey, nil);
   if Result = ERROR_SUCCESS then
     RegCloseKey(RegKey);
 end;
@@ -640,7 +820,8 @@ var
   RegKey: HKEY;
 begin
   Result := False;
-  if RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_SET_VALUE, RegKey) = ERROR_SUCCESS then
+  RegKey := 0;
+  if InternalRegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_SET_VALUE, RegKey) = ERROR_SUCCESS then
   begin
     Result := RegDeleteValue(RegKey, PChar(Name)) = ERROR_SUCCESS;
     RegCloseKey(RegKey);
@@ -660,7 +841,8 @@ var
   MaxSubKeyLen: DWORD;
   KeyName: string;
 begin
-  Result := RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_ALL_ACCESS, RegKey) = ERROR_SUCCESS;
+  RegKey := 0;
+  Result := InternalRegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_ALL_ACCESS, RegKey) = ERROR_SUCCESS;
   if Result then
   begin
     RegQueryInfoKey(RegKey, nil, nil, nil, @NumSubKeys, @MaxSubKeyLen, nil, nil, nil, nil, nil, nil);
@@ -689,7 +871,8 @@ var
   RegKey: HKEY;
 begin
   DataSize := 0;
-  Result := RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS;
+  RegKey := 0;
+  Result := InternalRegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS;
   if Result then
   begin
     Result := RegQueryValueEx(RegKey, PChar(Name), nil, nil, nil, @DataSize) = ERROR_SUCCESS;
@@ -703,7 +886,8 @@ var
   RegKey: HKEY;
 begin
   DataType := REG_NONE;
-  Result := RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS;
+  RegKey := 0;
+  Result := InternalRegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS;
   if Result then
   begin
     Result := RegQueryValueEx(RegKey, PChar(Name), nil, @DataType, nil, nil) = ERROR_SUCCESS;
@@ -833,7 +1017,8 @@ begin
   end
   else
   begin
-    FillChar(Data[0], SizeOf(Data), 0);
+    Data[0] := 0;
+    Data[1] := 0;
     Result := InternalGetData(RootKey, Key, Name, [REG_BINARY, REG_DWORD, REG_QWORD],
        SizeOf(Data), DataType, @Data, DataSize, RaiseException);
     // REG_BINARY is implicitly unsigned if DataSize < 8
@@ -910,10 +1095,10 @@ var
   OldSep: Char;
 begin
   RegGetDataType(RootKey, Key, Name, DataType);
-  OldSep := DecimalSeparator;
+  OldSep := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator;
   if DataType in [REG_SZ, REG_EXPAND_SZ] then
     try
-      DecimalSeparator := '.';
+      {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator := '.';
       if RaiseException then
       begin
         RetValue := StrToFloat(RegReadString(RootKey, Key, Name));
@@ -922,7 +1107,7 @@ begin
       else
         Result := TryStrToFloat(RegReadString(RootKey, Key, Name), RetValue);
     finally
-      DecimalSeparator := OldSep;
+      {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator := OldSep;
     end
   else
     Result := InternalGetData(RootKey, Key, Name, [REG_BINARY],
@@ -951,10 +1136,10 @@ var
   OldSep: Char;
 begin
   RegGetDataType(RootKey, Key, Name, DataType);
-  OldSep := DecimalSeparator;
+  OldSep := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator;
   if DataType in [REG_SZ, REG_EXPAND_SZ] then
     try
-      DecimalSeparator := '.';
+      {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator := '.';
       if RaiseException then
       begin
         RetValue := StrToFloat(RegReadString(RootKey, Key, Name));
@@ -963,7 +1148,7 @@ begin
       else
         Result := TryStrToFloat(RegReadString(RootKey, Key, Name), RetValue);
     finally
-      DecimalSeparator := OldSep;
+      {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator := OldSep;
     end
   else
     Result := InternalGetData(RootKey, Key, Name, [REG_BINARY],
@@ -992,10 +1177,10 @@ var
   OldSep: Char;
 begin
   RegGetDataType(RootKey, Key, Name, DataType);
-  OldSep := DecimalSeparator;
+  OldSep := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator;
   if DataType in [REG_SZ, REG_EXPAND_SZ] then
     try
-      DecimalSeparator := '.';
+      {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator := '.';
       if RaiseException then
       begin
         RetValue := StrToFloat(RegReadString(RootKey, Key, Name));
@@ -1004,7 +1189,7 @@ begin
       else
         Result := TryStrToFloat(RegReadString(RootKey, Key, Name), RetValue);
     finally
-      DecimalSeparator := OldSep;
+      {$IFDEF RTL220_UP}FormatSettings.{$ENDIF}DecimalSeparator := OldSep;
     end
   else
     Result := InternalGetData(RootKey, Key, Name, [REG_BINARY],
@@ -1027,33 +1212,50 @@ begin
 end;
 
 function RegReadStringEx(const RootKey: DelphiHKEY; const Key, Name: string;
-  out RetValue: AnsiString; RaiseException: Boolean): Boolean;
+  out RetValue: string; RaiseException: Boolean): Boolean;
+{$IFDEF SUPPORTS_UNICODE}
+var
+  TmpRet: WideString;
 begin
-  Result := RegReadAnsiStringEx(RootKey, Key, Name, RetValue, RaiseException);
+  Result := InternalGetWideString(RootKey, Key, Name, False, TmpRet, RaiseException);
+  RetValue := string(TmpRet);
 end;
+{$ELSE ~SUPPORTS_UNICODE}
+var
+  TmpRet: AnsiString;
+begin
+  Result := InternalGetAnsiString(RootKey, Key, Name, False, TmpRet, RaiseException);
+  RetValue := string(TmpRet);
+end;
+{$ENDIF ~SUPPORTS_UNICODE}
 
 function RegReadString(const RootKey: DelphiHKEY; const Key, Name: string): string;
 begin
-  Result := RegReadAnsiString(RootKey, Key, Name);
+  RegReadStringEx(RootKey, Key, Name, Result, True);
 end;
 
 function RegReadStringDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: string): string;
 begin
-  Result := RegReadAnsiStringDef(RootKey, Key, Name, Def);
+  try
+    if not RegReadStringEx(RootKey, Key, Name, Result, False) then
+      Result := Def;
+  except
+    Result := Def;
+  end;
 end;
 
-function RegReadAnsiStringEx(const RootKey: DelphiHKEY; const Key, Name: AnsiString;
+function RegReadAnsiStringEx(const RootKey: DelphiHKEY; const Key, Name: string;
   out RetValue: AnsiString; RaiseException: Boolean): Boolean;
 begin
-  Result := InternalGetString(RootKey, Key, Name, False, RetValue, RaiseException);
+  Result := InternalGetAnsiString(RootKey, Key, Name, False, RetValue, RaiseException);
 end;
 
-function RegReadAnsiString(const RootKey: DelphiHKEY; const Key, Name: AnsiString): AnsiString;
+function RegReadAnsiString(const RootKey: DelphiHKEY; const Key, Name: string): AnsiString;
 begin
   RegReadAnsiStringEx(RootKey, Key, Name, Result, True);
 end;
 
-function RegReadAnsiStringDef(const RootKey: DelphiHKEY; const Key, Name: AnsiString; Def: AnsiString): AnsiString;
+function RegReadAnsiStringDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: AnsiString): AnsiString;
 begin
   try
     if not RegReadAnsiStringEx(RootKey, Key, Name, Result, False) then
@@ -1086,13 +1288,23 @@ end;
 
 function RegReadMultiSzEx(const RootKey: DelphiHKEY; const Key, Name: string; Value: TStrings;
   RaiseException: Boolean): Boolean;
+{$IFDEF SUPPORTS_UNICODE}
 var
-  S: string;
+  S: WideString;
 begin
-  Result := InternalGetString(RootKey, Key, Name, True, S, RaiseException);
+  Result := InternalGetWideString(RootKey, Key, Name, True, S, RaiseException);
   if Result then
-    MultiSzToStrings(Value, PMultiSz(PChar(S)));
+    WideMultiSzToWideStrings(Value, PWideMultiSz(PChar(S)));
 end;
+{$ELSE ~SUPPORTS_UNICODE}
+var
+  S: AnsiString;
+begin
+  Result := InternalGetAnsiString(RootKey, Key, Name, True, S, RaiseException);
+  if Result then
+    JclStrings.MultiSzToStrings(Value, PAnsiMultiSz(PChar(S)));
+end;
+{$ENDIF ~SUPPORTS_UNICODE}
 
 procedure RegReadMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; Value: TStrings);
 begin
@@ -1111,41 +1323,109 @@ end;
 
 function RegReadMultiSzEx(const RootKey: DelphiHKEY; const Key, Name: string;
   out RetValue: PMultiSz; RaiseException: Boolean): Boolean;
-var
-  S: string;
-begin
-  RetValue := nil;
-  Result := InternalGetString(RootKey, Key, Name, True, S, RaiseException);
-  if Result then
-    // always returns a newly allocated PMultiSz
-    RetValue := MultiSzDup(PMultiSz(PChar(S)));
-end;
-
-function RegReadMultiSz(const RootKey: DelphiHKEY; const Key, Name: string): PMultiSz;
-begin
-  RegReadMultiSzEx(RootKey, Key, Name, Result, True);
-end;
-
-function RegReadMultiSzDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: PMultiSz): PMultiSz;
-begin
-  try
-    if not RegReadMultiSzEx(RootKey, Key, Name, Result, False) then
-      // always returns a newly allocated PMultiSz
-      Result := MultiSzDup(Def);
-  except
-    // always returns a newly allocated PMultiSz
-    Result := MultiSzDup(Def);
-  end;
-end;
-
-function RegReadWideMultiSzEx(const RootKey: DelphiHKEY; const Key, Name: string; Value: TWideStrings;
-  RaiseException: Boolean): Boolean; 
+{$IFDEF SUPPORTS_UNICODE}
 var
   S: WideString;
 begin
   Result := InternalGetWideString(RootKey, Key, Name, True, S, RaiseException);
   if Result then
-    WideMultiSzToWideStrings(Value, PWideMultiSz(PWideChar(S)));
+    // always returns a newly allocated PMultiSz
+    RetValue := WideMultiSzDup(PWideMultiSz(S))
+  else
+    RetValue := nil;
+end;
+{$ELSE ~SUPPORTS_UNICODE}
+var
+  S: AnsiString;
+begin
+  Result := InternalGetAnsiString(RootKey, Key, Name, True, S, RaiseException);
+  if Result then
+    // always returns a newly allocated PMultiSz
+    RetValue := JclAnsiStrings.MultiSzDup(PAnsiMultiSz(S))
+  else
+    RetValue := nil;
+end;
+{$ENDIF ~SUPPORTS_UNICODE}
+
+function RegReadMultiSz(const RootKey: DelphiHKEY; const Key, Name: string): JclStrings.PMultiSz;
+begin
+  RegReadMultiSzEx(RootKey, Key, Name, Result, True);
+end;
+
+function RegReadMultiSzDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: JclStrings.PMultiSz): JclStrings.PMultiSz;
+begin
+  try
+    if not RegReadMultiSzEx(RootKey, Key, Name, Result, False) then
+      // always returns a newly allocated PMultiSz
+      Result := JclStrings.MultiSzDup(Def);
+  except
+    // always returns a newly allocated PMultiSz
+    Result := JclStrings.MultiSzDup(Def);
+  end;
+end;
+
+function RegReadAnsiMultiSzEx(const RootKey: DelphiHKEY; const Key, Name: string; Value: TAnsiStrings;
+  RaiseException: Boolean): Boolean;
+var
+  S: AnsiString;
+begin
+  Result := InternalGetAnsiString(RootKey, Key, Name, True, S, RaiseException);
+  if Result then
+    JclAnsiStrings.MultiSzToStrings(Value, PAnsiMultiSz(S));
+end;
+
+procedure RegReadAnsiMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; Value: TAnsiStrings);
+begin
+  RegReadAnsiMultiSzEx(RootKey, Key, Name, Value, True);
+end;
+
+procedure RegReadAnsiMultiSzDef(const RootKey: DelphiHKEY; const Key, Name: string; Value, Def: TAnsiStrings);
+begin
+  try
+    if not RegReadAnsiMultiSzEx(RootKey, Key, Name, Value, False) then
+      Value.Assign(Def);
+  except
+    Value.Assign(Def);
+  end;
+end;
+
+function RegReadAnsiMultiSzEx(const RootKey: DelphiHKEY; const Key, Name: string;
+  out RetValue: PAnsiMultiSz; RaiseException: Boolean): Boolean; overload;
+var
+  S: AnsiString;
+begin
+  RetValue := nil;
+  Result := InternalGetAnsiString(RootKey, Key, Name, True, S, RaiseException);
+  if Result then
+    // always returns a newly allocated PMultiAnsiSz
+    RetValue := JclAnsiStrings.MultiSzDup(PAnsiMultiSz(S));
+end;
+
+function RegReadAnsiMultiSz(const RootKey: DelphiHKEY; const Key, Name: string): PAnsiMultiSz;
+begin
+  RegReadAnsiMultiSzEx(RootKey, Key, Name, Result, True);
+end;
+
+function RegReadAnsiMultiSzDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: PAnsiMultiSz): PAnsiMultiSz;
+begin
+  try
+    if RegReadAnsiMultiSzEx(RootKey, Key, Name, Result, False) then
+      // always returns a newly allocated PAnsiMultiSz
+      Result := JclAnsiStrings.MultiSzDup(Def);
+  except
+    // always returns a newly allocated PAnsiMultiSz
+    Result := JclAnsiStrings.MultiSzDup(Def);
+  end;
+end;
+
+function RegReadWideMultiSzEx(const RootKey: DelphiHKEY; const Key, Name: string; Value: TWideStrings;
+  RaiseException: Boolean): Boolean;
+var
+  S: WideString;
+begin
+  Result := InternalGetWideString(RootKey, Key, Name, True, S, RaiseException);
+  if Result then
+    JclWideStrings.MultiSzToStrings(Value, PWideMultiSz(S));
 end;
 
 procedure RegReadWideMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; Value: TWideStrings);
@@ -1172,7 +1452,7 @@ begin
   Result := InternalGetWideString(RootKey, Key, Name, True, S, RaiseException);
   if Result then
     // always returns a newly allocated PMultiWideSz
-    RetValue := WideMultiSzDup(PWideMultiSz(PWideChar(S)));
+    RetValue := JclWideStrings.MultiSzDup(PWideMultiSz(S));
 end;
 
 function RegReadWideMultiSz(const RootKey: DelphiHKEY; const Key, Name: string): PWideMultiSz;
@@ -1185,10 +1465,10 @@ begin
   try
     if RegReadWideMultiSzEx(RootKey, Key, Name, Result, False) then
       // always returns a newly allocated PWideMultiSz
-      Result := WideMultiSzDup(Def);
+      Result := JclWideStrings.MultiSzDup(Def);
   except
     // always returns a newly allocated PWideMultiSz
-    Result := WideMultiSzDup(Def);
+    Result := JclWideStrings.MultiSzDup(Def);
   end;
 end;
 
@@ -1374,57 +1654,68 @@ end;
 
 procedure RegWriteString(const RootKey: DelphiHKEY; const Key, Name, Value: string);
 begin
-  RegWriteAnsiString(RootKey, Key, Name, REG_SZ, Value);
+  RegWriteString(RootKey, Key, Name, REG_SZ, Value);
 end;
 
-procedure RegWriteString(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: string);
-begin
-  RegWriteAnsiString(RootKey, Key, Name, DataType, Value);
-end;
-
-procedure RegWriteAnsiString(const RootKey: DelphiHKEY; const Key, Name, Value: AnsiString);
-begin
-  RegWriteAnsiString(RootKey, Key, Name, REG_SZ, Value);
-end;
-
-procedure RegWriteAnsiString(const RootKey: DelphiHKEY; const Key, Name: AnsiString; DataType: Cardinal;
-  Value: AnsiString);
+procedure RegWriteString(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; const Value: string);
 begin
   if DataType in [REG_BINARY, REG_SZ, REG_EXPAND_SZ] then
-    InternalSetData(RootKey, Key, Name, DataType, PChar(Value),
+    {$IFDEF SUPPORTS_UNICODE}
+    InternalSetWideData(RootKey, Key, Name, DataType, PChar(Value),
+      (Length(Value) + 1) * SizeOf(Char))
+    {$ELSE ~SUPPORTS_UNICODE}
+    InternalSetAnsiData(RootKey, Key, Name, DataType, PChar(Value),
+      (Length(Value) + 1) * SizeOf(Char))
+    {$ENDIF ~SUPPORTS_UNICODE}
+  else
+    DataError(RootKey, Key, Name);
+end;
+
+procedure RegWriteAnsiString(const RootKey: DelphiHKEY; const Key, Name: string; const Value: AnsiString);
+begin
+  RegWriteAnsiString(RootKey, Key, Name, REG_SZ, Value);
+end;
+
+procedure RegWriteAnsiString(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal;
+  const Value: AnsiString);
+begin
+  if DataType in [REG_BINARY, REG_SZ, REG_EXPAND_SZ] then
+    InternalSetAnsiData(RootKey, Key, Name, DataType, PAnsiChar(Value),
       (Length(Value) + 1) * SizeOf(AnsiChar))
   else
     DataError(RootKey, Key, Name);
 end;
 
-procedure RegWriteWideString(const RootKey: DelphiHKEY; const Key, Name: string; Value: WideString);
+procedure RegWriteWideString(const RootKey: DelphiHKEY; const Key, Name: string; const Value: WideString);
 begin
   RegWriteWideString(RootKey, Key, Name, REG_SZ, Value);
 end;
 
-procedure RegWriteWideString(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: WideString);
+procedure RegWriteWideString(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal;
+  const Value: WideString);
 begin
   if DataType in [REG_BINARY, REG_SZ, REG_EXPAND_SZ] then
-    if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
-      InternalSetWideData(RootKey, Key, Name, REG_BINARY, PWideChar(Value),
-        (Length(Value) + 1) * SizeOf(WideChar))
-    else
-      InternalSetWideData(RootKey, Key, Name, DataType, PWideChar(Value),
-        (Length(Value) + 1) * SizeOf(WideChar))
+    InternalSetWideData(RootKey, Key, Name, DataType, PWideChar(Value),
+      (Length(Value) + 1) * SizeOf(WideChar))
   else
     DataError(RootKey, Key, Name);
 end;
 
-procedure RegWriteMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; Value: PMultiSz);
+procedure RegWriteMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; Value: JclStrings.PMultiSz);
 begin
   RegWriteMultiSz(RootKey, Key, Name, REG_MULTI_SZ, Value);
 end;
 
-procedure RegWriteMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: PMultiSz);
+procedure RegWriteMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: JclStrings.PMultiSz);
 begin
   if DataType in [REG_BINARY, REG_MULTI_SZ] then
-    InternalSetData(RootKey, Key, Name, DataType, Value,
+    {$IFDEF SUPPORTS_UNICODE}
+    InternalSetWideData(RootKey, Key, Name, DataType, Value,
       MultiSzLength(Value) * SizeOf(Char))
+    {$ELSE ~SUPPORTS_UNICODE}
+    InternalSetAnsiData(RootKey, Key, Name, DataType, Value,
+      JclStrings.MultiSzLength(Value) * SizeOf(Char))
+    {$ENDIF ~SUPPORTS_UNICODE}
   else
     DataError(RootKey, Key, Name);
 end;
@@ -1437,15 +1728,55 @@ end;
 procedure RegWriteMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal;
   const Value: TStrings);
 var
-  Dest: PMultiSz;
+  Dest: JclStrings.PMultiSz;
 begin
   if DataType in [REG_BINARY, REG_MULTI_SZ] then
   begin
-    StringsToMultiSz(Dest, Value);
+    Dest := nil;
+    JclStrings.StringsToMultiSz(Dest, Value);
     try
       RegWriteMultiSz(RootKey, Key, Name, DataType, Dest);
     finally
-      FreeMultiSz(Dest);
+      JclStrings.FreeMultiSz(Dest);
+    end;
+  end
+  else
+    DataError(RootKey, Key, Name);
+end;
+
+procedure RegWriteAnsiMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; Value: PAnsiMultiSz);
+begin
+  RegWriteAnsiMultiSz(RootKey, Key, Name, REG_MULTI_SZ, Value);
+end;
+
+procedure RegWriteAnsiMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal;
+  Value: PAnsiMultiSz);
+begin
+  if DataType in [REG_BINARY, REG_MULTI_SZ] then
+    InternalSetAnsiData(RootKey, Key, Name, DataType, Value,
+      JclAnsiStrings.MultiSzLength(Value) * SizeOf(AnsiChar))
+  else
+    DataError(RootKey, Key, Name);
+end;
+
+procedure RegWriteAnsiMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; const Value: TAnsiStrings);
+begin
+  RegWriteAnsiMultiSz(RootKey, Key, Name, REG_MULTI_SZ, Value);
+end;
+
+procedure RegWriteAnsiMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal;
+  const Value: TAnsiStrings);
+var
+  Dest: PAnsiMultiSz;
+begin
+  if DataType in [REG_BINARY, REG_MULTI_SZ] then
+  begin
+    Dest := nil;
+    JclAnsiStrings.StringsToMultiSz(Dest, Value);
+    try
+      RegWriteAnsiMultiSz(RootKey, Key, Name, DataType, Dest);
+    finally
+      JclAnsiStrings.FreeMultiSz(Dest);
     end;
   end
   else
@@ -1460,11 +1791,9 @@ end;
 procedure RegWriteWideMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal;
   Value: PWideMultiSz);
 begin
-  if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
-    DataType := REG_BINARY;
   if DataType in [REG_BINARY, REG_MULTI_SZ] then
     InternalSetWideData(RootKey, Key, Name, DataType, Value,
-      WideMultiSzLength(Value) * SizeOf(WideChar))
+      JclWideStrings.MultiSzLength(Value) * SizeOf(WideChar))
   else
     DataError(RootKey, Key, Name);
 end;
@@ -1481,11 +1810,12 @@ var
 begin
   if DataType in [REG_BINARY, REG_MULTI_SZ] then
   begin
-    WideStringsToWideMultiSz(Dest, Value);
+    Dest := nil;
+    JclWideStrings.StringsToMultiSz(Dest, Value);
     try
       RegWriteWideMultiSz(RootKey, Key, Name, DataType, Dest);
     finally
-      FreeWideMultiSz(Dest);
+      JclWideStrings.FreeMultiSz(Dest);
     end;
   end
   else
@@ -1531,7 +1861,8 @@ begin
   List.BeginUpdate;
   try
     List.Clear;
-    if RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+    RegKey := 0;
+    if InternalRegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
     begin
       if RegQueryInfoKey(RegKey, nil, nil, nil, @NumSubKeys, nil, nil,
         @NumSubValues, @MaxSubValueLen, nil, nil, nil) = ERROR_SUCCESS then
@@ -1568,7 +1899,8 @@ begin
   List.BeginUpdate;
   try
     List.Clear;
-    if RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+    RegKey := 0;
+    if InternalRegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
     begin
       if RegQueryInfoKey(RegKey, nil, nil, nil,
         @NumSubKeys, @MaxSubKeyLen, nil, nil, nil, nil, nil, nil) = ERROR_SUCCESS then
@@ -1592,13 +1924,42 @@ begin
   end;
 end;
 
+function RegGetValueNamesAndValues(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
+var
+  I: Integer;
+  TempList: TStringList;
+  Name: string;
+  DataType: DWORD;
+begin
+  List.BeginUpdate;
+  TempList := TStringList.Create;
+  try
+    List.Clear;
+    Result := RegKeyExists(RootKey, Key) and RegGetValueNames(RootKey, Key, TempList);
+    if Result then
+    begin
+      for I := 0 to TempList.Count - 1 do
+      begin
+        Name := TempList[I];
+        if RegGetDataType(RootKey, Key, Name, DataType) and
+          ((DataType = REG_SZ) or (DataType = REG_EXPAND_SZ) or (DataType = REG_BINARY)) then
+          List.Values[Name] := RegReadStringDef(RootKey, Key, Name, '');
+      end;
+    end;
+  finally
+    List.EndUpdate;
+    TempList.Free;
+  end;
+end;
+
 function RegHasSubKeys(const RootKey: DelphiHKEY; const Key: string): Boolean;
 var
   RegKey: HKEY;
   NumSubKeys: Integer;
 begin
   Result := False;
-  if RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  RegKey := 0;
+  if InternalRegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
   begin
     RegQueryInfoKey(RegKey, nil, nil, nil, @NumSubKeys, nil, nil, nil, nil, nil, nil, nil);
     Result := NumSubKeys <> 0;
@@ -1612,7 +1973,8 @@ function RegKeyExists(const RootKey: DelphiHKEY; const Key: string): Boolean;
 var
   RegKey: HKEY;
 begin
-  Result := (RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS);
+  RegKey := 0;
+  Result := (InternalRegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS);
   if Result then
     RegCloseKey(RegKey);
 end;
@@ -1621,7 +1983,8 @@ function RegValueExists(const RootKey: DelphiHKEY; const Key, Name: string): Boo
 var
   RegKey: HKEY;
 begin
-  Result := (RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS);
+  RegKey := 0;
+  Result := (InternalRegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS);
   if Result then
   begin
     Result := RegQueryValueEx(RegKey, PChar(Name), nil, nil, nil, nil) = ERROR_SUCCESS;
@@ -1693,21 +2056,42 @@ begin
   begin
     case RootKey of
       HKLM:
-        Path := RsHKLMLong + RegKeyDelimiter + RelativeKey(RootKey, PChar(Path));
+        Path := HKLMLongName + RegKeyDelimiter + RelativeKey(RootKey, PChar(Path));
       HKCU:
-        Path := RsHKCULong + RegKeyDelimiter + RelativeKey(RootKey, PChar(Path));
+        Path := HKCULongName + RegKeyDelimiter + RelativeKey(RootKey, PChar(Path));
       HKCR:
-        Path := RsHKCRLong + RegKeyDelimiter + RelativeKey(RootKey, PChar(Path));
+        Path := HKCRLongName + RegKeyDelimiter + RelativeKey(RootKey, PChar(Path));
       HKUS:
-        Path := RsHKUSLong + RegKeyDelimiter + RelativeKey(RootKey, PChar(Path));
+        Path := HKUSLongName + RegKeyDelimiter + RelativeKey(RootKey, PChar(Path));
     end;
     Len := (Length(Path) + 1) * SizeOf(WideChar);
     GetMem(WidePath, Len);
-    MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(Path), -1, WidePath, Len);
+    MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PAnsiChar(AnsiString(Path)), -1, WidePath, Len);
     Result := RtdlSetNamedSecurityInfoW(WidePath, SE_REGISTRY_KEY,
       DACL_SECURITY_INFORMATION, nil, nil, nil, nil) = ERROR_SUCCESS;
     FreeMem(WidePath);
   end;
+end;
+
+function RegAutoExecEnabled(const ExecKind: TExecKind; const Name: string; out CmdLine: string): Boolean;
+var
+  Key: HKEY;
+  RegPath: string;
+begin
+  CmdLine := '';
+
+  Result := GetKeyAndPath(ExecKind, Key, RegPath);
+  if Result then
+  begin
+    try
+      CmdLine := RegReadString(Key, RegPath, Name);
+    except
+      Result := False;
+      CmdLine := '';
+    end;
+  end
+  else
+    CmdLine := '';
 end;
 
 {$IFDEF UNITVERSIONING}
@@ -1719,4 +2103,5 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
+
 

@@ -9,7 +9,7 @@ object JclOtaActionConfigureFrame: TJclOtaActionConfigureFrame
   object LabelActions: TLabel
     Left = 16
     Top = 16
-    Width = 48
+    Width = 47
     Height = 13
     Caption = 'RsActions'
     FocusControl = ListViewActions
@@ -48,6 +48,7 @@ object JclOtaActionConfigureFrame: TJclOtaActionConfigureFrame
     Left = 80
     Top = 330
     Width = 121
+    Height = 19
     Anchors = [akLeft, akBottom]
     HotKey = 0
     InvalidKeys = [hcNone]

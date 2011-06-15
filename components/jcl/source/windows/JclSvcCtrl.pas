@@ -23,18 +23,19 @@
 {   Rik Barker (rikbarker)                                                                         }
 {   Robert Rossmair (rrossmair)                                                                    }
 {   Warren Postma                                                                                  }
+{   Terry Yapt                                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { This unit contains routines and classes to control NT service                                    }
 {                                                                                                  }
-{ Unit owner: Flier Lu                                                                             }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date:: 2009-08-09 15:08:29 +0200 (dim., 09 août 2009)                          $ }
+{ Revision:      $Rev:: 2921                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date: 2006-07-25 07:56:46 +0200 (mar., 25 juil. 2006) $
-
-{$R+} { TODO : Why Rangecheck on here? }
 
 unit JclSvcCtrl;
 
@@ -50,9 +51,9 @@ uses
   Windows, Classes, SysUtils, Contnrs,
   {$IFDEF FPC}
   JwaWinNT, JwaWinSvc,
-  {$ELSE}
+  {$ELSE ~FPC}
   WinSvc,
-  {$ENDIF FPC}
+  {$ENDIF ~FPC}
   JclBase, JclSysUtils;
 
 // Service Types
@@ -156,6 +157,7 @@ const
   SERVICE_CONFIG_FAILURE_ACTIONS = 2;
   {$EXTERNALSYM SERVICE_CONFIG_FAILURE_ACTIONS}
 
+{$IFNDEF FPC}
 type
   LPSERVICE_DESCRIPTIONA = ^SERVICE_DESCRIPTIONA;
   {$EXTERNALSYM LPSERVICE_DESCRIPTIONA}
@@ -165,6 +167,7 @@ type
   {$EXTERNALSYM SERVICE_DESCRIPTIONA}
   TServiceDescriptionA = SERVICE_DESCRIPTIONA;
   PServiceDescriptionA = LPSERVICE_DESCRIPTIONA;
+{$ENDIF ~FPC}
 
 type
   TQueryServiceConfig2A = function(hService: SC_HANDLE; dwInfoLevel: DWORD;
@@ -184,6 +187,7 @@ type
     FDisplayName: string;
     FDescription: string;
     FFileName: TFileName;
+    FServiceStartName: string;
     FDependentServices: TList;
     FDependentGroups: TList;
     FDependentByServices: TList;
@@ -204,7 +208,6 @@ type
     function GetDependentByService(const Idx: Integer): TJclNtService;
     function GetDependentByServiceCount: Integer;
   protected
-    constructor Create(const ASCManager: TJclSCManager; const SvcStatus: TEnumServiceStatus);
     procedure Open(const ADesiredAccess: DWORD = DefaultSvcDesiredAccess);
     procedure Close;
     function GetServiceStatus: TServiceStatus;
@@ -215,6 +218,7 @@ type
     procedure CommitConfig(var SvcConfig: TQueryServiceConfig);
     procedure SetStartType(AStartType: TJclServiceStartType);
   public
+    constructor Create(const ASCManager: TJclSCManager; const SvcStatus: TEnumServiceStatus);
     destructor Destroy; override;
     procedure Refresh;
     procedure Commit;
@@ -234,6 +238,7 @@ type
     property DesiredAccess: DWORD read FDesiredAccess;
     property Description: string read FDescription; // Win2K or later
     property FileName: TFileName read FFileName;
+    property ServiceStartName: string read FServiceStartName;
     property DependentServices[const Idx: Integer]: TJclNtService read GetDependentService;
     property DependentServiceCount: Integer read GetDependentServiceCount;
     property DependentGroups[const Idx: Integer]: TJclServiceGroup read GetDependentGroup;
@@ -258,10 +263,10 @@ type
     function GetService(const Idx: Integer): TJclNtService;
     function GetServiceCount: Integer;
   protected
-    constructor Create(const ASCManager: TJclSCManager; const AName: string; const AOrder: Integer);
     function Add(const AService: TJclNtService): Integer;
     function Remove(const AService: TJclNtService): Integer;
   public
+    constructor Create(const ASCManager: TJclSCManager; const AName: string; const AOrder: Integer);
     destructor Destroy; override;
     property SCManager: TJclSCManager read FSCManager;
     property Name: string read FName;
@@ -317,8 +322,8 @@ type
       const LoadOrderGroup: TJclServiceGroup = nil; const Dependencies: PChar = nil;
       const Account: PChar = nil; const Password: PChar = nil): TJclNtService;
     procedure Sort(const AOrderType: TJclServiceSortOrderType; const AOrderAsc: Boolean = True);
-    function FindService(const SvcName: string; var NtSvc: TJclNtService): Boolean;
-    function FindGroup(const GrpName: string; var SvcGrp: TJclServiceGroup;
+    function FindService(const SvcName: string; out NtSvc: TJclNtService): Boolean;
+    function FindGroup(const GrpName: string; out SvcGrp: TJclServiceGroup;
       const AutoAdd: Boolean = True): Boolean;
     procedure Lock;
     procedure Unlock;
@@ -353,10 +358,12 @@ function StartServiceByName(const AServer,AServiceName: String):Boolean;
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jcl.svn.sourceforge.net/svnroot/jcl/tags/JCL-1.101-Build2725/jcl/source/windows/JclSvcCtrl.pas $';
-    Revision: '$Revision: 1695 $';
-    Date: '$Date: 2006-07-25 07:56:46 +0200 (mar., 25 juil. 2006) $';
-    LogPath: 'JCL\source\windows'
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/source/windows/JclSvcCtrl.pas $';
+    Revision: '$Revision: 2921 $';
+    Date: '$Date: 2009-08-09 15:08:29 +0200 (dim., 09 août 2009) $';
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -364,11 +371,10 @@ implementation
 
 uses
   {$IFDEF FPC}
-  WinSysUt,
   JwaRegStr,
-  {$ELSE}
+  {$ELSE ~FPC}
   RegStr,
-  {$ENDIF FPC}
+  {$ENDIF ~FPC}
   Math,
   JclRegistry, JclStrings, JclSysInfo;
 
@@ -426,7 +432,7 @@ begin
     until Ret or (GetLastError <> ERROR_INSUFFICIENT_BUFFER);
     Win32Check(Ret);
 
-    FDescription := PSvcDesc.lpDescription;
+    FDescription := string(PSvcDesc.lpDescription);
   finally
     FreeMem(PSvcDesc);
   end;
@@ -479,13 +485,15 @@ begin
       BytesNeeded := 40960;
       repeat
         ReallocMem(PBuf, BytesNeeded);
+        ServicesReturned := 0;
         Ret := EnumDependentServices(FHandle, SERVICE_STATE_ALL,
           PEnumServiceStatus(PBuf){$IFNDEF FPC}^{$ENDIF}, BytesNeeded, BytesNeeded, ServicesReturned);
       until Ret or (GetLastError <> ERROR_INSUFFICIENT_BUFFER);
       Win32Check(Ret);
 
       PEss := PBuf;
-      for I := 0 to ServicesReturned - 1 do
+      if ServicesReturned > 0 then
+        for I := 0 to ServicesReturned - 1 do
       begin
         if (PEss.lpServiceName[1] <> SC_GROUP_IDENTIFIER) and
           (SCManager.FindService(PEss.lpServiceName, NtSvc)) then
@@ -597,6 +605,7 @@ begin
   begin
     FFileName := lpBinaryPathName;
     FStartType := TJclServiceStartType(dwStartType);
+    FServiceStartName := lpServiceStartName;
     FErrorControlType := TJclServiceErrorControlType(dwErrorControl);
     UpdateLoadOrderGroup;
     UpdateDependencies;
@@ -1001,28 +1010,48 @@ procedure TJclSCManager.Refresh(const RefreshAll: Boolean);
     PEss: PEnumServiceStatus;
     NtSvc: TJclNtService;
     BytesNeeded, ServicesReturned, ResumeHandle: DWORD;
+    LastError: Cardinal;
   begin
     Assert((DesiredAccess and SC_MANAGER_ENUMERATE_SERVICE) <> 0);
     // Enum the services
     ResumeHandle := 0; // Must set this value to zero !!!
     try
       PBuf := nil;
-      BytesNeeded := 40960;
+      BytesNeeded := 0;
+      //from MSDN:
+      //The maximum size of this array is 256K bytes. To determine the required
+      //size, specify NULL for this parameter and 0 for the cbBufSize parameter.
+      //The function will fail and GetLastError will return
+      //ERROR_INSUFFICIENT_BUFFER. The pcbBytesNeeded parameter will receive the
+      //required size.
+
+      //(it doesn't actually return ERROR_INSUFFICIENT_BUFFER apparently)
+
       repeat
         ReallocMem(PBuf, BytesNeeded);
+        ServicesReturned := 0;
         Ret := EnumServicesStatus(FHandle, SERVICE_TYPE_ALL, SERVICE_STATE_ALL,
           PEnumServiceStatus(PBuf){$IFNDEF FPC}^{$ENDIF},
           BytesNeeded, BytesNeeded, ServicesReturned, ResumeHandle);
-      until Ret or (GetLastError <> ERROR_MORE_DATA);
+        LastError := GetLastError;
+
+        if (ServicesReturned > 0) and (Ret or (LastError = ERROR_MORE_DATA)) then
+        begin
+          PEss := PBuf;
+          for I := 0 to ServicesReturned - 1 do
+          begin
+            NtSvc := TJclNtService.Create(Self, PEss^);
+            try
+              NtSvc.Refresh;
+            except
+              // trap invalid services
+            end;
+            Inc(PEss);
+          end;
+        end;
+      until Ret or (LastError <> ERROR_MORE_DATA);
       Win32Check(Ret);
 
-      PEss := PBuf;
-      for I := 0 to ServicesReturned - 1 do
-      begin
-        NtSvc := TJclNtService.Create(Self, PEss^);
-        NtSvc.Refresh;
-        Inc(PEss);
-      end;
     finally
       FreeMem(PBuf);
     end;
@@ -1080,7 +1109,11 @@ procedure TJclSCManager.Refresh(const RefreshAll: Boolean);
     I: Integer;
   begin
     for I := 0 to GetServiceCount - 1 do
+    try
       GetService(I).Refresh;
+    except
+      // trap invalid services
+    end;
   end;
 
 begin
@@ -1133,7 +1166,7 @@ begin
   FServices.Sort(ServiceSortFunc);
 end;
 
-function TJclSCManager.FindService(const SvcName: string; var NtSvc: TJclNtService): Boolean;
+function TJclSCManager.FindService(const SvcName: string; out NtSvc: TJclNtService): Boolean;
 var
   I: Integer;
 begin
@@ -1150,7 +1183,7 @@ begin
   NtSvc := nil;
 end;
 
-function TJclSCManager.FindGroup(const GrpName: string; var SvcGrp: TJclServiceGroup;
+function TJclSCManager.FindGroup(const GrpName: string; out SvcGrp: TJclServiceGroup;
   const AutoAdd: Boolean): Boolean;
 var
   I: Integer;
@@ -1349,6 +1382,7 @@ begin
     ServiceHandle:=OpenService(SCMHandle,PChar(AServiceName),Access);
     if ServiceHandle <> 0 then
     try
+      ResetMemory(ServiceStatus, SizeOf(ServiceStatus));
       if QueryServiceStatus(ServiceHandle,ServiceStatus) then
         Result:=TJclServiceState(ServiceStatus.dwCurrentState);
     finally
@@ -1387,14 +1421,17 @@ var
   SCMHandle: DWORD;
   SS: _Service_Status;
 begin
-  Result:=False;
+  Result := False;
 
-  SCMHandle:= OpenSCManager(PChar(AServer), nil, SC_MANAGER_ALL_ACCESS);
+  SCMHandle := OpenSCManager(PChar(AServer), nil, SC_MANAGER_ALL_ACCESS);
   if SCMHandle <> 0 then
   try
-    ServiceHandle:=OpenService(SCMHandle,PChar(AServiceName),SERVICE_ALL_ACCESS);
+    ServiceHandle := OpenService(SCMHandle, PChar(AServiceName), SERVICE_ALL_ACCESS);
     if ServiceHandle <> 0 then
-      Result:=ControlService(ServiceHandle,SERVICE_CONTROL_STOP,SS);
+    begin
+      ResetMemory(SS, SizeOf(SS));
+      Result := ControlService(ServiceHandle, SERVICE_CONTROL_STOP, SS);
+    end;
 
     CloseServiceHandle(ServiceHandle);
   finally
@@ -1406,6 +1443,7 @@ function GetServiceStatus(ServiceHandle: SC_HANDLE): DWORD;
 var
   ServiceStatus: TServiceStatus;
 begin
+  ResetMemory(ServiceStatus, SizeOf(ServiceStatus));
   if not QueryServiceStatus(ServiceHandle, ServiceStatus) then
     RaiseLastOSError;
 
@@ -1418,6 +1456,7 @@ var
   WaitDuration: DWORD;
   LastCheckPoint: DWORD;
 begin
+  ResetMemory(ServiceStatus, SizeOf(ServiceStatus));
   if not QueryServiceStatus(ServiceHandle, ServiceStatus) then
     RaiseLastOSError;
 

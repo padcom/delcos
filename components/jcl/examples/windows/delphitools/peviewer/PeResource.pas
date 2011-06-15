@@ -19,7 +19,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date: 2007-04-18 22:54:59 +0200 (mer., 18 avr. 2007) $                                                      }
+{ Last modified: $Date: 2008-09-09 21:32:17 +0200 (mar., 09 sept. 2008) $                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -723,10 +723,16 @@ const
 
 function WideCharToStr(WStr: PWChar; Len: Integer): string;
 begin
+  {$IFDEF SUPPORTS_UNICODE}
+  SetLength(Result, Len);
+  if Len > 0 then
+    Move(WStr^, Result[1], Len * SizeOf(WideChar));
+  {$ELSE SUPPORTS_UNICODE}
   if Len = 0 then Len := -1;
   Len := WideCharToMultiByte(CP_ACP, 0, WStr, Len, nil, 0, nil, nil);
   SetLength(Result, Len);
   WideCharToMultiByte(CP_ACP, 0, WStr, Len, PChar(Result), Len, nil, nil);
+  {$ENDIF ~SUPPORTS_UNICODE}
 end;
 
 { TPeResItem }
@@ -1363,7 +1369,7 @@ begin
           S := WideCharToStr(PWideChar(Text), lstrlenW(PWideChar(Text)))
         else
           SetString(S, PAnsiChar(Text), StrLen(Text));
-        if StripCrLf then S := StrRemoveChars(S, [AnsiCarriageReturn, AnsiLineFeed]);
+        if StripCrLf then S := StrRemoveChars(S, CharIsReturn);
         Strings.AddObject(S, Pointer(E));
       end;
       Entry := Pointer(PChar(Entry) + Entry^.Length);
@@ -1392,7 +1398,7 @@ begin
       Inc(P);
       ID := ((FResourceItem.ParentItem.Entry^.Name - 1) shl 4) + Cnt;
       S := WideCharToStr(P, Len);
-      if StripCrLf then S := StrRemoveChars(S, [AnsiCarriageReturn, AnsiLineFeed]);
+      if StripCrLf then S := StrRemoveChars(S, CharIsReturn);
       Strings.AddObject(S, Pointer(ID));
       Inc(P, Len);
     end else

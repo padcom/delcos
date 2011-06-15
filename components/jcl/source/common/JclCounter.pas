@@ -28,8 +28,12 @@
 { This unit contains a high performance counter class which can be used for highly accurate timing }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date: 2006-07-24 07:34:39 +0200 (lun., 24 juil. 2006) $
+{                                                                                                  }
+{ Last modified: $Date:: 2009-07-30 12:08:05 +0200 (jeu., 30 juil. 2009)                         $ }
+{ Revision:      $Rev:: 2892                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclCounter;
 
@@ -85,10 +89,12 @@ type
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jcl.svn.sourceforge.net/svnroot/jcl/tags/JCL-1.101-Build2725/jcl/source/common/JclCounter.pas $';
-    Revision: '$Revision: 1694 $';
-    Date: '$Date: 2006-07-24 07:34:39 +0200 (lun., 24 juil. 2006) $';
-    LogPath: 'JCL\source\common'
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/source/common/JclCounter.pas $';
+    Revision: '$Revision: 2892 $';
+    Date: '$Date: 2009-07-30 12:08:05 +0200 (jeu., 30 juil. 2009) $';
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -97,6 +103,11 @@ implementation
 uses
   SysUtils,
   JclResources;
+
+procedure NoCounterError;
+begin
+  raise EJclCounterError.CreateRes(@RsNoCounter);
+end;
 
 constructor TJclCounter.Create(const Compensate: Boolean);
 const
@@ -109,7 +120,7 @@ begin
 
   {$IFDEF MSWINDOWS}
   if not QueryPerformanceFrequency(FFrequency) then
-    raise EJclCounterError.CreateRes(@RsNoCounter);
+    NoCounterError;
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   FFrequency := 100000;  // 1 sec = 10E6 microseconds, therefore we have to divide by 10E5
@@ -143,8 +154,8 @@ begin
   FElapsedTime := 0;
   FOverallElapsedTime := 0;
   {$IFDEF MSWINDOWS}
-  if not QueryPerformanceCounter(FStart) then  
-    raise EJclCounterError.CreateRes(@RsNoCounter);
+  if not QueryPerformanceCounter(FStart) then
+    NoCounterError;
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   GetTimeOfDay(FTimeval, nil);
@@ -156,7 +167,7 @@ function TJclCounter.Stop: Float;
 begin
   {$IFDEF MSWINDOWS}
   if not QueryPerformanceCounter(FStop) then
-    raise EJclCounterError.CreateRes(@RsNoCounter);
+    NoCounterError;
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   GetTimeOfDay(FTimeval, nil);
@@ -173,8 +184,9 @@ var
   TimeNow: Int64;
 begin
   {$IFDEF MSWINDOWS}
+  TimeNow := 0;
   if not QueryPerformanceCounter(TimeNow) then
-    raise EJclCounterError.CreateRes(@RsNoCounter);
+    NoCounterError;
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   GetTimeOfDay(FTimeval, nil);

@@ -29,29 +29,46 @@ const
   FILE_FLAG_FIRST_PIPE_INSTANCE = $00080000;
   {$EXTERNALSYM FILE_FLAG_FIRST_PIPE_INSTANCE}
 
+// line 2727
+type
+  _MEMORYSTATUSEX = packed record
+    dwLength: DWORD;
+    dwMemoryLoad: DWORD;
+    ullTotalPhys: Int64;
+    ullAvailPhys: Int64;
+    ullTotalPageFile: Int64;
+    ullAvailPageFile: Int64;
+    ullTotalVirtual: Int64;
+    ullAvailVirtual: Int64;
+    ullAvailExtendedVirtual: Int64;
+  end;
+  {$EXTERNALSYM _MEMORYSTATUSEX}
+
+  MEMORYSTATUSEX = _MEMORYSTATUSEX;
+  {$EXTERNALSYM MEMORYSTATUSEX}
+  LPMEMORYSTATUSEX = ^_MEMORYSTATUSEX;
+  {$EXTERNALSYM LPMEMORYSTATUSEX}
+
+  TMemoryStatusEx = _MEMORYSTATUSEX;
+
+function GlobalMemoryStatusEx(out lpBuffer: TMemoryStatusEx): BOOL; stdcall;
+
 // line 3189
   
 {$IFDEF MSWINDOWS}
 
 function BackupSeek(hFile: THandle; dwLowBytesToSeek, dwHighBytesToSeek: DWORD;
   out lpdwLowByteSeeked, lpdwHighByteSeeked: DWORD;
-  var lpContext: {$IFDEF CLR}IntPtr{$ELSE}Pointer{$ENDIF}): BOOL; stdcall;
-  {$IFDEF CLR}external kernel32 name 'BackupSeek';{$ENDIF}
+  var lpContext: Pointer): BOOL; stdcall;
 {$EXTERNALSYM BackupSeek}
 
 // line 5454
 
 function AdjustTokenPrivileges(TokenHandle: THandle; DisableAllPrivileges: BOOL;
   const NewState: TTokenPrivileges; BufferLength: DWORD;
-  {$IFDEF CLR}
-  out PreviousState: TTokenPrivileges;
-  out ReturnLength: DWORD
-  {$ELSE}
   PreviousState: PTokenPrivileges;
   ReturnLength: PDWORD
-  {$ENDIF CLR}
   ): BOOL; stdcall;
-  {$IFDEF CLR} external advapi32 name 'AdjustTokenPrivileges';{$ENDIF}
 {$EXTERNALSYM AdjustTokenPrivileges}
 
 {
@@ -83,16 +100,12 @@ I have not had this problem on Windows 98.
 Ray Lischner, author of Delphi in a Nutshell (coming later this year)
 http://www.bardware.com and http://www.tempest-sw.com
 }
-{$IFNDEF CLR}
 function CreateMutex(lpMutexAttributes: PSecurityAttributes; bInitialOwner: DWORD; lpName: PChar): THandle; stdcall;
 {$EXTERNALSYM CreateMutex}
-{$ENDIF ~CLR}
 
 // alternative conversion for WinNT 4.0 SP6 and later (OSVersionInfoEx instead of OSVersionInfo)
 {$EXTERNALSYM GetVersionEx}
 function GetVersionEx(var lpVersionInformation: TOSVersionInfoEx): BOOL; stdcall; overload;
-  {$IFDEF CLR}external version name 'GetVersionEx';{$ENDIF}
-{$IFNDEF CLR}
 {$EXTERNALSYM GetVersionEx}
 function GetVersionEx(lpVersionInformation: POSVERSIONINFOEX): BOOL; stdcall; overload;
   {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
@@ -114,7 +127,7 @@ function SetFileSecurityW(lpFileName: LPCWSTR; SecurityInformation: SECURITY_INF
 {$EXTERNALSYM SetFileSecurityW}
 function SetFileSecurity(lpFileName: LPCTSTR; SecurityInformation: SECURITY_INFORMATION;
   pSecurityDescriptor: PSECURITY_DESCRIPTOR): BOOL; stdcall;
-{$EXTERNALSYM SetFileSecurityA}
+{$EXTERNALSYM SetFileSecurity}
 
 function GetFileSecurityA(lpFileName: LPCSTR; RequestedInformation: SECURITY_INFORMATION;
   pSecurityDescriptor: PSECURITY_DESCRIPTOR; nLength: DWORD;
@@ -127,20 +140,43 @@ function GetFileSecurityW(lpFileName: LPCWSTR; RequestedInformation: SECURITY_IN
 function GetFileSecurity(lpFileName: LPCTSTR; RequestedInformation: SECURITY_INFORMATION;
   pSecurityDescriptor: PSECURITY_DESCRIPTOR; nLength: DWORD;
   var lpnLengthNeeded: DWORD): BOOL; stdcall;
-{$EXTERNALSYM GetFileSecurityA}
+{$EXTERNALSYM GetFileSecurity}
 
 // WinBase.h line 10251
 
-function SetVolumeMountPoint(lpszVolumeMountPoint, lpszVolumeName: LPCSTR): BOOL; stdcall;
-{$EXTERNALSYM SetVolumeMountPoint}
+function SetVolumeMountPointW(lpszVolumeMountPoint, lpszVolumeName: LPCWSTR): BOOL; stdcall;
+{$EXTERNALSYM SetVolumeMountPointW}
 
-function DeleteVolumeMountPoint(lpszVolumeMountPoint: LPCSTR): BOOL; stdcall;
-{$EXTERNALSYM DeleteVolumeMountPoint}
+function DeleteVolumeMountPointW(lpszVolumeMountPoint: LPCWSTR): BOOL; stdcall;
+{$EXTERNALSYM DeleteVolumeMountPointW}
 
-function GetVolumeNameForVolumeMountPoint(lpszVolumeMountPoint: LPCSTR;
-  lpszVolumeName: LPSTR; cchBufferLength: DWORD): BOOL; stdcall;
-{$EXTERNALSYM GetVolumeNameForVolumeMountPoint}
+function GetVolumeNameForVolumeMountPointW(lpszVolumeMountPoint: LPCWSTR;
+  lpszVolumeName: LPWSTR; cchBufferLength: DWORD): BOOL; stdcall;
+{$EXTERNALSYM GetVolumeNameForVolumeMountPointW}
 
-{$ENDIF ~CLR}
+// new Windows 7 debugging API
+function CopyExtendedContext(Destination: PCONTEXT_EX; ContextFlags: DWORD; Source: PCONTEXT_EX): BOOL; stdcall;
+{$EXTERNALSYM CopyExtendedContext}
+
+function InitializeExtendedContext(Context: Pointer; ContextFlags: DWORD; out ContextEx: PCONTEXT_EX): BOOL; stdcall;
+{$EXTERNALSYM InitializeExtendedContext}
+
+function GetEnabledExtendedFeatures(const FeatureMask: Int64): Int64; stdcall;
+{$EXTERNALSYM GetEnabledExtendedFeatures}
+
+function GetExtendedContextLength(ContextFlags: DWORD; ContextLength: PDWORD): BOOL; stdcall;
+{$EXTERNALSYM GetExtendedContextLength}
+
+function GetExtendedFeaturesMask(ContextEx: PCONTEXT_EX): Int64; stdcall;
+{$EXTERNALSYM GetExtendedFeaturesMask}
+
+function LocateExtendedFeature(ContextEx: PCONTEXT_EX; FeatureId: DWORD; Length: PDWORD): Pointer; stdcall;
+{$EXTERNALSYM LocateExtendedFeature}
+
+function LocateLegacyContext(ContextEx: PCONTEXT_EX; Length: PDWORD): PCONTEXT; stdcall;
+{$EXTERNALSYM LocateLegacyContext}
+
+procedure SetExtendedFeaturesMask(ContextEx: PCONTEXT_EX; const FeatureMask: Int64);
+{$EXTERNALSYM SetExtendedFeaturesMask}
 
 {$ENDIF MSWINDOWS}

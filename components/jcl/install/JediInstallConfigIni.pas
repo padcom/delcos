@@ -22,6 +22,12 @@
 { Storage facility into an ini file for the installer core                                         }
 {                                                                                                  }
 {**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date:: 2009-09-18 15:53:34 +0200 (ven., 18 sept. 2009)                         $ }
+{ Revision:      $Rev:: 3014                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JediInstallConfigIni;
 
@@ -80,8 +86,8 @@ uses
   SysUtils, Classes,
   JclSysInfo, JclFileUtils;
 
-resourcestring
-  RsIniFileName = 'JCL-install.ini';
+const
+  DefaultIniFileName = 'JCL-install.ini';
 
 function CreateConfigIni: IJediConfiguration;
 begin
@@ -107,7 +113,7 @@ begin
     AFileName := '';
 
   if AFileName = '' then
-    AFileName := RsIniFileName;
+    AFileName := DefaultIniFileName;
 
   if not PathIsAbsolute(AFileName) then
     AFileName := ExtractFilePath(ParamStr(0)) + AFileName;

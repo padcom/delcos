@@ -2,35 +2,55 @@ object JclDebugIdeConfigFrame: TJclDebugIdeConfigFrame
   Left = 0
   Top = 0
   Width = 369
-  Height = 375
+  Height = 436
+  AutoScroll = True
   TabOrder = 0
   TabStop = True
-  object CheckBoxGenerateJdbg: TCheckBox
-    Left = 32
-    Top = 56
-    Width = 321
-    Height = 17
-    Anchors = [akLeft, akTop, akRight]
+  object RadioGroupGenerateJdbg: TRadioGroup
+    Left = 3
+    Top = 3
+    Width = 347
+    Height = 129
     Caption = 'RsDebugGenerateJdbg'
+    Items.Strings = (
+      'RsAlwaysDisabled'
+      'RsDefaultDisabled'
+      'RsDefaultEnabled'
+      'RsAlwaysEnabled')
     TabOrder = 0
   end
-  object CheckBoxInsertJdbg: TCheckBox
-    Left = 32
-    Top = 87
-    Width = 321
-    Height = 17
-    Anchors = [akLeft, akTop, akRight]
+  object RadioGroupInsertJdbg: TRadioGroup
+    Left = 3
+    Top = 138
+    Width = 347
+    Height = 129
     Caption = 'RsDebugInsertJdbg'
+    Items.Strings = (
+      'RsAlwaysDisabled'
+      'RsDefaultDisabled'
+      'RsDefaultEnabled'
+      'RsAlwaysEnabled')
     TabOrder = 1
   end
-  object CheckBoxEnableExpert: TCheckBox
-    Left = 16
-    Top = 24
-    Width = 337
-    Height = 17
-    Anchors = [akLeft, akTop, akRight]
-    Caption = 'RsDebugEnableExpert'
+  object RadioGroupDeleteMapFile: TRadioGroup
+    Left = 3
+    Top = 273
+    Width = 347
+    Height = 129
+    Caption = 'RsDeleteMapFile'
+    Items.Strings = (
+      'RsDataAlwaysDisabled'
+      'RsDataDefaultDisabled'
+      'RsDataDefaultEnabled'
+      'RsDataAlwaysEnabled')
     TabOrder = 2
-    OnClick = CheckBoxEnableExpertClick
+  end
+  object CheckBoxQuiet: TCheckBox
+    Left = 3
+    Top = 408
+    Width = 347
+    Height = 17
+    Caption = 'RsQuiet'
+    TabOrder = 3
   end
 end

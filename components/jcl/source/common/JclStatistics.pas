@@ -30,8 +30,12 @@
 { meanor median of a set of numbers.                                                               }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date: 2006-07-24 07:34:39 +0200 (lun., 24 juil. 2006) $
+{                                                                                                  }
+{ Last modified: $Date:: 2009-07-30 12:08:05 +0200 (jeu., 30 juil. 2009)                         $ }
+{ Revision:      $Rev:: 2892                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 { TODO : Test cases! }
 
@@ -64,9 +68,7 @@ function IsPositiveFloatArray(const X: TDynFloatArray): Boolean;
 function MaxFloatArray(const B: TDynFloatArray): Float;
 function MaxFloatArrayIndex(const B: TDynFloatArray): Integer;
 function Median(const X: TDynFloatArray): Float;
-{$IFNDEF CLR}
 function MedianUnsorted(const X: TDynFloatArray): Float;
-{$ENDIF ~CLR}
 function MinFloatArray(const B: TDynFloatArray): Float;
 function MinFloatArrayIndex(const B: TDynFloatArray): Integer;
 function Permutation(N, R: Cardinal): Float;
@@ -86,10 +88,12 @@ function SumPairProductFloatArray(const X, Y: TDynFloatArray): Float;
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jcl.svn.sourceforge.net/svnroot/jcl/tags/JCL-1.101-Build2725/jcl/source/common/JclStatistics.pas $';
-    Revision: '$Revision: 1694 $';
-    Date: '$Date: 2006-07-24 07:34:39 +0200 (lun., 24 juil. 2006) $';
-    LogPath: 'JCL\source\common'
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/source/common/JclStatistics.pas $';
+    Revision: '$Revision: 2892 $';
+    Date: '$Date: 2009-07-30 12:08:05 +0200 (jeu., 30 juil. 2009) $';
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -97,9 +101,7 @@ implementation
 
 uses
   JclLogic,
-  {$IFNDEF CLR}
   JclSysUtils,
-  {$ENDIF ~CLR}
   JclResources;
 
 //=== Local helpers ==========================================================
@@ -113,20 +115,12 @@ function GetDynLengthNotNull(const X: TDynFloatArray): Integer;
 begin
   Result := Length(X);
   if Result = 0 then
-    {$IFDEF CLR}
-    raise EJclMathError.Create(RsEmptyArray);
-    {$ELSE}
     raise EJclMathError.CreateRes(@RsEmptyArray);
-    {$ENDIF CLR}
 end;
 
 procedure InvalidSampleSize(SampleSize: Integer);
 begin
-  {$IFDEF CLR}
-  raise EJclStatisticsError.CreateFmt(RsInvalidSampleSize, [SampleSize]);
-  {$ELSE}
   raise EJclStatisticsError.CreateResFmt(@RsInvalidSampleSize, [SampleSize]);
-  {$ENDIF CLR}
 end;
 
 function GetSampleSize(const Sample: TDynFloatArray; MinValidSize: Integer = 1): Integer;
@@ -152,11 +146,7 @@ begin
   for I := 0 to N - 1 do
   begin
     if X[I] <= PrecisionTolerance then
-      {$IFDEF CLR}
-      raise EJclMathError.Create(RsNonPositiveArray);
-      {$ELSE}
       raise EJclMathError.CreateRes(@RsNonPositiveArray);
-      {$ENDIF CLR}
     Result := Result * X[I];
   end;
   Result := Power(Result, 1 / N);
@@ -171,11 +161,7 @@ begin
   for I := 0 to N - 1 do
   begin
     if X[I] <= PrecisionTolerance then
-      {$IFDEF CLR}
-      raise EJclMathError.Create(RsNonPositiveArray);
-      {$ELSE}
       raise EJclMathError.CreateRes(@RsNonPositiveArray);
-      {$ENDIF CLR}
     Result := Result + 1 / X[I];
   end;
   Result := N / Result;
@@ -281,7 +267,6 @@ begin
     Result := (X[N div 2 - 1] + X[N div 2]) / 2;
 end;
 
-{$IFNDEF CLR}
 function MedianUnsorted(const X: TDynFloatArray): Float;
 var
   SortedList: TDynFloatArray;
@@ -295,7 +280,6 @@ begin
   // and call the median function afterwards
   Result := Median(SortedList);
 end;
-{$ENDIF ~CLR}
 
 function MinFloatArray(const B: TDynFloatArray): Float;
 var

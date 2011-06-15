@@ -28,11 +28,13 @@
 { instances of your application that can exist at any time. In addition there is support for       }
 { simple interprocess communication between these instance including a notification mechanism.     }
 {                                                                                                  }
-{ Unit owner: Petr Vones                                                                           }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date:: 2009-10-03 12:20:22 +0200 (sam., 03 oct. 2009)                          $ }
+{ Revision:      $Rev:: 3036                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date: 2006-07-25 07:56:46 +0200 (mar., 25 juil. 2006) $
 
 unit JclAppInst;
 
@@ -109,16 +111,26 @@ function JclAppInstances(const UniqueAppIdGuidStr: string): TJclAppInstances; ov
 // Interprocess communication routines
 function ReadMessageCheck(var Message: TMessage; const IgnoredOriginatorWnd: THandle): TJclAppInstDataKind;
 procedure ReadMessageData(const Message: TMessage; var Data: Pointer; var Size: Integer);
-procedure ReadMessageString(const Message: TMessage; var S: string);
+procedure ReadMessageString(const Message: TMessage; out S: string);
 procedure ReadMessageStrings(const Message: TMessage; const Strings: TStrings);
+
+function SendData(const Wnd, OriginatorWnd: HWND;
+  const DataKind: TJclAppInstDataKind; const Data: Pointer; const Size: Integer): Boolean;
+function SendStrings(const Wnd, OriginatorWnd: HWND;
+  const DataKind: TJclAppInstDataKind; const Strings: TStrings): Boolean;
+function SendCmdLineParams(const Wnd, OriginatorWnd: HWND): Boolean;
+function SendString(const Wnd, OriginatorWnd: HWND;
+  const DataKind: TJclAppInstDataKind; const S: string): Boolean;
 
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jcl.svn.sourceforge.net/svnroot/jcl/tags/JCL-1.101-Build2725/jcl/source/windows/JclAppInst.pas $';
-    Revision: '$Revision: 1695 $';
-    Date: '$Date: 2006-07-25 07:56:46 +0200 (mar., 25 juil. 2006) $';
-    LogPath: 'JCL\source\windows'
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/source/windows/JclAppInst.pas $';
+    Revision: '$Revision: 3036 $';
+    Date: '$Date: 2009-10-03 12:20:22 +0200 (sam., 03 oct. 2009) $';
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -130,12 +142,12 @@ uses
 
 {$IFDEF FPC}  // missing declaration from unit Messages
 type
-  TWMCopyData = packed record
-    Msg: Cardinal;
-    From: THandle;
-    CopyDataStruct: PCopyDataStruct;
-    Result: Longint;
-  end;
+  TWMCopyData = record
+      Msg: UINT;
+      From: THandle;
+      CopyDataStruct: PCopyDataStruct;
+      Result : LRESULT;
+    End;
 {$ENDIF FPC}
 
 const
@@ -227,36 +239,37 @@ begin
   CheckMultipleInstances(1);
 end;
 
-class function TJclAppInstances.GetApplicationWnd(const ProcessID: DWORD): THandle;
 type
   PTopLevelWnd = ^TTopLevelWnd;
   TTopLevelWnd = record
     ProcessID: DWORD;
     Wnd: THandle;
   end;
+
+function EnumApplicationWinProc(Wnd: THandle; Param: PTopLevelWnd): BOOL; stdcall;
+var
+  PID: DWORD;
+  C: array [0..Length(ClassNameOfTApplication) + 1] of Char;
+begin
+  GetWindowThreadProcessId(Wnd, @PID);
+  if (PID = Param^.ProcessID) and (GetClassName(Wnd, C, Length(C)) > 0) and (C = ClassNameOfTApplication) then
+  begin
+    Result := False;
+    Param^.Wnd := Wnd;
+  end
+  else
+  begin
+    Result := True;
+  end;
+end;
+
+class function TJclAppInstances.GetApplicationWnd(const ProcessID: DWORD): THandle;
 var
   TopLevelWnd: TTopLevelWnd;
-
-  function EnumWinProc(Wnd: THandle; Param: PTopLevelWnd): BOOL; stdcall;
-  var
-    PID: DWORD;
-    C: array [0..Length(ClassNameOfTApplication) + 1] of Char;
-  begin
-    GetWindowThreadProcessId(Wnd, @PID);
-    if (PID = Param^.ProcessID) and (GetClassName(Wnd, C, SizeOf(C)) > 0) and
-      (C = ClassNameOfTApplication) then
-    begin
-      Result := False;
-      Param^.Wnd := Wnd;
-    end
-    else
-      Result := True;
-  end;
-
 begin
   TopLevelWnd.ProcessID := ProcessID;
   TopLevelWnd.Wnd := 0;
-  EnumWindows(@EnumWinProc, LPARAM(@TopLevelWnd));
+  EnumWindows(@EnumApplicationWinProc, LPARAM(@TopLevelWnd));
   Result := TopLevelWnd.Wnd;
 end;
 
@@ -338,20 +351,19 @@ begin
   Halt(0);
 end;
 
+function EnumNotifyWinProc(Wnd: THandle; Message: PMessage): BOOL; stdcall;
+begin
+  with Message^ do
+    SendNotifyMessage(Wnd, Msg, WParam, LParam);
+  Result := True;
+end;
+
 procedure TJclAppInstances.NotifyInstances(const W, L: Integer);
 var
   I: Integer;
   Wnd: THandle;
   TID: DWORD;
   Msg: TMessage;
-
-  function EnumWinProc(Wnd: THandle; Message: PMessage): BOOL; stdcall;
-  begin 
-    with Message^ do
-      SendNotifyMessage(Wnd, Msg, WParam, LParam);
-    Result := True;
-  end;
-
 begin
   FOptex.Enter;
   try
@@ -370,7 +382,7 @@ begin
         Msg.Msg := FMessageID;
         Msg.WParam := W;
         Msg.LParam := L;
-        EnumThreadWindows(TID, @EnumWinProc, LPARAM(@Msg));
+        EnumThreadWindows(TID, @EnumNotifyWinProc, LPARAM(@Msg));
       end;
   finally
     FOptex.Leave;
@@ -413,10 +425,6 @@ begin
   end;
 end;
 
-function TJclAppInstances.SendData(const WindowClassName: string;
-  const DataKind: TJclAppInstDataKind;
-  Data: Pointer; const Size: Integer;
-  OriginatorWnd: THandle): Boolean;
 type
   PEnumWinRec = ^TEnumWinRec;
   TEnumWinRec = record
@@ -426,39 +434,42 @@ type
     Self: TJclAppInstances;
   end;
 
+function EnumWinProc(Wnd: THandle; Data: PEnumWinRec): BOOL; stdcall;
+var
+  ClassName: array [0..200] of Char;
+  I: Integer;
+  PID: DWORD;
+  Found: Boolean;
+begin
+  if (GetClassName(Wnd, ClassName, Length(ClassName) - 1) > 0) and
+    (StrComp(ClassName, Data.WindowClassName) = 0) then
+  begin
+    GetWindowThreadProcessId(Wnd, @PID);
+    Found := False;
+    Data.Self.FOptex.Enter;
+    try
+      with PJclAISharedData(Data.Self.FMappingView.Memory)^ do
+        for I := 0 to Count - 1 do
+          if ProcessIDs[I] = PID then
+          begin
+            Found := True;
+            Break;
+          end;
+    finally
+      Data.Self.FOptex.Leave;
+    end;
+    if Found then
+      SendMessage(Wnd, WM_COPYDATA, Data.OriginatorWnd, LPARAM(@Data.CopyData));
+  end;
+  Result := True;
+end;
+
+function TJclAppInstances.SendData(const WindowClassName: string;
+  const DataKind: TJclAppInstDataKind;
+  Data: Pointer; const Size: Integer;
+  OriginatorWnd: THandle): Boolean;
 var
   EnumWinRec: TEnumWinRec;
-
-  function EnumWinProc(Wnd: THandle; Data: PEnumWinRec): BOOL; stdcall;
-  var
-    ClassName: array [0..200] of Char;
-    I: Integer;
-    PID: DWORD;
-    Found: Boolean;
-  begin
-    if (GetClassName(Wnd, ClassName, SizeOf(ClassName)) > 0) and
-      (StrComp(ClassName, Data.WindowClassName) = 0) then
-    begin
-      GetWindowThreadProcessId(Wnd, @PID);
-      Found := False;
-      Data.Self.FOptex.Enter;
-      try
-        with PJclAISharedData(Data.Self.FMappingView.Memory)^ do
-          for I := 0 to Count - 1 do
-            if ProcessIDs[I] = PID then
-            begin
-              Found := True;
-              Break;
-            end;
-      finally
-        Data.Self.FOptex.Leave;
-      end;
-      if Found then
-        SendMessage(Wnd, WM_COPYDATA, Data.OriginatorWnd, LPARAM(@Data.CopyData));
-    end;
-    Result := True;
-  end;
-
 begin
   Assert(DataKind <> AppInstDataKindNoData);
   EnumWinRec.WindowClassName := PChar(WindowClassName);
@@ -467,25 +478,21 @@ begin
   EnumWinRec.CopyData.cbData := Size;
   EnumWinRec.CopyData.lpData := Data;
   EnumWinRec.Self := Self;
-  Result := EnumWindows(@EnumWinProc, Integer(@EnumWinRec));
+  Result := EnumWindows(@EnumWinProc, LPARAM(@EnumWinRec));
 end;
 
 function TJclAppInstances.SendString(const WindowClassName: string;
   const DataKind: TJclAppInstDataKind; const S: string;
   OriginatorWnd: THandle): Boolean;
 begin
-  Result := SendData(WindowClassName, DataKind, PChar(S), Length(S) + 1,
-    OriginatorWnd);
+  Result := SendData(WindowClassName, DataKind, PChar(S), Length(S) * SizeOf(Char), OriginatorWnd);
 end;
 
 function TJclAppInstances.SendStrings(const WindowClassName: string;
   const DataKind: TJclAppInstDataKind; const Strings: TStrings;
   OriginatorWnd: THandle): Boolean;
-var
-  S: string;
 begin
-  S := Strings.Text;
-  Result := SendData(WindowClassName, DataKind, Pointer(S), Length(S), OriginatorWnd);
+  Result := SendString(WindowClassName, DataKind, Strings.Text, OriginatorWnd);
 end;
 
 class function TJclAppInstances.SetForegroundWindow98(const Wnd: THandle): Boolean;
@@ -561,11 +568,11 @@ begin
     end;
 end;
 
-procedure ReadMessageString(const Message: TMessage; var S: string);
+procedure ReadMessageString(const Message: TMessage; out S: string);
 begin
   with TWMCopyData(Message) do
     if Msg = WM_COPYDATA then
-      SetString(S, PChar(CopyDataStruct^.lpData), CopyDataStruct^.cbData);
+      SetString(S, PChar(CopyDataStruct^.lpData), CopyDataStruct^.cbData div SizeOf(Char));
 end;
 
 procedure ReadMessageStrings(const Message: TMessage; const Strings: TStrings);
@@ -575,9 +582,47 @@ begin
   with TWMCopyData(Message) do
     if Msg = WM_COPYDATA then
     begin
-      SetString(S, PChar(CopyDataStruct^.lpData), CopyDataStruct^.cbData);
+      ReadMessageString(Message, S);
       Strings.Text := S;
     end;
+end;
+
+function SendData(const Wnd, OriginatorWnd: HWND;
+  const DataKind: TJclAppInstDataKind; const Data: Pointer; const Size: Integer): Boolean;
+var
+  CopyData: TCopyDataStruct;
+begin
+  CopyData.dwData := DataKind;
+  CopyData.cbData := Size;
+  CopyData.lpData := Data;
+  Result := Boolean(SendMessage(Wnd, WM_COPYDATA, OriginatorWnd, LPARAM(@CopyData)));
+end;
+
+function SendStrings(const Wnd, OriginatorWnd: HWND;
+  const DataKind: TJclAppInstDataKind; const Strings: TStrings): Boolean;
+begin
+  Result := SendString(Wnd, OriginatorWnd, DataKind, Strings.Text);
+end;
+
+function SendCmdLineParams(const Wnd, OriginatorWnd: HWND): Boolean;
+var
+  TempList: TStringList;
+  I: Integer;
+begin
+  TempList := TStringList.Create;
+  try
+    for I := 1 to ParamCount do
+      TempList.Add(ParamStr(I));
+    Result := SendStrings(Wnd, OriginatorWnd, AppInstCmdLineDataKind, TempList);
+  finally
+    TempList.Free;
+  end;
+end;
+
+function SendString(const Wnd, OriginatorWnd: HWND;
+  const DataKind: TJclAppInstDataKind; const S: string): Boolean;
+begin
+  Result := SendData(Wnd, OriginatorWnd, DataKind, PChar(S), Length(S) * SizeOf(Char));
 end;
 
 initialization

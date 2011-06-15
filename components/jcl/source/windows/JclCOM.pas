@@ -28,8 +28,12 @@
 { This unit contains Various COM (Component Object Model) utility routines.                        }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date: 2007-06-28 22:06:21 +0200 (jeu., 28 juin 2007) $
+{                                                                                                  }
+{ Last modified: $Date:: 2010-01-25 13:19:13 +0100 (lun., 25 janv. 2010)                         $ }
+{ Revision:      $Rev:: 3139                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclCOM;
 
@@ -120,10 +124,12 @@ procedure VariantArrayToStream(VarArray: OleVariant; var Stream: IStream); overl
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jcl.svn.sourceforge.net/svnroot/jcl/tags/JCL-1.101-Build2725/jcl/source/windows/JclCOM.pas $';
-    Revision: '$Revision: 2056 $';
-    Date: '$Date: 2007-06-28 22:06:21 +0200 (jeu., 28 juin 2007) $';
-    LogPath: 'JCL\source\windows'
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/source/windows/JclCOM.pas $';
+    Revision: '$Revision: 3139 $';
+    Date: '$Date: 2010-01-25 13:19:13 +0100 (lun., 25 janv. 2010) $';
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -134,9 +140,7 @@ uses
   Types,
   {$ENDIF FPC}
   SysUtils,
-  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
   JclFileUtils, JclRegistry, JclResources, JclSysInfo, JclWin32;
 
 {implementation Constants - may be reused by more than one routine }
@@ -306,6 +310,7 @@ var
   itfStream: IStream;
 begin
   { TODO -cTest : D4 (CBx ??) }
+  itfStream := nil;
   Result := MarshalInterProcessInterfaceInStream(iid, unk, itfStream);
 
   if Result <> S_OK then
@@ -360,6 +365,7 @@ var
   itfStream: IStream;
 begin
   { TODO -cTest : D4 (CBx ??) }
+  itfStream := nil;
   Result := MarshalInterMachineInterfaceInStream(iid, unk, itfStream);
 
   if Result <> S_OK then

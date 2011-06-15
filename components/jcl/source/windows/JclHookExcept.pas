@@ -24,11 +24,13 @@
 {                                                                                                  }
 { Exception hooking routines                                                                       }
 {                                                                                                  }
-{ Unit owner: Petr Vones                                                                           }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date:: 2009-08-09 15:08:29 +0200 (dim., 09 août 2009)                          $ }
+{ Revision:      $Rev:: 2921                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date: 2007-01-15 19:47:58 +0100 (lun., 15 janv. 2007) $
 
 unit JclHookExcept;
 
@@ -40,12 +42,12 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, SysUtils;
+  Windows, SysUtils, Classes;
 
 type
   // Exception hooking notifiers routines
   TJclExceptNotifyProc = procedure(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
-  TJclExceptNotifyProcEx = procedure(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean; ESP: Pointer);
+  TJclExceptNotifyProcEx = procedure(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean; StackPointer: Pointer);
   TJclExceptNotifyMethod = procedure(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean) of object;
 
   TJclExceptNotifyPriority = (npNormal, npFirstChain);
@@ -73,26 +75,29 @@ type
   TJclModuleArray = array of HMODULE;
 
 function JclInitializeLibrariesHookExcept: Boolean;
-function JclHookedExceptModulesList(var ModulesList: TJclModuleArray): Boolean;
+function JclHookedExceptModulesList(out ModulesList: TJclModuleArray): Boolean;
 
 // Hooking routines location info helper
-function JclBelongsHookedCode(Addr: Pointer): Boolean;
+function JclBelongsHookedCode(Address: Pointer): Boolean;
 
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jcl.svn.sourceforge.net/svnroot/jcl/tags/JCL-1.101-Build2725/jcl/source/windows/JclHookExcept.pas $';
-    Revision: '$Revision: 1892 $';
-    Date: '$Date: 2007-01-15 19:47:58 +0100 (lun., 15 janv. 2007) $';
-    LogPath: 'JCL\source\windows'
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/source/windows/JclHookExcept.pas $';
+    Revision: '$Revision: 2921 $';
+    Date: '$Date: 2009-08-09 15:08:29 +0200 (dim., 09 août 2009) $';
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
 implementation
 
 uses
-  Classes,
-  JclBase, JclPeImage, JclSysInfo, JclSysUtils;
+  JclBase,
+  JclPeImage,
+  JclSysInfo, JclSysUtils;
 
 type
   PExceptionArguments = ^TExceptionArguments;
@@ -111,7 +116,7 @@ type
     constructor Create(const NotifyProc: TJclExceptNotifyProc; Priority: TJclExceptNotifyPriority); overload;
     constructor Create(const NotifyProc: TJclExceptNotifyProcEx; Priority: TJclExceptNotifyPriority); overload;
     constructor Create(const NotifyMethod: TJclExceptNotifyMethod; Priority: TJclExceptNotifyPriority); overload;
-    procedure DoNotify(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean; ESP: Pointer);
+    procedure DoNotify(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean; StackPointer: Pointer);
     property Priority: TJclExceptNotifyPriority read FPriority;
   end;
 
@@ -119,9 +124,15 @@ var
   ExceptionsHooked: Boolean;
   Kernel32_RaiseException: procedure (dwExceptionCode, dwExceptionFlags,
     nNumberOfArguments: DWORD; lpArguments: PDWORD); stdcall;
+  {$IFDEF BORLAND}
   SysUtils_ExceptObjProc: function (P: PExceptionRecord): Exception;
+  {$ENDIF BORLAND}
+  {$IFDEF FPC}
+  SysUtils_ExceptProc: TExceptProc;
+  {$ENDIF FPC}
   Notifiers: TThreadList;
 
+{$IFDEF HOOK_DLL_EXCEPTIONS}
 const
   JclHookExceptDebugHookName = '__JclHookExcept';
 
@@ -138,7 +149,7 @@ type
     destructor Destroy; override;
     class function JclHookExceptDebugHookAddr: Pointer;
     procedure HookModule(Module: HMODULE);
-    procedure List(var ModulesList: TJclModuleArray);
+    procedure List(out ModulesList: TJclModuleArray);
     procedure UnhookModule(Module: HMODULE);
   end;
 
@@ -146,7 +157,6 @@ var
   HookExceptModuleList: TJclHookExceptModuleList;
   JclHookExceptDebugHook: Pointer;
 
-{$IFDEF HOOK_DLL_EXCEPTIONS}
 exports
   JclHookExceptDebugHook name JclHookExceptDebugHookName;
 {$ENDIF HOOK_DLL_EXCEPTIONS}
@@ -203,26 +213,31 @@ begin
 end;
 
 procedure TNotifierItem.DoNotify(ExceptObj: TObject; ExceptAddr: Pointer;
-  OSException: Boolean; ESP: Pointer);
+  OSException: Boolean; StackPointer: Pointer);
 begin
   if Assigned(FNotifyProc) then
     FNotifyProc(ExceptObj, ExceptAddr, OSException)
   else
   if Assigned(FNotifyProcEx) then
-    FNotifyProcEx(ExceptObj, ExceptAddr, OSException, ESP)
+    FNotifyProcEx(ExceptObj, ExceptAddr, OSException, StackPointer)
   else
   if Assigned(FNotifyMethod) then
     FNotifyMethod(ExceptObj, ExceptAddr, OSException);
 end;
 
-function GetEBP: Pointer;
+function GetFramePointer: Pointer;
 asm
+        {$IFDEF CPU32}
         MOV     EAX, EBP
+        {$ENDIF CPU32}
+        {$IFDEF CPU64}
+        MOV     RAX, RBP
+        {$ENDIF CPU64}
 end;
 
 {$STACKFRAMES ON}
 
-procedure DoExceptNotify(ExceptObj: Exception; ExceptAddr: Pointer; OSException: Boolean; ESP: Pointer);
+procedure DoExceptNotify(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean; StackPointer: Pointer);
 var
   Priorities: TJclExceptNotifyPriority;
   I: Integer;
@@ -239,7 +254,7 @@ begin
         if Count = 1 then
         begin
           with TNotifierItem(Items[0]) do
-            DoNotify(ExceptObj, ExceptAddr, OSException, ESP);
+            DoNotify( ExceptObj, ExceptAddr, OSException, StackPointer);
         end
         else
         begin
@@ -247,7 +262,7 @@ begin
             for I := 0 to Count - 1 do
               with TNotifierItem(Items[I]) do
                 if Priority = Priorities then
-                  DoNotify(ExceptObj, ExceptAddr, OSException, ESP);
+                  DoNotify(ExceptObj, ExceptAddr, OSException, StackPointer);
         end;
       finally
         Notifiers.UnlockList;
@@ -261,31 +276,43 @@ end;
 procedure HookedRaiseException(ExceptionCode, ExceptionFlags, NumberOfArguments: DWORD;
   Arguments: PExceptionArguments); stdcall;
 const
-  {$IFDEF DELPHI2}
-  cDelphiException = $0EEDFACE;
-  {$ELSE}
   cDelphiException = $0EEDFADE;
-  {$ENDIF DELPHI2}
   cNonContinuable = 1;
 begin
   if (ExceptionFlags = cNonContinuable) and (ExceptionCode = cDelphiException) and
-    (NumberOfArguments = 7) and (DWORD(Arguments) = DWORD(@Arguments) + 4) then
+    (NumberOfArguments = 7) and (TJclAddr(Arguments) = TJclAddr(@Arguments) + SizeOf(Pointer)) then
   begin
-    DoExceptNotify(Arguments.ExceptObj, Arguments.ExceptAddr, False, GetEBP);
+    DoExceptNotify(Arguments.ExceptObj, Arguments.ExceptAddr, False, GetFramePointer);
   end;
   Kernel32_RaiseException(ExceptionCode, ExceptionFlags, NumberOfArguments, PDWORD(Arguments));
 end;
 
+{$IFDEF BORLAND}
 function HookedExceptObjProc(P: PExceptionRecord): Exception;
 var
   NewResultExcCache: Exception; // TLS optimization
 begin
   Result := SysUtils_ExceptObjProc(P);
-  DoExceptNotify(Result, P^.ExceptionAddress, True, GetEBP);
+  DoExceptNotify(Result, P^.ExceptionAddress, True, GetFramePointer);
   NewResultExcCache := NewResultExc;
   if NewResultExcCache <> nil then
     Result := NewResultExcCache;
 end;
+{$ENDIF BORLAND}
+
+{$IFDEF FPC}
+procedure HookedExceptProc(Obj : TObject; Addr : Pointer; FrameCount:Longint; Frame: PPointer);
+var
+  NewResultExcCache: Exception; // TLS optimization
+begin
+  DoExceptNotify(Obj, Addr, True, GetFramePointer);
+  NewResultExcCache := NewResultExc;
+  if NewResultExcCache <> nil then
+    SysUtils_ExceptProc(NewResultExcCache, Addr, FrameCount, Frame)
+  else
+    SysUtils_ExceptProc(Obj, Addr, FrameCount, Frame)
+end;
+{$ENDIF FPC}
 
 {$IFNDEF STACKFRAMES_ON}
 {$STACKFRAMES OFF}
@@ -293,11 +320,11 @@ end;
 
 // Do not change ordering of HookedRaiseException, HookedExceptObjProc and JclBelongsHookedCode routines
 
-function JclBelongsHookedCode(Addr: Pointer): Boolean;
+function JclBelongsHookedCode(Address: Pointer): Boolean;
 begin
-  Result := (Cardinal(@HookedRaiseException) < Cardinal(@JclBelongsHookedCode)) and
-    (Cardinal(@HookedRaiseException) <= Cardinal(Addr)) and
-    (Cardinal(@JclBelongsHookedCode) > Cardinal(Addr));
+  Result := (TJclAddr(@HookedRaiseException) < TJclAddr(@JclBelongsHookedCode)) and
+    (TJclAddr(@HookedRaiseException) <= TJclAddr(Address)) and
+    (TJclAddr(@JclBelongsHookedCode) > TJclAddr(Address));
 end;
 
 function JclAddExceptNotifier(const NotifyProc: TJclExceptNotifyProc; Priority: TJclExceptNotifyPriority): Boolean;
@@ -428,8 +455,14 @@ begin
     if Result then
     begin
       @Kernel32_RaiseException := RaiseExceptionAddressCache;
+      {$IFDEF BORLAND}
       SysUtils_ExceptObjProc := System.ExceptObjProc;
       System.ExceptObjProc := @HookedExceptObjProc;
+      {$ENDIF BORLAND}
+      {$IFDEF FPC}
+      SysUtils_ExceptProc := System.ExceptProc;
+      System.ExceptProc := @HookedExceptProc;
+      {$ENDIF FPC}
     end;
     ExceptionsHooked := Result;
   end
@@ -443,8 +476,14 @@ begin
   begin
     with TJclPeMapImgHooks do
       ReplaceImport(SystemBase, kernel32, @HookedRaiseException, @Kernel32_RaiseException);
+    {$IFDEF BORLAND}
     System.ExceptObjProc := @SysUtils_ExceptObjProc;
     @SysUtils_ExceptObjProc := nil;
+    {$ENDIF BORLAND}
+    {$IFDEF FPC}
+    System.ExceptProc := @SysUtils_ExceptProc;
+    @SysUtils_ExceptProc := nil;
+    {$ENDIF FPC}
     @Kernel32_RaiseException := nil;
     Result := True;
     ExceptionsHooked := False;
@@ -470,6 +509,7 @@ begin
     TJclPeMapImgHooks.ReplaceImport(Pointer(Module), kernel32, @HookedRaiseException, @Kernel32_RaiseException);
 end;
 
+{$IFDEF HOOK_DLL_EXCEPTIONS}
 // Exceptions hooking in libraries
 
 procedure JclHookExceptDebugHookProc(Module: HMODULE; Hook: Boolean); stdcall;
@@ -494,6 +534,7 @@ begin
       HookExceptProc(Module, True);
   end;
 end;
+{$ENDIF HOOK_DLL_EXCEPTIONS}
 
 function JclInitializeLibrariesHookExcept: Boolean;
 begin
@@ -511,7 +552,7 @@ begin
   {$ENDIF HOOK_DLL_EXCEPTIONS}
 end;
 
-function JclHookedExceptModulesList(var ModulesList: TJclModuleArray): Boolean;
+function JclHookedExceptModulesList(out ModulesList: TJclModuleArray): Boolean;
 begin
   {$IFDEF HOOK_DLL_EXCEPTIONS}
   Result := Assigned(HookExceptModuleList);
@@ -519,9 +560,11 @@ begin
     HookExceptModuleList.List(ModulesList);
   {$ELSE HOOK_DLL_EXCEPTIONS}
   Result := False;
+  SetLength(ModulesList, 0);
   {$ENDIF HOOK_DLL_EXCEPTIONS}
 end;
 
+{$IFDEF HOOK_DLL_EXCEPTIONS}
 procedure FinalizeLibrariesHookExcept;
 begin
   FreeAndNil(HookExceptModuleList);
@@ -591,7 +634,7 @@ begin
   Result := GetProcAddress(HostModule, JclHookExceptDebugHookName);
 end;
 
-procedure TJclHookExceptModuleList.List(var ModulesList: TJclModuleArray);
+procedure TJclHookExceptModuleList.List(out ModulesList: TJclModuleArray);
 var
   I: Integer;
 begin
@@ -614,6 +657,7 @@ begin
     FModules.UnlockList;
   end;
 end;
+{$ENDIF HOOK_DLL_EXCEPTIONS}
 
 initialization
   Notifiers := TThreadList.Create;

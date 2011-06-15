@@ -13,7 +13,8 @@ procedure TestJclVector(Results: TStrings);
 procedure TestBucketList(Results: TStrings);
 procedure TestJclHashMap(Results: TStrings);
 procedure TestHashedStringList(Results: TStrings);
-procedure TestJclStrStrHashMap(Results: TStrings);
+procedure TestJclAnsiStrAnsiStrHashMap(Results: TStrings);
+procedure TestJclWideStrWideStrHashMap(Results: TStrings);
 
 implementation
 
@@ -21,19 +22,12 @@ implementation
 
 uses
   SysUtils, Forms, Controls, Math,
-  {$IFDEF RTL140_UP}
   Contnrs, IniFiles,
-  {$ENDIF RTL140_UP}
   JclContainerIntf, JclArrayLists, JclLinkedLists, JclHashMaps, JclVectors;
 
 const
   ResultFormat = '%.1f ms';
   MsecsPerDay = 24 * 60 * 60 * 1000;
-
-{$IFNDEF RTL140_UP}
-const
-  SNeedRTL140Up = 'requires RTL > 14.0';
-{$ENDIF ~RTL140_UP}
 
 var
   Res: Integer;
@@ -171,7 +165,7 @@ begin
     Results[1] := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     for I := 0 to List.Size - 1 do
-      Res := Integer(List.Items[I]);
+      Res := Integer(List.Objects[I]);
     Results[2] := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     for I := 0 to 200 do
@@ -179,9 +173,9 @@ begin
     Results[3] := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     for I := List.Size - 1 downto 20 do
-      List.Items[I - 10] := List.Items[I];
+      List.Objects[I - 10] := List.Objects[I];
     for I := 0 to 10 do
-      List.Items[I + 10] := TObject(I);
+      List.Objects[I + 10] := TObject(I);
     Results[4] := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     List.Clear;
@@ -193,7 +187,6 @@ begin
 end;
 
 procedure TestBucketList(Results: TStrings);
-{$IFDEF RTL140_UP}
 var
   I: Integer;
   Start: TDateTime;
@@ -219,14 +212,6 @@ begin
     Screen.Cursor := crDefault;
   end;
 end;
-{$ELSE ~RTL140_UP}
-var
-  I: Integer;
-begin
-  for I := 1 to 3 do
-    Results[I] := SNeedRTL140Up;
-end;
-{$ENDIF ~RTL140_UP}
 
 procedure TestJclHashMap(Results: TStrings);
 var
@@ -238,7 +223,7 @@ begin
   Screen.Cursor := crHourGlass;
   try
     Start := Now;
-    Map := JclHashMaps.TJclHashMap.Create(256, False);
+    Map := JclHashMaps.TJclHashMap.Create(256, False, False);
     for I := 0 to 100000 do
       Map.PutValue(TObject(Random(100000)), TObject(I));
     Results[1] := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
@@ -260,7 +245,6 @@ begin
 end;
 
 procedure TestHashedStringList(Results: TStrings);
-{$IFDEF RTL140_UP}
 var
   I: Integer;
   List: THashedStringList;
@@ -286,18 +270,10 @@ begin
     Screen.Cursor := crDefault;
   end;
 end;
-{$ELSE ~RTL140_UP}
-var
-  I: Integer;
-begin
-  for I := 1 to 3 do
-    Results[I] := SNeedRTL140Up;
-end;
-{$ENDIF ~RTL140_UP}
 
-procedure TestJclStrStrHashMap(Results: TStrings);
+procedure TestJclAnsiStrAnsiStrHashMap(Results: TStrings);
 var
-  Map: IJclStrStrMap;
+  Map: IJclAnsiStrAnsiStrMap;
   I: Integer;
   Res: string;
   Start: TDateTime;
@@ -306,7 +282,34 @@ begin
   Screen.Cursor := crHourGlass;
   try
     Start := Now;
-    Map := TJclStrStrHashMap.Create(256);
+    Map := TJclAnsiStrAnsiStrHashMap.Create(256);
+    for I := 0 to 100000 do
+      Map.PutValue(AnsiString(GenId(123)), '');
+    Results[1] := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
+    Start := Now;
+    for I := 0 to 100000 do
+      Res := string(Map.GetValue(AnsiString(GenId(123))));
+    Results[2] := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
+    Start := Now;
+    Map.Clear;
+    Results[3] := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
+  finally
+    Screen.Cursor := crDefault;
+  end;
+end;
+
+procedure TestJclWideStrWideStrHashMap(Results: TStrings);
+var
+  Map: IJclWideStrWideStrMap;
+  I: Integer;
+  Res: string;
+  Start: TDateTime;
+begin
+  Randomize;
+  Screen.Cursor := crHourGlass;
+  try
+    Start := Now;
+    Map := TJclWideStrWideStrHashMap.Create(256);
     for I := 0 to 100000 do
       Map.PutValue(GenId(123), '');
     Results[1] := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);

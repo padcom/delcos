@@ -162,7 +162,7 @@ uses
   { delphi }
   SysUtils, Windows,
   { jcl }
-  JclStrings,
+  JclAnsiStrings,
   { local }
   ParseTreeNodeType, Tokens, Nesting;
 

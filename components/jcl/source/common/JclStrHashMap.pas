@@ -24,8 +24,12 @@
 { a passed-in traits object.                                                                       }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date: 2007-05-15 08:49:51 +0200 (mar., 15 mai 2007) $
+{                                                                                                  }
+{ Last modified: $Date:: 2009-08-09 15:08:29 +0200 (dim., 09 août 2009)                         $ }
+{ Revision:      $Rev:: 2921                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclStrHashMap;
 
@@ -55,38 +59,12 @@ function CaseSensitiveTraits: TStringHashMapTraits;
 function CaseInsensitiveTraits: TStringHashMapTraits;
 
 type
-  {$IFDEF CLR}
-  PUserData = TObject;
-  PData = TObject;
-
-  TIterateFunc = function(AUserData: PUserData; const AStr: string; var APtr): Boolean;
-  TIterateMethod = function(AUserData: PUserData; const AStr: string; var APtr): Boolean of object;
-  {$ELSE}
   PUserData = Pointer;
   PData = Pointer;
 
   TIterateFunc = function(AUserData: PUserData; const AStr: string; var APtr: PData): Boolean;
   TIterateMethod = function(AUserData: PUserData; const AStr: string; var APtr: PData): Boolean of object;
-  {$ENDIF CLR}
 
-  {$IFDEF CLR}
-  THashNode = class;
-  PHashNode = THashNode;
-  PPHashNode = PHashNode;
-  THashNode = class
-    Str: string;
-    Ptr: TObject;
-    Left: PHashNode;
-    Right: PHashNode;
-  end;
-
-  { Internal iterate function pointer type used by the protected
-    TStringHashMap.NodeIterate method. }
-  TNodeIterateFunc = procedure(AUserData: TObject; ANode: PPHashNode);
-
-  THashArray = array of PHashNode;
-  PHashArray = THashArray;
-  {$ELSE}
   PPHashNode = ^PHashNode;
   PHashNode = ^THashNode;
   THashNode = record
@@ -102,8 +80,6 @@ type
 
   PHashArray = ^THashArray;
   THashArray = array [0..MaxInt div SizeOf(PHashNode) - 1] of PHashNode;
-  {$ENDIF CLR}
-
 
   TStringHashMap = class(TObject)
   private
@@ -147,9 +123,9 @@ type
 function StrHash(const S: string): THashValue;
 function TextHash(const S: string): THashValue;
 function DataHash(var AValue; ASize: Cardinal): THashValue;
-function Iterate_FreeObjects(AUserData: PUserData; const AStr: string; var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
-function Iterate_Dispose(AUserData: PUserData; const AStr: string; var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
-function Iterate_FreeMem(AUserData: PUserData; const AStr: string; var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
+function Iterate_FreeObjects(AUserData: PUserData; const AStr: string; var AData: PData): Boolean;
+function Iterate_Dispose(AUserData: PUserData; const AStr: string; var AData: PData): Boolean;
+function Iterate_FreeMem(AUserData: PUserData; const AStr: string; var AData: PData): Boolean;
 
 type
   TCaseSensitiveTraits = class(TStringHashMapTraits)
@@ -167,10 +143,12 @@ type
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jcl.svn.sourceforge.net/svnroot/jcl/tags/JCL-1.101-Build2725/jcl/source/common/JclStrHashMap.pas $';
-    Revision: '$Revision: 2008 $';
-    Date: '$Date: 2007-05-15 08:49:51 +0200 (mar., 15 mai 2007) $';
-    LogPath: 'JCL\source\common'
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/source/common/JclStrHashMap.pas $';
+    Revision: '$Revision: 2921 $';
+    Date: '$Date: 2009-08-09 15:08:29 +0200 (dim., 09 août 2009) $';
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -217,50 +195,31 @@ begin
   Result := GlobalCaseInsensitiveTraits;
 end;
 
-function Iterate_FreeObjects(AUserData: PUserData; const AStr: string; var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
+function Iterate_FreeObjects(AUserData: PUserData; const AStr: string; var AData: PData): Boolean;
 begin
   TObject(AData).Free;
   AData := nil;
   Result := True;
 end;
 
-function Iterate_Dispose(AUserData: PUserData; const AStr: string; var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
+function Iterate_Dispose(AUserData: PUserData; const AStr: string; var AData: PData): Boolean;
 begin
-  {$IFDEF CLR}
-  TObject(AData).Free;
-  {$ELSE}
   Dispose(AData);
-  {$ENDIF CLR}
   AData := nil;
   Result := True;
 end;
 
-function Iterate_FreeMem(AUserData: PUserData; const AStr: string; var AData {$IFNDEF CLR}: PData{$ENDIF}): Boolean;
+function Iterate_FreeMem(AUserData: PUserData; const AStr: string; var AData: PData): Boolean;
 begin
-  {$IFDEF CLR}
-  TObject(AData).Free;
-  {$ELSE}
   FreeMem(AData);
-  {$ENDIF CLR}
   AData := nil;
   Result := True;
 end;
 
-{$IFOPT Q+}
-{$DEFINE OVERFLOWCHECKS_ON}
-{$Q-}
-{$ENDIF}
+{$OVERFLOWCHECKS OFF}
 
 function StrHash(const S: string): Cardinal;
-{$IFDEF CLR}
-begin
-  Result := 0;
-  if S <> nil then
-    Result := S.GetHashCode
-end;
-{$ELSE}
 const
-  cLongBits = 32;
   cOneEight = 4;
   cThreeFourths = 24;
   cHighBits = $F0000000;
@@ -276,7 +235,7 @@ begin
   I := Length(S);
   while I > 0 do
   begin
-    Result := (Result shl cOneEight) + Ord(P^);
+    Result := (Result shl cOneEight) or Ord(P^);
     Temp := Result and cHighBits;
     if Temp <> 0 then
       Result := (Result xor (Temp shr cThreeFourths)) and (not cHighBits);
@@ -284,18 +243,9 @@ begin
     Inc(P);
   end;
 end;
-{$ENDIF CLR}
 
 function TextHash(const S: string): Cardinal;
-{$IFDEF CLR}
-begin
-  Result := 0;
-  if S <> nil then
-    Result := S.GetHashCode
-end;
-{$ELSE}
 const
-  cLongBits = 32;
   cOneEight = 4;
   cThreeFourths = 24;
   cHighBits = $F0000000;
@@ -311,7 +261,7 @@ begin
   I := Length(S);
   while I > 0 do
   begin
-    Result := (Result shl cOneEight) + Ord(UpCase(P^));
+    Result := (Result shl cOneEight) or Ord(UpCase(P^));
     Temp := Result and cHighBits;
     if Temp <> 0 then
       Result := (Result xor (Temp shr cThreeFourths)) and (not cHighBits);
@@ -319,18 +269,9 @@ begin
     Inc(P);
   end;
 end;
-{$ENDIF CLR}
 
 function DataHash(var AValue; ASize: Cardinal): THashValue;
-{$IFDEF CLR}
-begin
-  Result := 0;
-  if TObject(AValue) <> nil then
-    Result := TObject(AValue).GetHashCode
-end;
-{$ELSE}
 const
-  cLongBits = 32;
   cOneEight = 4;
   cThreeFourths = 24;
   cHighBits = $F0000000;
@@ -344,7 +285,7 @@ begin
 
   while ASize > 0 do
   begin
-    Result := (Result shl cOneEight) + Ord(P^);
+    Result := (Result shl cOneEight) or Ord(P^);
     Temp := Result and cHighBits;
     if Temp <> 0 then
       Result := (Result xor (Temp shr cThreeFourths)) and (not cHighBits);
@@ -352,22 +293,17 @@ begin
     Inc(P);
   end;
 end;
-{$ENDIF CLR}
 
 {$IFDEF OVERFLOWCHECKS_ON}
-{$Q+}
-{$ENDIF}
+{$OVERFLOWCHECKS ON}
+{$ENDIF OVERFLOWCHECKS_ON}
 
 //=== { TStringHashMap } =====================================================
 
 constructor TStringHashMap.Create(ATraits: TStringHashMapTraits; AHashSize: Cardinal);
 begin
   inherited Create;
-  {$IFDEF CLR}
-  Assert(ATraits <> nil, RsStringHashMapNoTraits);
-  {$ELSE}
   Assert(ATraits <> nil, LoadResString(@RsStringHashMapNoTraits));
-  {$ENDIF CLR}
   SetHashSize(AHashSize);
   FTraits := ATraits;
 end;
@@ -380,15 +316,6 @@ begin
 end;
 
 type
-  {$IFDEF CLR}
-  TCollectNodeNode = class;
-  PCollectNodeNode = TCollectNodeNode;
-  TCollectNodeNode = class
-    Next: PCollectNodeNode;
-    Str: string;
-    Ptr: TObject;
-  end;
-  {$ELSE}
   PPCollectNodeNode = ^PCollectNodeNode;
   PCollectNodeNode = ^TCollectNodeNode;
   TCollectNodeNode = record
@@ -396,10 +323,8 @@ type
     Str: string;
     Ptr: Pointer;
   end;
-  {$ENDIF CLR}
 
 
-{$IFNDEF CLR}
 procedure NodeIterate_CollectNodes(AUserData: PUserData; ANode: PPHashNode);
 var
   PPCnn: PPCollectNodeNode;
@@ -413,7 +338,6 @@ begin
   PCnn^.Str := ANode^^.Str;
   PCnn^.Ptr := ANode^^.Ptr;
 end;
-{$ENDIF ~CLR}
 
 procedure TStringHashMap.SetHashSize(AHashSize: Cardinal);
 var

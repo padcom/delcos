@@ -19,17 +19,23 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Unit owner: Robert Marquardt                                                                     }
-{ Last modified: $Date: 2006-05-30 00:02:45 +0200 (mar., 30 mai 2006) $                                                      }
+{ Last modified: $Date:: 2009-09-21 23:25:05 +0200 (lun., 21 sept. 2009)                         $ }
+{ Revision:      $Rev:: 3017                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
 unit JclUsesDialog;
 
+{$I jcl.inc}
+
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Dialogs, StdCtrls, ComCtrls, ImgList;
 
 type
@@ -50,6 +56,18 @@ type
     constructor Create(AOwner: TComponent; AChangeList: TStrings; Errors: TList); reintroduce;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/experts/useswizard/JclUsesDialog.pas $';
+    Revision: '$Revision: 3017 $';
+    Date: '$Date: 2009-09-21 23:25:05 +0200 (lun., 21 sept. 2009) $';
+    LogPath: 'JCL\experts\useswizard';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
@@ -59,16 +77,24 @@ uses
 {$R *.dfm}
 
 constructor TFormUsesConfirm.Create(AOwner: TComponent; AChangeList: TStrings; Errors: TList);
-const
-  ActionStrings: array [TWizardAction] of string =
-    (RsActionSkip, RsActionAdd, RsActionAdd, RsActionMove);
-  SectionStrings: array [TWizardAction] of string =
-    ('', RsSectionImpl, RsSectionIntf, RsSectionIntf);
 var
   I, J: Integer;
   Node: TTreeNode;
+  ActionStrings: array [TWizardAction] of string;
+  SectionStrings: array [TWizardAction] of string;
 begin
   inherited Create(AOwner);
+
+  ActionStrings[waSkip] := LoadResString(@RsActionSkip);
+  ActionStrings[waAddToImpl] := LoadResString(@RsActionAdd);
+  ActionStrings[waAddToIntf] := LoadResString(@RsActionAdd);
+  ActionStrings[waMoveToIntf] := LoadResString(@RsActionMove);
+
+  SectionStrings[waSkip] := '';
+  SectionStrings[waAddToImpl] := LoadResString(@RsSectionImpl);
+  SectionStrings[waAddToIntf] := LoadResString(@RsSectionIntf);
+  SectionStrings[waMoveToIntf] := LoadResString(@RsSectionIntf);
+
   FChangeList := AChangeList;
   FErrors := Errors;
   for I := 0 to FChangeList.Count - 1 do
@@ -79,7 +105,7 @@ begin
     for J := 0 to FErrors.Count - 1 do
       with PErrorInfo(FErrors[J])^ do
         if AnsiCompareText(UsesName, FChangeList[I]) = 0 then
-          with TreeViewChanges.Items.AddChild(Node, Format(RsUndeclIdent,
+          with TreeViewChanges.Items.AddChild(Node, Format(LoadResString(@RsUndeclIdent),
             [UnitName, LineNumber, Identifier, UsesName])) do
           begin
             ImageIndex := -1;
@@ -97,7 +123,7 @@ begin
   end;
   if FErrors.Count > 0 then
     with PErrorInfo(FErrors[0])^ do
-      Caption := Format(RsConfirmChanges, [UnitName]);
+      Caption := Format(LoadResString(@RsConfirmChanges), [UnitName]);
 end;
 
 function TFormUsesConfirm.ToggleNode(Node: TTreeNode): Boolean;
@@ -189,5 +215,13 @@ begin
     end;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

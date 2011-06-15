@@ -3,8 +3,8 @@ object JclSIMDModifyFrm: TJclSIMDModifyFrm
   Top = 175
   BorderStyle = bsDialog
   Caption = 'JclSIMDModifyFrm'
-  ClientHeight = 417
-  ClientWidth = 481
+  ClientHeight = 388
+  ClientWidth = 936
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,46 +18,39 @@ object JclSIMDModifyFrm: TJclSIMDModifyFrm
   object LabelDisplay: TLabel
     Left = 8
     Top = 16
-    Width = 40
+    Width = 47
     Height = 13
-    Caption = 'Display :'
+    Caption = 'RsDisplay'
     Layout = tlCenter
   end
   object LabelFormat: TLabel
     Left = 240
     Top = 16
-    Width = 38
+    Width = 45
     Height = 13
-    Caption = 'Format :'
+    Caption = 'RsFormat'
     Layout = tlCenter
   end
   object LabelBlank: TLabel
-    Left = 8
-    Top = 48
-    Width = 123
+    Left = 480
+    Top = 16
+    Width = 65
     Height = 13
-    Caption = 'Keep blank for no change'
+    Caption = 'RsKeepBlank'
   end
   object ComboBoxDisplay: TComboBox
     Left = 56
-    Top = 16
+    Top = 13
     Width = 137
     Height = 21
     Style = csDropDownList
     ItemHeight = 13
     TabOrder = 0
     OnChange = ComboBoxDisplayChange
-    Items.Strings = (
-      'Bytes'
-      'Words'
-      'DWords'
-      'QWords'
-      'Singles'
-      'Doubles')
   end
   object ComboBoxFormat: TComboBox
     Left = 288
-    Top = 16
+    Top = 13
     Width = 145
     Height = 21
     Style = csDropDownList
@@ -65,50 +58,47 @@ object JclSIMDModifyFrm: TJclSIMDModifyFrm
     TabOrder = 1
     OnChange = ComboBoxFormatChange
     Items.Strings = (
-      'Binary'
-      'Signed Decimal'
-      'Unsigned Decimal'
-      'Hexadecimal')
+      'RsBinary'
+      'RsSignedDecimal'
+      'RsUnsignedDecimal'
+      'RsHexadecimal')
   end
   object PanelModify: TPanel
     Left = 8
-    Top = 72
-    Width = 465
+    Top = 40
+    Width = 920
     Height = 265
     BevelInner = bvLowered
     TabOrder = 2
   end
   object ButtonOK: TButton
-    Left = 336
-    Top = 384
+    Left = 789
+    Top = 355
     Width = 139
     Height = 25
-    Caption = '&OK'
+    Caption = 'RsOk'
     Default = True
     TabOrder = 3
     OnClick = ButtonOKClick
   end
   object ButtonCancel: TButton
-    Left = 336
-    Top = 352
+    Left = 789
+    Top = 324
     Width = 139
     Height = 25
     Cancel = True
-    Caption = '&Cancel'
+    Caption = 'RsCancel'
     ModalResult = 2
     TabOrder = 4
   end
   object MemoTip: TMemo
     Left = 8
-    Top = 352
-    Width = 313
-    Height = 57
+    Top = 311
+    Width = 761
+    Height = 65
     BorderStyle = bsNone
     Lines.Strings = (
-      'Tip: xmm0.byte0 will return the first byte of xmm0'
-      'Valid registers are: xmm0..xmm7 (32-bit processor) or '
-      'xmm0..xmm15 (64-bit processor)'
-      'Valid fields are byteX, wordX, dwordX, qwordX, singleX, doubleX')
+      'RsSIMDModificationDescription')
     ParentColor = True
     TabOrder = 5
   end

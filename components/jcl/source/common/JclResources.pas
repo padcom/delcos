@@ -20,6 +20,7 @@
 {   Barry Kelly                                                                                    }
 {   Flier Lu (flier)                                                                               }
 {   Florent Ouchet (outchy)                                                                        }
+{   Jean-Fabien Connault (cycocrew)                                                                }
 {   Marcel Bestebroer                                                                              }
 {   Marcel van Brakel                                                                              }
 {   Matthias Thoma (mthoma)                                                                        }
@@ -29,14 +30,19 @@
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
 {   Scott Price (scottprice)                                                                       }
+{   Uwe Schuster (uschuster)                                                                       }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Unit which provides a central place for all resource strings used in the JCL                     }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date: 2007-07-19 21:04:25 +0200 (jeu., 19 juil. 2007) $
+{                                                                                                  }
+{ Last modified: $Date:: 2010-07-25 13:44:27 +0200 (dim., 25 juil. 2010)                         $ }
+{ Revision:      $Rev:: 3266                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclResources;
 
@@ -49,116 +55,309 @@ uses
   JclUnitVersioning;
 {$ENDIF UNITVERSIONING}
 
-{$IFNDEF RTL140_UP}
-const
-  sLineBreak = #13#10;
-{$ENDIF RTL140_UP}
-
 //=== JclBase ================================================================
 resourcestring
-  RsWin32Prefix        = 'Win32: %s (%u)';
-  RsDynArrayError      = 'DynArrayInitialize: ElementSize out of bounds';
-  RsSysErrorMessageFmt = 'Win32 Error %d (%x)';
   RsCantConvertAddr64  = 'The address %s%.16x cannot be converted to 32 bit';
-  {$IFDEF CLR}
-  RsEGetBytesExFmt     = 'GetBytesEx(): Unsupported value type: %s';
-  RsESetBytesExFmt     = 'SetBytesEx(): Unsupported value type: %s';
-  {$ENDIF CLR}
+  RsEReplacementChar   = 'Failed to get ANSI replacement character';
 
-//=== JclBorlandTools ========================================================
+//=== JclCharsets ============================================================
 resourcestring
-  RsNeedUpdate          = 'You should install latest Update Pack #%d for %s';
-  RsUpdatePackName      = 'Update Pack #%d';
-  RsDelphiName          = 'Delphi';
-  RsDelphiNetName       = 'Delphi.net';
-  RsBCBName             = 'C++Builder';
-  RsCSharpName          = 'C#Builder';
-  RsBDSName             = 'Borland Developer Studio';
-  RsRSName              = 'RAD Studio';
-  {$IFDEF KYLIX}
-  RsKylixName           = 'Kylix for %s';
-  RsKylixVersionName    = 'Kylix %d for %s';
-  RsOpenEdition         = 'Open Edition';
-  RsServerDeveloper     = 'Server Developer';
-  RsVclIncludeDir       = '/include/vcl/';
-  {$ENDIF KYLIX}
-  {$IFDEF MSWINDOWS}
-  RsClientServer        = 'Client/Server';
-  RsStandard            = 'Standard';
-  RsVclIncludeDir       = '\Include\Vcl\';
-  {$ENDIF MSWINDOWS}
-  RsArchitect           = 'Architect';
-  RsEnterprise          = 'Enterprise';
-  RsPersonal            = 'Personal';
-  RsProfessional        = 'Professional';
-
-  RsCommandLineToolMissing = 'No compiler available for %s';
-
-  RsUnknownProjectType = '%s not a known project type';
-
-  RsBorlandStudioProjects = 'Borland Studio Projects';
-  RsMsBuildNotSupported = 'MSBuild is not supported by this IDE';                 
-
-  RsPackageInstallationStarted    = 'Installing package %s';
-  RsPackageInstallationFinished   = 'Installation of package finished';
-  RsPackageUninstallationStarted  = 'Uninstalling package %s';
-  RsPackageUninstallationFinished = 'Uninstallation of package finished';
-  RsIdePackageInstallationStarted    = 'Installing ide package %s';
-  RsIdePackageInstallationFinished   = 'Installation of ide package finished';
-  RsIdePackageUninstallationStarted  = 'Uninstalling ide package %s';
-  RsIdePackageUninstallationFinished = 'Uninstallation of ide package finished';
-  RsExpertInstallationStarted     = 'Installing expert %s';
-  RsExpertInstallationFinished    = 'Installation of expert finished';
-  RsExpertUninstallationStarted   = 'Uninstalling expert %s';
-  RsExpertUninstallationFinished  = 'Uninstallation of expert finished';
-
-  RsCompilingPackage            = 'Compiling package %s';
-  RsCompilingProject            = 'Compiling project %s';
-  RsCompilationOk               = 'Compilation success';
-  RsCompilationFailed           = 'Compilation failure';
-  RsCreatingJdbg                = 'Creating JEDI Debug informations for %s';
-  RsInsertingJdbg               = 'Inserting JEDI Debug informations in %s';
-  RsJdbgInfo                    = 'Bug unit: %s; MAP size: %d; Debug size: %d';
-  RsJdbgInfoOk                  = 'JDBG successfully generated';
-  RsJdbgInfoFailed              = 'Cannot generate JDBG informations';
-  RsDeletingFile                = 'Deleting file %s';
-  RsFileDeletionOk              = 'File deletion success';
-  RsFileDeletionFailed          = 'File deletion failure';
-  RsRegisteringPackage          = 'Registering package %s';
-  RsRegisteringIdePackage       = 'Registering ide package %s';
-  RsRegisteringExpert           = 'Registering expert %s';
-  RsRegistrationOk              = 'Registration ok';
-  RsRegistrationFailed          = 'Registration failed';
-  RsUnregisteringPackage        = 'Removing from registry package %s';
-  RsUnregisteringIdePackage     = 'Removing from registry ide package %s';
-  RsUnregisteringExpert         = 'Removing from registry expert %s';
-  RsUnregistrationOk            = 'Unregistration ok';
-  RsUnregistrationFailed        = 'Unregistration failed';
-  RsCleaningPackageCache        = 'Cleaning package cache for %s';
-  RsCleaningOk                  = 'Cleaning ok';
-  RsCleaningFailed              = 'Cleaning failed';
-
-  RsEUnknownPackageExtension    = '%s not a known package extension';
-  RsEUnknownProjectExtension    = '%s not a known project extension';
-  RsEUnknownIdePackageExtension = '%s not a known IDE package extension';
-  RsEIndexOufOfRange            = 'Index out of range';
-  RsECmdLineToolOutputInvalid   = '%s: Output invalid, when OutputCallback assigned.';
-  RsENotABcbPackage             = '%s not a C++Builder package source file';
-  RsENotADelphiProject          = '%s not a Delphi project source file';
-  RsENotADelphiPackage          = '%s not a Delphi package source file';
-  RsENotFound                   = '%s not found';
-  RsECannotInstallRunOnly       = 'A run-only package cannot be installed';
-  RsENotABcbProject             = '%s not a C++Builder project source file';
-  RsENoSupportedPersonality     = 'No personalities supported';
-  RsEDualPackageNotSupported    = 'This installation of %s doesn''t support dual packages';
-  RsEx64PlatformNotValid        = 'This installation cannot generate x64 binaries'; 
-  {$IFDEF MSWINDOWS}
-  RsENoOpenHelp                 = 'open help not present in Borland Developer Studio';
-  {$ENDIF MSWINDOWS}
+  RsENoCharset = 'No matching charset';
 
 //=== JclCIL =================================================================
 resourcestring
   RsInstructionStreamInvalid = 'Invalid IL instruction stream';
+  RsCILNamenop         = 'nop';
+  RsCILNamebreak       = 'break';
+  RsCILNameldarg0      = 'ldarg.0';
+  RsCILNameldarg1      = 'ldarg.1';
+  RsCILNameldarg2      = 'ldarg.2';
+  RsCILNameldarg3      = 'ldarg.3';
+  RsCILNameldloc0      = 'ldloc.0';
+  RsCILNameldloc1      = 'ldloc.1';
+  RsCILNameldloc2      = 'ldloc.2';
+  RsCILNameldloc3      = 'ldloc.3';
+  RsCILNamestloc0      = 'stloc.0';
+  RsCILNamestloc1      = 'stloc.1';
+  RsCILNamestloc2      = 'stloc.2';
+  RsCILNamestloc3      = 'stloc.3';
+  RsCILNameldargs      = 'ldarg.s';
+  RsCILNameldargas     = 'ldarga.s';
+  RsCILNamestargs      = 'starg.s';
+  RsCILNameldlocs      = 'ldloc.s';
+  RsCILNameldlocas     = 'ldloca.s';
+  RsCILNamestlocs      = 'stloc.s';
+  RsCILNameldnull      = 'ldnull';
+  RsCILNameldci4m1     = 'ldc.i4.m1';
+  RsCILNameldci40      = 'ldc.i4.0';
+  RsCILNameldci41      = 'ldc.i4.1';
+  RsCILNameldci42      = 'ldc.i4.2';
+  RsCILNameldci43      = 'ldc.i4.3';
+  RsCILNameldci44      = 'ldc.i4.4';
+  RsCILNameldci45      = 'ldc.i4.5';
+  RsCILNameldci46      = 'ldc.i4.6';
+  RsCILNameldci47      = 'ldc.i4.7';
+  RsCILNameldci48      = 'ldc.i4.8';
+  RsCILNameldci4s      = 'ldc.i4.s';
+  RsCILNameldci4       = 'ldc.i4';
+  RsCILNameldci8       = 'ldc.i8';
+  RsCILNameldcr4       = 'ldc.r4';
+  RsCILNameldcr8       = 'ldc.r8';
+  RsCILNameunused1     = 'unused';
+  RsCILNamedup         = 'dup';
+  RsCILNamepop         = 'pop';
+  RsCILNamejmp         = 'jmp';
+  RsCILNamecall        = 'call';
+  RsCILNamecalli       = 'calli';
+  RsCILNameret         = 'ret';
+  RsCILNamebrs         = 'br.s';
+  RsCILNamebrfalses    = 'brfalse.s';
+  RsCILNamebrtrues     = 'brtrue.s';
+  RsCILNamebeqs        = 'beq.s';
+  RsCILNamebges        = 'bge.s';
+  RsCILNamebgts        = 'bgt.s';
+  RsCILNamebles        = 'ble.s';
+  RsCILNameblts        = 'blt.s';
+  RsCILNamebneuns      = 'bne.un.s';
+  RsCILNamebgeuns      = 'bge.un.s';
+  RsCILNamebgtuns      = 'bgt.un.s';
+  RsCILNamebleuns      = 'ble.un.s';
+  RsCILNamebltuns      = 'blt.un.s';
+  RsCILNamebr          = 'br';
+  RsCILNamebrfalse     = 'brfalse';
+  RsCILNamebrtrue      = 'brtrue';
+  RsCILNamebeq         = 'beq';
+  RsCILNamebge         = 'bge';
+  RsCILNamebgt         = 'bgt';
+  RsCILNameble         = 'ble';
+  RsCILNameblt         = 'blt';
+  RsCILNamebneun       = 'bne.un';
+  RsCILNamebgeun       = 'bge.un';
+  RsCILNamebgtun       = 'bgt.un';
+  RsCILNamebleun       = 'ble.un';
+  RsCILNamebltun       = 'blt.un';
+  RsCILNameswitch      = 'switch';
+  RsCILNameldindi1     = 'ldind.i1';
+  RsCILNameldindu1     = 'ldind.u1';
+  RsCILNameldindi2     = 'ldind.i2';
+  RsCILNameldindu2     = 'ldind.u2';
+  RsCILNameldindi4     = 'ldind.i4';
+  RsCILNameldindu4     = 'ldind.u4';
+  RsCILNameldindi8     = 'ldind.i8';
+  RsCILNameldindi      = 'ldind.i';
+  RsCILNameldindr4     = 'ldind.r4';
+  RsCILNameldindr8     = 'ldind.r8';
+  RsCILNameldindref    = 'ldind.ref';
+  RsCILNamestindref    = 'stind.ref';
+  RsCILNamestindi1     = 'stind.i1';
+  RsCILNamestindi2     = 'stind.i2';
+  RsCILNamestindi4     = 'stind.i4';
+  RsCILNamestindi8     = 'stind.i8';
+  RsCILNamestindr4     = 'stind.r4';
+  RsCILNamestindr8     = 'stind.r8';
+  RsCILNameadd         = 'add';
+  RsCILNamesub         = 'sub';
+  RsCILNamemul         = 'mul';
+  RsCILNamediv         = 'div';
+  RsCILNamedivun       = 'div.un';
+  RsCILNamerem         = 'rem';
+  RsCILNameremun       = 'rem.un';
+  RsCILNameand         = 'and';
+  RsCILNameor          = 'or';
+  RsCILNamexor         = 'xor';
+  RsCILNameshl         = 'shl';
+  RsCILNameshr         = 'shr';
+  RsCILNameshrun       = 'shr.un';
+  RsCILNameneg         = 'neg';
+  RsCILNamenot         = 'not';
+  RsCILNameconvi1      = 'conv.i1';
+  RsCILNameconvi2      = 'conv.i2';
+  RsCILNameconvi4      = 'conv.i4';
+  RsCILNameconvi8      = 'conv.i8';
+  RsCILNameconvr4      = 'conv.r4';
+  RsCILNameconvr8      = 'conv.r8';
+  RsCILNameconvu4      = 'conv.u4';
+  RsCILNameconvu8      = 'conv.u8';
+  RsCILNamecallvirt    = 'callvirt';
+  RsCILNamecpobj       = 'cpobj';
+  RsCILNameldobj       = 'ldobj';
+  RsCILNameldstr       = 'ldstr';
+  RsCILNamenewobj      = 'newobj';
+  RsCILNamecastclass   = 'castclass';
+  RsCILNameisinst      = 'isinst';
+  RsCILNameconvrun     = 'conv.r.un';
+  RsCILNameunused2     = 'unused';
+  RsCILNameunused3     = 'unused';
+  RsCILNameunbox       = 'unbox';
+  RsCILNamethrow       = 'throw';
+  RsCILNameldfld       = 'ldfld';
+  RsCILNameldflda      = 'ldflda';
+  RsCILNamestfld       = 'stfld';
+  RsCILNameldsfld      = 'ldsfld';
+  RsCILNameldsflda     = 'ldsflda';
+  RsCILNamestsfld      = 'stsfld';
+  RsCILNamestobj       = 'stobj';
+  RsCILNameconvovfi1un = 'conv.ovf.i1.un';
+  RsCILNameconvovfi2un = 'conv.ovf.i2.un';
+  RsCILNameconvovfi4un = 'conv.ovf.i4.un';
+  RsCILNameconvovfi8un = 'conv.ovf.i8.un';
+  RsCILNameconvovfu1un = 'conv.ovf.u1.un';
+  RsCILNameconvovfu2un = 'conv.ovf.u2.un';
+  RsCILNameconvovfu4un = 'conv.ovf.u4.un';
+  RsCILNameconvovfu8un = 'conv.ovf.u8.un';
+  RsCILNameconvovfiun  = 'conv.ovf.i.un';
+  RsCILNameconvovfuun  = 'conv.ovf.u.un';
+  RsCILNamebox         = 'box';
+  RsCILNamenewarr      = 'newarr';
+  RsCILNameldlen       = 'ldlen';
+  RsCILNameldelema     = 'ldelema';
+  RsCILNameldelemi1    = 'ldelem.i1';
+  RsCILNameldelemu1    = 'ldelem.u1';
+  RsCILNameldelemi2    = 'ldelem.i2';
+  RsCILNameldelemu2    = 'ldelem.u2';
+  RsCILNameldelemi4    = 'ldelem.i4';
+  RsCILNameldelemu4    = 'ldelem.u4';
+  RsCILNameldelemi8    = 'ldelem.i8';
+  RsCILNameldelemi     = 'ldelem.i';
+  RsCILNameldelemr4    = 'ldelem.r4';
+  RsCILNameldelemr8    = 'ldelem.r8';
+  RsCILNameldelemref   = 'ldelem.ref';
+  RsCILNamestelemi     = 'stelem.i';
+  RsCILNamestelemi1    = 'stelem.i1';
+  RsCILNamestelemi2    = 'stelem.i2';
+  RsCILNamestelemi4    = 'stelem.i4';
+  RsCILNamestelemi8    = 'stelem.i8';
+  RsCILNamestelemr4    = 'stelem.r4';
+  RsCILNamestelemr8    = 'stelem.r8';
+  RsCILNamestelemref   = 'stelem.ref';
+  RsCILNameunused4     = 'unused';
+  RsCILNameunused5     = 'unused';
+  RsCILNameunused6     = 'unused';
+  RsCILNameunused7     = 'unused';
+  RsCILNameunused8     = 'unused';
+  RsCILNameunused9     = 'unused';
+  RsCILNameunused10    = 'unused';
+  RsCILNameunused11    = 'unused';
+  RsCILNameunused12    = 'unused';
+  RsCILNameunused13    = 'unused';
+  RsCILNameunused14    = 'unused';
+  RsCILNameunused15    = 'unused';
+  RsCILNameunused16    = 'unused';
+  RsCILNameunused17    = 'unused';
+  RsCILNameunused18    = 'unused';
+  RsCILNameunused19    = 'unused';
+  RsCILNameconvovfi1   = 'conv.ovf.i1';
+  RsCILNameconvovfu1   = 'conv.ovf.u1';
+  RsCILNameconvovfi2   = 'conv.ovf.i2';
+  RsCILNameconvovfu2   = 'conv.ovf.u2';
+  RsCILNameconvovfi4   = 'conv.ovf.i4';
+  RsCILNameconvovfu4   = 'conv.ovf.u4';
+  RsCILNameconvovfi8   = 'conv.ovf.i8';
+  RsCILNameconvovfu8   = 'conv.ovf.u8';
+  RsCILNameunused20    = 'unused';
+  RsCILNameunused21    = 'unused';
+  RsCILNameunused22    = 'unused';
+  RsCILNameunused23    = 'unused';
+  RsCILNameunused24    = 'unused';
+  RsCILNameunused25    = 'unused';
+  RsCILNameunused26    = 'unused';
+  RsCILNamerefanyval   = 'refanyval';
+  RsCILNameckfinite    = 'ckfinite';
+  RsCILNameunused27    = 'unused';
+  RsCILNameunused28    = 'unused';
+  RsCILNamemkrefany    = 'mkrefany';
+  RsCILNameunused29    = 'unused';
+  RsCILNameunused30    = 'unused';
+  RsCILNameunused31    = 'unused';
+  RsCILNameunused32    = 'unused';
+  RsCILNameunused33    = 'unused';
+  RsCILNameunused34    = 'unused';
+  RsCILNameunused35    = 'unused';
+  RsCILNameunused36    = 'unused';
+  RsCILNameunused37    = 'unused';
+  RsCILNameldtoken     = 'ldtoken';
+  RsCILNameconvu2      = 'conv.u2';
+  RsCILNameconvu1      = 'conv.u1';
+  RsCILNameconvi       = 'conv.i';
+  RsCILNameconvovfi    = 'conv.ovf.i';
+  RsCILNameconvovfu    = 'conv.ovf.u';
+  RsCILNameaddovf      = 'add.ovf';
+  RsCILNameaddovfun    = 'add.ovf.un';
+  RsCILNamemulovf      = 'mul.ovf';
+  RsCILNamemulovfun    = 'mul.ovf.un';
+  RsCILNamesubovf      = 'sub.ovf';
+  RsCILNamesubovfun    = 'sub.ovf.un';
+  RsCILNameendfinally  = 'endfinally';
+  RsCILNameleave       = 'leave';
+  RsCILNameleaves      = 'leave.s';
+  RsCILNamestindi      = 'stind.i';
+  RsCILNameconvu       = 'conv.u';
+  RsCILNameunused38    = 'unused';
+  RsCILNameunused39    = 'unused';
+  RsCILNameunused40    = 'unused';
+  RsCILNameunused41    = 'unused';
+  RsCILNameunused42    = 'unused';
+  RsCILNameunused43    = 'unused';
+  RsCILNameunused44    = 'unused';
+  RsCILNameunused45    = 'unused';
+  RsCILNameunused46    = 'unused';
+  RsCILNameunused47    = 'unused';
+  RsCILNameunused48    = 'unused';
+  RsCILNameunused49    = 'unused';
+  RsCILNameunused50    = 'unused';
+  RsCILNameunused51    = 'unused';
+  RsCILNameunused52    = 'unused';
+  RsCILNameunused53    = 'unused';
+  RsCILNameunused54    = 'unused';
+  RsCILNameunused55    = 'unused';
+  RsCILNameunused56    = 'unused';
+  RsCILNameunused57    = 'unused';
+  RsCILNameunused58    = 'unused';
+  RsCILNameunused59    = 'unused';
+  RsCILNameunused60    = 'unused';
+  RsCILNameprefix7     = 'prefix7';
+  RsCILNameprefix6     = 'prefix6';
+  RsCILNameprefix5     = 'prefix5';
+  RsCILNameprefix4     = 'prefix4';
+  RsCILNameprefix3     = 'prefix3';
+  RsCILNameprefix2     = 'prefix2';
+  RsCILNameprefix1     = 'prefix1';
+  RsCILNameprefixref   = 'prefixref';
+  RsCILNamearglist     = 'arglist';
+  RsCILNameceq         = 'ceq';
+  RsCILNamecgt         = 'cgt';
+  RsCILNamecgtun       = 'cgt.un';
+  RsCILNameclt         = 'clt';
+  RsCILNamecltun       = 'clt.un';
+  RsCILNameldftn       = 'ldftn';
+  RsCILNameldvirtftn   = 'ldvirtftn';
+  RsCILNameunused61    = 'unused';
+  RsCILNameldarg       = 'ldarg';
+  RsCILNameldarga      = 'ldarga';
+  RsCILNamestarg       = 'starg';
+  RsCILNameldloc       = 'ldloc';
+  RsCILNameldloca      = 'ldloca';
+  RsCILNamestloc       = 'stloc';
+  RsCILNamelocalloc    = 'localloc';
+  RsCILNameunused62    = 'unused';
+  RsCILNameendfilter   = 'endfilter';
+  RsCILNameunaligned   = 'unaligned.';
+  RsCILNamevolatile    = 'volatile.';
+  RsCILNametail        = 'tail.';
+  RsCILNameinitobj     = 'initobj';
+  RsCILNameunused63    = 'unused';
+  RsCILNamecpblk       = 'cpblk';
+  RsCILNameinitblk     = 'initblk';
+  RsCILNameunused64    = 'unused';
+  RsCILNamerethrow     = 'rethrow';
+  RsCILNameunused65    = 'unused';
+  RsCILNamesizeof      = 'sizeof';
+  RsCILNamerefanytype  = 'refanytype';
+  RsCILNameunused66    = 'unused';
+  RsCILNameunused67    = 'unused';
+  RsCILNameunused68    = 'unused';
+  RsCILNameunused69    = 'unused';
+  RsCILNameunused70    = 'unused';
 
   RsCILCmdnop         = 'no operation';
   RsCILCmdbreak       = 'breakpoint instruction';
@@ -744,11 +943,7 @@ resourcestring
   RsCILDescrunused69    = '';
   RsCILDescrunused70    = '';
 
-//=== JclClasses =============================================================
-resourcestring
-  RsVMTMemoryWriteError = 'Error writing VMT memory (%s)';
-
-//=== JclClr =================================================================
+//=== JclCLR =================================================================
 resourcestring
   RsClrCopyright    = '// Delphi-JEDI .NET Framework IL Disassembler.  Version 0.1' +  sLineBreak +
     '// Project JEDI Code Library (JCL) Team. All rights reserved.' +  sLineBreak;
@@ -768,7 +963,6 @@ resourcestring
 
 //=== JclCompression =========================================================
 resourcestring
-  RsCompressionOperationNotSupported = 'Operation is not supported.';
   RsCompressionReadNotSupported      = 'read is not an supported operation.';
   RsCompressionWriteNotSupported     = 'write is not an supported operation.';
   RsCompressionResetNotSupported     = 'reset is not an supported operation.';
@@ -800,6 +994,108 @@ resourcestring
   RsCompressionBZIP2OutBuffError     = 'bzip2 returned: out buffer is too small';
   RsCompressionBZIP2ConfigError      = 'bzip2 returned: configuration error';
   RsCompressionBZIP2Error            = 'bzip2 returned: unknown error (%d)';
+  RsCompressionUnavailableProperty   = 'Property is not available';
+  RsCompressionCompressingError      = 'Operation is not supported while compressing';
+  RsCompressionDecompressingError    = 'Operation is not supported while decompressing';
+  RsCompressionNoFileName            = 'File name not supplied';
+  RsCompressionUnsupportedMethod     = 'Unsupported method';
+  RsCompressionDataError             = 'Data error';
+  RsCompressionCRCError              = 'CRC error';
+  RsCompressionUnknownError          = 'Unknown error';
+  RsCompression7zLoadError           = 'Sevenzip: Failed to load 7z.dll';
+  RsCompression7zReturnError         = 'Sevenzip: Error result (%.8x) "%s"';
+  RsCompression7zOutArchiveError     = 'Sevenzip: Failed to get out archive interface for class %s';
+  RsCompression7zInArchiveError      = 'Sevenzip: Failed to get in archive interface for class %s';
+  RsCompression7zUnknownValueType    = 'Sevenzip: Unknown value type (%d) for property ID %d';
+  RsCompression7zOnlyCurrentFile     = 'Sevenzip: Only properties for current file can be retreived';
+  RsCompression7zWindows             = 'Windows';
+  RsCompression7zUnix                = 'Unix';
+  RsCompressionZipName               = 'Zip archive';
+  RsCompressionZipExtensions         = '*.zip;*.jar;*.xpi';
+  RsCompressionBZip2Name             = 'BZip2 archive';
+  RsCompressionBZip2Extensions       = '*.bz2;*.bzip2;*.tbz2;*.tbz';
+  RsCompressionRarName               = 'Rar archive';
+  RsCompressionRarExtensions         = '*.rar;*.r00';
+  RsCompressionArjName               = 'Arj archive';
+  RsCompressionArjExtensions         = '*.arj';
+  RsCompressionZName                 = 'Z archive';
+  RsCompressionZExtensions           = '*.z;*.taz';
+  RsCompressionLzhName               = 'Lzh archive';
+  RsCompressionLzhExtensions         = '*.lzh;*.lha';
+  RsCompression7zName                = '7z archive';
+  RsCompression7zExtensions          = '*.7z';
+  RsCompressionCabName               = 'Cab archive';
+  RsCompressionCabExtensions         = '*.cab';
+  RsCompressionNsisName              = 'Nsis archive';
+  RsCompressionNsisExtensions        = '*.nsis';
+  RsCompressionLzmaName              = 'Lzma archive';
+  RsCompressionLzmaExtensions        = '*.lzma';
+  RsCompressionLzma86Name            = 'Lzma86 archive';
+  RsCompressionLzma86Extensions      = '*.lzma86';
+  RsCompressionPeName                = 'Pe archive';
+  RsCompressionPeExtensions          = '*.exe;*.dll;*.sys;*.bpl';
+  RsCompressionElfName               = 'Elf archive';
+  // TODO: extension might be *.*, but then TJclCompressionStreamFormats.FindDecompressFormat can fail
+  RsCompressionElfExtensions         = '*.';
+  RsCompressionMachoName             = 'Mach-O archive';
+  // TODO: extension might be *.*, but then TJclCompressionStreamFormats.FindDecompressFormat can fail
+  RsCompressionMachoExtensions       = '*.';
+  RsCompressionUdfName               = 'Udf archive';
+  RsCompressionUdfExtensions         = '*.iso';
+  RsCompressionXarName               = 'Xar archive';
+  RsCompressionXarExtensions         = '*.xar';
+  RsCompressionMubName               = 'Mub archive';
+  // TODO: extension might be *.*, but then TJclCompressionStreamFormats.FindDecompressFormat can fail
+  RsCompressionMubExtensions         = '*.';
+  RsCompressionHfsName               = 'Hfs archive';
+  RsCompressionHfsExtensions         = '*.hfs';
+  RsCompressionDmgName               = 'Dmg archive';
+  RsCompressionDmgExtensions         = '*.dmg';
+  RsCompressionCompoundName          = 'Compound archive';
+  RsCompressionCompoundExtensions    = '*.msi;*.msp;*.doc;*.xls;*.ppt';
+  RsCompressionWimName               = 'Wim archive';
+  RsCompressionWimExtensions         = '*.wim;*.swm';
+  RsCompressionIsoName               = 'Iso archive';
+  RsCompressionIsoExtensions         = '*.iso';
+  RsCompressionChmName               = 'Chm archive';
+  RsCompressionChmExtensions         = '*.chm;*.chi;*.chq;*.chw;*.hxs;*.hxi;*.hxr;*.hxq;*.hxw;*.lit';
+  RsCompressionSplitName             = 'Split archive';
+  RsCompressionSplitExtensions       = '*.001';
+  RsCompressionRpmName               = 'Rpm archive';
+  RsCompressionRpmExtensions         = '*.rpm';
+  RsCompressionDebName               = 'Deb archive';
+  RsCompressionDebExtensions         = '*.deb';
+  RsCompressionCpioName              = 'Cpio archive';
+  RsCompressionCpioExtensions        = '*.cpio';
+  RsCompressionTarName               = 'Tar archive';
+  RsCompressionTarExtensions         = '*.tar';
+  RsCompressionGZipName              = 'GZip archive';
+  RsCompressionGZipExtensions        = '*.gz;*.gzip;*.tgz;*.tpz';
+  RsCompressionXzName                = 'Xz archive';
+  RsCompressionXzExtensions          = '*.xz;*.txz';
+  RsCompressionNtfsName              = 'Ntfs archive';
+  RsCompressionNtfsExtensions        = '*.ntfs;*.img';
+  RsCompressionFatName               = 'Fat archive';
+  RsCompressionFatExtensions         = '*.fat;*.img';
+  RsCompressionMbrName               = 'Mbr archive';
+  RsCompressionMbrExtensions         = '*.mbr';
+  RsCompressionVhdName               = 'Vhd archive';
+  RsCompressionVhdExtensions         = '*.vhd;*.mbr';
+  RsCompressionFlvName               = 'Flv archive';
+  RsCompressionFlvExtensions         = '*.flv';
+  RsCompressionMsLZName              = 'MsLZ archive';
+  // TODO: extension might be *.*, but then TJclCompressionStreamFormats.FindDecompressFormat can fail
+  RsCompressionMsLZExtensions        = '*.';
+  RsCompressionSwfName               = 'Swf archive';
+  RsCompressionSwfExtensions         = '*.swf';
+  RsCompressionSwfcName              = 'Swf archive';
+  RsCompressionSwfcExtensions        = '*.swf';
+  RsCompressionApmName               = 'APM archive';
+  RsCompressionApmExtensions         = '*.';
+  RsCompressionPpmdName              = 'PPMD archive';
+  RsCompressionPpmdExtensions        = '*.pmd';
+  RsCompressionDuplicate             = 'The file %s already exists in the archive';
+  RsCompressionReplaceError          = 'At least one compression volumes could not be replaced after an archive out-of-place update';
 
 //=== JclConsole =============================================================
 resourcestring
@@ -807,15 +1103,18 @@ resourcestring
 
 //=== JclContainerIntf =======================================================
 resourcestring
-  RsEOutOfBounds = 'Out of bounds';
-  //RsENoSuchElement = 'No such element';
-  //RsEIllegalState = 'Illegal state';
-  //RsEConcurrentModification = 'Concurrent modification';
-  //RsEIllegalArgument = 'Illegal argument';
+  RsEOutOfBounds           = 'Out of bounds';
   RsEOperationNotSupported = 'Operation not supported';
-  RsEValueNotFound = 'Value %s not found';
-  RsENoCollection = 'Collection = nil';
-  RsEIllegalQueueCapacity = 'Illegal queue capacity';
+  RsEValueNotFound         = 'Value %s not found';
+  RsEDuplicateElement      = 'Duplicate element';
+  RsENoCollection          = 'Collection not assigned';
+  RsEIllegalQueueCapacity  = 'Illegal queue capacity';
+  RsEIllegalStateOperation = 'Illegal state operation';
+  RsENoEqualityComparer    = 'Item equality comparer is not assigned';
+  RsENoComparer            = 'Item comparer is not assigned';
+  RsENoHashConverter       = 'Hash converter is not assigned';
+  RsEAssignError           = 'Assignation error';
+  RsEReadOnlyError         = 'Container is read-only';
 
 //=== JclCounter =============================================================
 resourcestring
@@ -828,178 +1127,11 @@ resourcestring
 
 //=== JclDebug ===============================================================
 resourcestring
-  // Diagnostics
-  RsDebugAssertValidPointer = 'Invalid Pointer passed to AssertValid';
-  RsDebugAssertValidString  = 'Invalid string passed to AssertValid';
-
-  // TMapFiles
-  RsDebugNoProcessInfo    = 'Unable to obtain process information';
-  RsDebugSnapshot         = 'Failure creating toolhelp32 snapshot';
-
-  // JclDebugInfoExport
   RsUnknownFunctionAt     = 'Unknown function at %s';
 
 //=== JclDotNet ==============================================================
 resourcestring
   RsEUnknownCLRVersion = '"%s" is not a known CLR version';
-
-//=== JclEDI =================================================================
-resourcestring
-  RsEDIError001 = 'Could not open edi file.  File not specified.';
-  RsEDIError002 = 'Could not save edi file.  File name and path not specified.';
-  RsEDIError003 = 'Could not get data object from %s at index [%s],';
-  RsEDIError004 = 'Could not get data object from %s at index [%s], Index too low.';
-  RsEDIError005 = 'Could not get data object from %s at index [%s], Index too high.';
-  RsEDIError006 = 'Could not get data object from %s at index [%s], ' +
-    'There was no data object assigned.';
-  RsEDIError007 = 'Could not set data object from %s at index [%s].';
-  RsEDIError008 = 'Could not set data object from %s at index [%s], Index too low.';
-  RsEDIError009 = 'Could not set data object from %s at index [%s], Index too high.';
-  RsEDIError010 = 'Could not delete data object from %s at index [%s]';
-  RsEDIError011 = 'Could not delete data objects from %s at index [%s]';
-  RsEDIError012 = 'Delimiters have not been assigned to interchange.  Dissassemble cancelled.';
-  RsEDIError013 = 'Delimiters have not been assigned to interchange.  Assemble cancelled.';
-  RsEDIError014 = 'Could not find interchange control header segment terminator.';
-  RsEDIError015 = 'Could not find interchange control header.';
-  RsEDIError016 = 'Could not find interchange control trailer segment terminator.';
-  RsEDIError017 = 'Could not find interchange control trailer.';
-  RsEDIError018 = 'Could not find interchange control trailer or garbage at end of file.';
-  RsEDIError019 = 'Could not assign delimiters to functional group.  Dissassemble cancelled.';
-  RsEDIError020 = 'Could not assign delimiters to functional group.  Assemble cancelled.';
-  RsEDIError021 = 'Could not find functional group header segment terminator.';
-  RsEDIError022 = 'Could not find functional group header.'; //conditional for UN/EDIFACT
-  RsEDIError023 = 'Could not find functional group trailer segment terminator.';
-  RsEDIError024 = 'Could not find functional group trailer.';
-  RsEDIError025 = 'Could not assign delimiters to transaction set.  Dissassemble cancelled.';
-  RsEDIError026 = 'Could not assign delimiters to transaction set.  Assemble cancelled.';
-  RsEDIError027 = 'Could not find transaction set header.';
-  RsEDIError028 = 'Could not find transaction set trailer segment terminator.';
-  RsEDIError029 = 'Could not find transaction set trailer.';
-  RsEDIError030 = 'Could not assign delimiters to message.  Dissassemble cancelled.';
-  RsEDIError031 = 'Could not assign delimiters to message.  Assemble cancelled.';
-  RsEDIError032 = 'Could not find message header.';
-  RsEDIError033 = 'Could not find message trailer segment terminator.';
-  RsEDIError034 = 'Could not find message trailer.';
-  RsEDIError035 = 'Could not assign delimiters to segment.  Dissassemble cancelled.';
-  RsEDIError036 = 'Could not assign delimiters to segment.  Assemble cancelled.';
-  RsEDIError037 = 'Could not assign delimiters to composite element.  Dissassemble cancelled.';
-  RsEDIError038 = 'Could not assign delimiters to composite element.  Assemble cancelled.';
-  RsEDIError039 = 'Could not get data object in transaction set loop at index [%s], ' +
-    'Data object does not exist.';
-  RsEDIError040 = 'Could not get data object in transaction set loop at index [%s], ' +
-    'Index too high.';
-  RsEDIError041 = 'Could not get data object in transaction set loop at index [%s], Index too low.';
-  RsEDIError042 = 'Could not get data object in transaction set loop at index [%s].';
-  RsEDIError043 = 'Could not set data object in transaction set loop at index [%s], ' +
-    'Index too high.';
-  RsEDIError044 = 'Could not set data object in transaction set loop at index [%s], Index too low.';
-  RsEDIError045 = 'Could not set data object in transaction set loop at index [%s].';
-  RsEDIError046 = 'Could not get data object in message loop at index [%s], ' +
-    'Data object does not exist.';
-  RsEDIError047 = 'Could not get data object in message loop at index [%s], Index too high.';
-  RsEDIError048 = 'Could not get data object in message loop at index [%s], Index too low.';
-  RsEDIError049 = 'Could not get data object in message loop at index [%s].';
-  RsEDIError050 = 'Could not set data object in message loop at index [%s], Index too high.';
-  RsEDIError051 = 'Could not set data object in message loop at index [%s], Index too low.';
-  RsEDIError052 = 'Could not set data object in message loop at index [%s].';
-  RsEDIError053 = 'Loop in loop stack record at index [%s] does not exist.';
-  RsEDIError054 = 'Could not get loop stack record at index [%s], Index too high.';
-  RsEDIError055 = 'Could not get loop stack record at index [%s], Index too low.';
-  RsEDIError056 = 'Could not get loop stack record at index [%s].';
-  RsEDIError057 = 'Could not get safe loop stack index [%s].';
-  RsEDIError058 = 'Could not assign element specification to element at index [%s] ' +
-    'in segment [%s] at index [%s] in transaction set.';
-
-  RsUnknownAttribute = 'Unknown Attribute';
-
-//== JclEDISEF ===============================================================
-resourcestring
-  // Transaction Set:850
-  SEFTextSetsCode_Set0_Desc = 'Transaction Set or message title.';
-  SEFTextSetsCode_Set1_Desc = 'Transaction Set functional group (X12).';
-  SEFTextSetsCode_Set2_Desc = 'Transaction Set or message purpose.';
-  SEFTextSetsCode_Set3_Desc = 'Level 1 note on transaction set or message.';
-  SEFTextSetsCode_Set4_Desc = 'Level 2 note on transaction set or message.';
-  SEFTextSetsCode_Set5_Desc = 'Level 3 note on transaction set or message.';
-  // Transaction Set~segment ordinal number: 850~1
-  SEFTextSetsCode_Seg0_Desc = 'Segment reference notes that are part of the transaction set in X12.';
-  SEFTextSetsCode_Seg1_Desc = 'Segment reference notes documented with the segment (like in VICS/UCS).';
-  SEFTextSetsCode_Seg2_Desc = 'Segment reference comment documented with the transaction set.';
-  SEFTextSetsCode_Seg3_Desc = 'Segment name.';
-  SEFTextSetsCode_Seg4_Desc = 'Level 1 note on segment.';
-  SEFTextSetsCode_Seg5_Desc = 'Level 2 note on segment.';
-  SEFTextSetsCode_Seg6_Desc = 'Segment purpose.';
-  SEFTextSetsCode_Seg7_Desc = 'Level 3 note on segment. See * below for other levels of notes.';
-  // Transaction Set~segment ordinal number~element or composite ordinal number: 850~1~4
-  SEFTextSetsCode_Elm0_Desc = 'Level 1 note on element or composite.';
-  SEFTextSetsCode_Elm1_Desc = 'Level 2 note on element or composite.';
-  SEFTextSetsCode_Elm2_Desc = 'Name of element or composite.';
-  SEFTextSetsCode_Elm4_Desc = 'Level 3 note on element or composite.';
-
-//=== JclEDIXML ==============================================================
-resourcestring
-  EDIXMLError001 = 'Could not open edi file.  File not specified.';
-  EDIXMLError002 = 'Could not save edi file.  File name and path not specified.';
-  EDIXMLError003 = 'Could not assign delimiters to edi file.  Disassemble cancelled.';
-  EDIXMLError004 = 'Could not assign delimiters to edi file.  Assemble cancelled.';
-  EDIXMLError005 = 'Could not assign delimiters to interchange control. Disassemble cancelled.';
-  EDIXMLError006 = 'Could not assign delimiters to interchange control. Assemble cancelled.';
-  EDIXMLError007 = 'Could not find interchange control end tag.';
-  EDIXMLError008 = 'Could not find interchange control end tag delimiter.';
-  EDIXMLError009 = 'Could not find interchange control header.';
-  EDIXMLError010 = 'Could not find interchange control header end tag.';
-  EDIXMLError011 = 'Could not find interchange control header end tag delimiter.';
-  EDIXMLError012 = 'Could not find interchange control trailer.';
-  EDIXMLError013 = 'Could not find interchange control trailer end tag.';
-  EDIXMLError014 = 'Could not find interchange control trailer end tag delimiter.';
-  EDIXMLError015 = 'Could not assign delimiters to functional group. Disassemble cancelled.';
-  EDIXMLError016 = 'Could not assign delimiters to functional group. Assemble cancelled.';
-  EDIXMLError017 = 'Could not find functional group end tag.';
-  EDIXMLError018 = 'Could not find functional group end tag delimiter.';
-  EDIXMLError019 = 'Could not find functional group header.';
-  EDIXMLError020 = 'Could not find functional group header end tag.';
-  EDIXMLError021 = 'Could not find functional group header end tag delimiter.';
-  EDIXMLError022 = 'Could not find functional group trailer.';
-  EDIXMLError023 = 'Could not find functional group trailer end tag.';
-  EDIXMLError024 = 'Could not find functional group trailer end tag delimiter.';
-  EDIXMLError025 = 'Could not assign delimiters to transactoin set. Disassemble cancelled.';
-  EDIXMLError026 = 'Could not assign delimiters to transactoin set. Assemble cancelled.';
-  EDIXMLError027 = 'Could not find transaction set end tag.';
-  EDIXMLError028 = 'Could not find transaction set end tag delimiter.';
-  EDIXMLError029 = 'Could not assign delimiters to transactoin set loop. Disassemble cancelled.';
-  EDIXMLError030 = 'Could not assign delimiters to transactoin set loop. Assemble cancelled.';
-  EDIXMLError031 = 'Could not find loop end tag';
-  EDIXMLError032 = 'Could not find loop end tag delimiter';
-  EDIXMLError033 = 'Could not set data object at index [%s].';
-  EDIXMLError034 = 'Could not set data object at index [%s], Index too low.';
-  EDIXMLError035 = 'Could not set data object at index [%s], Index too high.';
-  EDIXMLError036 = 'Could not get data object at index [%s], There was no data object to get.';
-  EDIXMLError037 = 'Could not get data object at index [%s], Index too low.';
-  EDIXMLError038 = 'Could not get data object at index [%s], Index too high.';
-  EDIXMLError039 = 'Could not get data object at index [%s], Data object does not exist.';
-  EDIXMLError040 = 'Could not delete EDI data object';
-  EDIXMLError041 = 'Could not assign delimiters to segment. Disassemble cancelled.';
-  EDIXMLError042 = 'Could not assign delimiters to segment. Assemble cancelled.';
-  EDIXMLError043 = 'Could not find segment begin tag';
-  EDIXMLError044 = 'Could not find segment end tag';
-  EDIXMLError045 = 'Could not find segment end tag delimiter';
-  EDIXMLError046 = 'Could not assign delimiters to element. Disassemble cancelled.';
-  EDIXMLError047 = 'Could not assign delimiters to element. Assemble cancelled.';
-  EDIXMLError048 = 'Could not find element tag';
-  EDIXMLError049 = 'Could not find element end tag';
-  EDIXMLError050 = 'Could not find element end tag delimiter';
-  EDIXMLError051 = 'Could not set element at index [%s].';
-  EDIXMLError052 = 'Could not set element at index [%s], Index too low.';
-  EDIXMLError053 = 'Could not set element at index [%s], Index too high.';
-  EDIXMLError054 = 'Could not get element at index [%s], There was no element to get.';
-  EDIXMLError055 = 'Could not get element at index [%s], Index too low.';
-  EDIXMLError056 = 'Could not get element at index [%s], Index too high.';
-  EDIXMLError057 = 'Could not get element at index [%s], Element does not exist.';
-  EDIXMLError058 = 'Could not delete element at index [%s].';
-  EDIXMLError059 = 'Could not find transaction set header.';
-  EDIXMLError060 = 'Could not find transaction set trailer.';
-  EDIXMLError061 = 'Could not find transaction set header and trailer.';
-  EDIXMLError062 = 'TEDIXMLANSIX12FormatTranslator: Unexpected object [%s] found.';
 
 //=== JclExprEval ============================================================
 resourcestring
@@ -1026,11 +1158,17 @@ resourcestring
   RsCannotCreateDir = 'Unable to create directory';
   RsDelTreePathIsEmpty = 'DelTree: Path is empty';
   RsFileSearchAttrInconsistency = 'Some file search attributes are required AND rejected!';
+  RsEWindowsVersionNotSupported = 'This windows version is not supported';
+  RsEWindowNotValid = 'The window with handle %d is not valid';
+  RsEProcessNotValid = 'The process with ID %d is not valid';
+  RsEModuleNotValid = 'The Module with handle %d is not valid';
 
   // TJclFileVersionInfo
   RsFileUtilsNoVersionInfo = 'File contains no version information';
+  RsFileUtilsFileDoesNotExist = 'The file %s does not exist';
   RsFileUtilsLanguageIndex = 'Illegal language index';
-
+  RsFileUtilsEmptyValue = 'No value was supplied';
+  RsFileUtilsValueNotFound = 'The value %s was not found.';
   // Strings returned from OSIdentTOString()
   RsVosUnknown      = 'Unknown';
   RsVosDos          = 'MS-DOS';
@@ -1046,7 +1184,7 @@ resourcestring
   RsVosOS216PM16    = '16-bit PM, running on 16-bit OS/2';
   RsVosOS232PM32    = '32-bit PM, running on 32-bit OS/2';
   RsVosNTWindows32  = 'Win32 API, running on Windows/NT';
-  RsVosDesignedFor  = 'Designed for ';
+  RsVosDesignedFor  = 'Designed for %s';
 
   // Strings returned from OSFileTypeToString()
   RsVftUnknown         = 'Unknown';
@@ -1116,28 +1254,6 @@ resourcestring
   // FileGetTypeName()
   RsDefaultFileTypeName = ' File';
 
-//=== JclGraphics, JclGraphUtils =============================================
-resourcestring
-  RsBitsPerSampleNotSupported = '%d bits per sample not supported in color space conversion';
-  RsAssertUnpairedEndUpdate   = 'Unpaired BeginUpdate EndUpdate';
-  RsCreateCompatibleDc        = 'Could not create compatible DC';
-  RsDestinationBitmapEmpty    = 'Destination bitmap is empty';
-  RsDibHandleAllocation       = 'Could not allocate handle for DIB';
-  RsMapSizeFmt                = 'Could not set size on class "%s"';
-  RsSelectObjectInDc          = 'Could not select object in DC';
-  RsSourceBitmapEmpty         = 'Source bitmap is empty';
-  RsSourceBitmapInvalid       = 'Source bitmap is invalid';
-  RsNoBitmapForRegion         = 'No bitmap for region';
-  RsNoDeviceContextForWindow  = 'Cannot get device context of the window';
-  RsInvalidRegion             = 'Invalid Region defined for RegionInfo';
-  RsRegionDataOutOfBound      = 'Out of bound index on RegionData';
-  RsRegionCouldNotCreated     = 'Region could not be created';
-  RsInvalidHandleForRegion    = 'Invalid handle for region';
-  RsInvalidRegionInfo         = 'Invalid RegionInfo';
-
-  RsBitmapExtension           = '.bmp';
-  RsJpegExtension             = '.jpg';
-
 //=== JclMapi ================================================================
 resourcestring
   RsMapiError         = 'MAPI Error: (%d) "%s"';
@@ -1176,16 +1292,13 @@ resourcestring
   RsMapiMailCC      = 'Cc';
   RsMapiMailBCC     = 'Bcc';
   RsMapiMailSubject = 'Subject';
-  RsMapiMailBody    = 'Body';
 
 //=== JclMath ================================================================
 resourcestring
   RsMathDomainError    = 'Domain check failure in JclMath';
   RsEmptyArray         = 'Empty array is not allowed as input parameter';
   RsNonPositiveArray   = 'Input array contains non-positive or zero values';
-  RsUnexpectedDataType = 'Unexpected data type';
   RsUnexpectedValue    = 'Unexpected data value';
-  RsRangeError         = 'Cannot merge range';
   RsInvalidRational    = 'Invalid rational number';
   RsDivByZero          = 'Division by zero';
   RsRationalDivByZero  = 'Rational division by zero';
@@ -1227,7 +1340,6 @@ resourcestring
 //=== JclMiscel ==============================================================
 resourcestring
   // CreateProcAsUser
-  RsCreateProcOSVersionError          = 'Unable to determine OS version';
   RsCreateProcNTRequiredError         = 'Windows NT required';
   RsCreateProcBuild1057Error          = 'NT version 3.51 build 1057 or later required';
 
@@ -1246,7 +1358,6 @@ resourcestring
 resourcestring
   // Multimedia timer
   RsMmTimerGetCaps     = 'Error retrieving multimedia timer device capabilities';
-  RsMmTimerBeginPeriod = 'The supplied timer period value is out of range';
   RsMmSetEvent         = 'Error setting multimedia event timer';
   RsMmInconsistentId   = 'Multimedia timer callback was called with inconsistent Id';
   RsMmTimerActive      = 'This operation cannot be performed while the timer is active';
@@ -1314,11 +1425,14 @@ resourcestring
   RsErrDfaWSSize     = 'DFA WSSize';
   RsErrDfaRecurse    = 'DFA Recurse';
   RsErrRecursionLimit = 'Recursion limit';
+  RsErrNullWsLimit   = 'Null WS limit';
+  RsErrBadNewLine    = 'Bad new line';
   RsErrLibNotLoaded  = 'PCRE library not loaded';
   RsErrMemFuncNotSet = 'PCRE memory management functions not set';
   RsErrStudyFailed   = 'Study failed'; 
   RsErrCalloutError  = 'Unhandled exception in callout';
-  RsErrUnknownError  = 'Unknown error'; 
+  RsErrUnknownError  = 'Unknown error';
+  RsErrNoUTF8Support = 'No UTF8 support in this version of PCRE';
 
 //=== JclPeImage =============================================================
 resourcestring
@@ -1348,6 +1462,7 @@ resourcestring
   RsPeImg_12 = 'IAT';
   RsPeImg_13 = 'Delay load import';
   RsPeImg_14 = 'COM run-time';
+  RsPeImg_Reserved = 'reserved [%.2d]';
 
   // NT Header names
   RsPeSignature               = 'Signature';
@@ -1475,54 +1590,6 @@ resourcestring
   RsPePkgOrgWeak  = 'OrgWeak';
   RsPePkgImplicit = 'Implicit';
 
-//=== JclPrint ===============================================================
-resourcestring
-  RsSpoolerDocName = 'My Document';
-
-  RsInvalidPrinter        = 'Invalid printer';
-  RsNAStartDocument       = 'Unable to "Start document"';
-  RsNASendData            = 'Unable to send data to printer';
-  RsNAStartPage           = 'Unable to "Start page"';
-  RsNAEndPage             = 'Unable to "End page"';
-  RsNAEndDocument         = 'Unable to "End document"';
-  RsNATransmission        = 'Not all chars have been sent correctly to printer';
-  RsDeviceMode            = 'Error retrieving DeviceMode';
-  RsUpdatingPrinter       = 'Error updating printer driver';
-  RsIndexOutOfRange       = 'Index out of range setting bin';
-  RsRetrievingSource      = 'Error retrieving Bin Source Info';
-  RsRetrievingPaperSource = 'Error retrieving Paper Source Info';
-  RsIndexOutOfRangePaper  = 'Index out of range setting paper';
-
-  // Paper Styles (PS)
-  RsPSLetter      = 'Letter 8 1/2 x 11 in';
-  RsPSLetterSmall = 'Letter Small 8 1/2 x 11 in';
-  RsPSTabloid     = 'Tabloid 11 x 17 in';
-  RsPSLedger      = 'Ledger 17 x 11 in';
-  RsPSLegal       = 'Legal 8 1/2 x 14 in';
-  RsPSStatement   = 'Statement 5 1/2 x 8 1/2 in';
-  RsPSExecutive   = 'Executive 7 1/2 x 10 in';
-  RsPSA3          = 'A3 297 x 420 mm';
-  RsPSA4          = 'A4 210 x 297 mm';
-  RsPSA4Small     = 'A4 Small 210 x 297 mm';
-  RsPSA5          = 'A5 148 x 210 mm';
-  RsPSB4          = 'B4 250 x 354';
-  RsPSB5          = 'B5 182 x 257 mm';
-  RsPSFolio       = 'Folio 8 1/2 x 13 in';
-  RsPSQuarto      = 'Quarto 215 x 275 mm';
-  RsPS10X14       = '10 x 14 in';
-  RsPS11X17       = '11 x 17 in';
-  RsPSNote        = 'Note 8 1/2 x 11 in';
-  RsPSEnv9        = 'Envelope #9 3 7/8 x 8 7/8 in';
-  RsPSEnv10       = 'Envelope #10 4 1/8 x 9 1/2 in';
-  RsPSEnv11       = 'Envelope #11 4 1/2 x 10 3/8 in';
-  RsPSEnv12       = 'Envelope #12 4 \276 x 11 in';
-  RsPSEnv14       = 'Envelope #14 5 x 11 1/2 in';
-  RsPSCSheet      = 'C size sheet';
-  RsPSDSheet      = 'D size sheet';
-  RsPSESheet      = 'E size sheet';
-  RsPSUser        = 'User Defined Size';
-  RsPSUnknown     = 'Unknown Paper Size';
-
 //=== JclRegistry ============================================================
 resourcestring
   RsUnableToOpenKeyRead  = 'Unable to open key "%s\%s" for read';
@@ -1530,21 +1597,6 @@ resourcestring
   RsUnableToAccessValue  = 'Unable to open key "%s\%s" and access value "%s"';
   RsWrongDataType        = '"%s\%s\%s" is of wrong kind or size';
   RsInconsistentPath     = '"%s" does not match RootKey';
-
-  RsHKCRLong = 'HKEY_CLASSES_ROOT';
-  RsHKCULong = 'HKEY_CURRENT_USER';
-  RsHKLMLong = 'HKEY_LOCAL_MACHINE';
-  RsHKUSLong = 'HKEY_USERS';
-  RsHKPDLong = 'HKEY_PERFORMANCE_DATA';
-  RsHKCCLong = 'HKEY_CURRENT_CONFIG';
-  RsHKDDLong = 'HKEY_DYN_DATA';
-  RsHKCRShort = 'HKCR';
-  RsHKCUShort = 'HKCU';
-  RsHKLMShort = 'HKLM';
-  RsHKUSShort = 'HKUS';
-  RsHKPDShort = 'HKPD';
-  RsHKCCShort = 'HKCC';
-  RsHKDDShort = 'HKDD';
 
 //=== JclRTTI ================================================================
 resourcestring
@@ -1621,24 +1673,26 @@ resourcestring
 //=== JclSimpleXml ===========================================================
 resourcestring
   RsEInvalidXMLElementUnexpectedCharacte =
-    'Invalid XML Element: Unexpected character in property declaration ("%s" found)';
+    'Invalid XML Element: Unexpected character in property declaration ("%s" found at position %d)';
   RsEInvalidXMLElementUnexpectedCharacte_ =
-    'Invalid XML Element: Unexpected character in property declaration. Expecting " or '' but "%s"  found';
-  RsEUnexpectedValueForLPos = 'Unexpected value for lPos';
-  RsEInvalidXMLElementExpectedBeginningO = 'Invalid XML Element: Expected beginning of tag but "%s" found';
-  RsEInvalidXMLElementExpectedEndOfTagBu = 'Invalid XML Element: Expected end of tag but "%s" found';
-  RsEInvalidXMLElementMalformedTagFoundn = 'Invalid XML Element: malformed tag found (no valid name)';
+    'Invalid XML Element: Unexpected character in property declaration. Expecting " or '' but "%s"  found at position %d';
+  RsEUnexpectedValueForLPos = 'Unexpected value for lPos at position %d';
+  RsEInvalidXMLElementExpectedBeginningO = 'Invalid XML Element: Expected beginning of tag but "%s" found at position %d';
+  RsEInvalidXMLElementExpectedEndOfTagBu = 'Invalid XML Element: Expected end of tag but "%s" found at position %d';
+  RsEInvalidXMLElementMalformedTagFoundn = 'Invalid XML Element: malformed tag found (no valid name) at position %d';
   RsEInvalidXMLElementErroneousEndOfTagE =
-    'Invalid XML Element: Erroneous end of tag, expecting </%0:s> but </%1:s> found';
-  RsEInvalidCommentExpectedsButFounds = 'Invalid Comment: expected "%0:s" but found "%1:s"';
-  RsEInvalidCommentNotAllowedInsideComme = 'Invalid Comment: "--" not allowed inside comments';
-  RsEInvalidCommentUnexpectedEndOfData = 'Invalid Comment: Unexpected end of data';
-  RsEInvalidCDATAExpectedsButFounds = 'Invalid CDATA: expected "%0:s" but found "%1:s"';
-  RsEInvalidCDATAUnexpectedEndOfData = 'Invalid CDATA: Unexpected end of data';
-  RsEInvalidHeaderExpectedsButFounds = 'Invalid Header: expected "%0:s" but found "%1:s"';
-  RsEInvalidStylesheetExpectedsButFounds = 'Invalid Stylesheet: expected "%0:s" but found "%1:s"';
-  RsEInvalidStylesheetUnexpectedEndOfDat = 'Invalid Stylesheet: Unexpected end of data';
-  RsEInvalidDocumentUnexpectedTextInFile = 'Invalid Document: Unexpected text in file prolog';
+    'Invalid XML Element: Erroneous end of tag, expecting </%0:s> but </%1:s> found at position %d';
+  RsEInvalidCommentExpectedsButFounds = 'Invalid Comment: expected "%0:s" but found "%1:s" at position %d';
+  RsEInvalidCommentNotAllowedInsideComme = 'Invalid Comment: "--" not allowed inside comments at position %d';
+  RsEInvalidCommentUnexpectedEndOfData = 'Invalid Comment: Unexpected end of data at position %d';
+  RsEInvalidCDATAExpectedsButFounds = 'Invalid CDATA: expected "%0:s" but found "%1:s" at position %d';
+  RsEInvalidCDATAUnexpectedEndOfData = 'Invalid CDATA: Unexpected end of data at position %d';
+  RsEInvalidHeaderExpectedsButFounds = 'Invalid Header: expected "%0:s" but found "%1:s" at position %d';
+  RsEInvalidStylesheetExpectedsButFounds = 'Invalid Stylesheet: expected "%0:s" but found "%1:s" at position %d';
+  RsEInvalidStylesheetUnexpectedEndOfDat = 'Invalid Stylesheet: Unexpected end of data at position %d';
+  RsEInvalidMSOExpectedsButFounds = 'Invalid MSO: expected "%0:s" but found "%1:s" at position %d';
+  RsEInvalidMSOUnexpectedEndOfDat = 'Invalid MSO: Unexpected end of data at position %d';
+  RsEInvalidDocumentUnexpectedTextInFile = 'Invalid Document: Unexpected text in file prolog at position %d';
 
 //=== JclStatistics ==========================================================
 resourcestring
@@ -1649,6 +1703,7 @@ resourcestring
   RsStreamsCreateError = 'Cannot create file %s';
   RsStreamsOpenError = 'Cannot open file %s';
   RsStreamsSetSizeError = 'Error setting stream size';
+  RsStreamsSeekError = 'Error seeking stream';
   RsStreamsCRCError = 'Cyclic Redundency Check (CRC) error: data are damaged';
 
 //=== JclStrHashMap ==========================================================
@@ -1662,12 +1717,18 @@ resourcestring
 resourcestring
   RsBlankSearchString       = 'Search string cannot be blank';
   RsInvalidEmptyStringItem  = 'String list passed to StringsToMultiSz cannot contain empty strings.';
-  RsNumericConstantTooLarge = 'Numeric constant too large.';
+  RsNumericConstantTooLarge = 'Numeric constant too large (%d) at position %d.';
   RsFormatException         = 'Format exception';
   RsDotNetFormatNullFormat  = 'Format string is null';
   RsArgumentIsNull          = 'Argument %d is null';
   RsDotNetFormatArgumentNotSupported = 'Argument type of %d is not supported';
   RsArgumentOutOfRange      = 'Argument out of range';
+  RsTabs_DuplicatesNotAllowed = 'Duplicate tab stops are not allowed.';
+  RsTabs_StopExpected = 'A tab stop was expected but not found.';
+  RsTabs_CloseBracketExpected = 'Closing bracket expected.';
+  RsTabs_TabWidthExpected = 'Tab width expected.';
+  // Default text for the NullReferenceException in .NET
+  RsArg_NullReferenceException = 'Object reference not set to an instance of an object.';
 
 //=== JclStructStorage =======================================================
 resourcestring
@@ -1705,15 +1766,25 @@ resourcestring
   RsIntelCacheDescr05 = 'Data TLB1: 4 MByte pages, 4-way set associative, 32 entries';
   RsIntelCacheDescr06 = '1st level instruction cache: 8 KBytes, 4-way set associative, 32 byte line size';
   RsIntelCacheDescr08 = '1st level instruction cache: 16 KBytes, 4-way set associative, 32 byte line size';
+  RsIntelCacheDescr09 = '1st level instruction cache: 32 KBytes, 4-way set associative, 64 byte line size';
   RsIntelCacheDescr0A = '1st level data cache: 8 KBytes, 2-way set associative, 32 byte line size';
   RsIntelCacheDescr0B = 'Instruction TLB: 4 MByte pages, 4-way set associative, 4 entries';
   RsIntelCacheDescr0C = '1st level data cache: 16 KBytes, 4-way set associative, 32 byte line size';
+  RsIntelCacheDescr0D = '1st level data cache: 16 KBytes, 4-way set associative, 64 byte line size';
+  RsIntelCacheDescr0E = '1st level data cache: 24 KBytes, 6-way set associative, 64 byte line size';
+  RsIntelCacheDescr21 = '2nd level cache: 256 KBytes, 8-way set associative, 64 byte line size';
   RsIntelCacheDescr22 = '3rd level cache: 512 KBytes, 4-way set associative, 64 byte line size, 2 lines per sector';
   RsIntelCacheDescr23 = '3rd level cache: 1 MBytes, 8-way set associative, 64 byte line size, 2 lines per sector';
   RsIntelCacheDescr25 = '3rd level cache: 2 MBytes, 8-way set associative, 64 byte line size, 2 lines per sector';
   RsIntelCacheDescr29 = '3rd level cache: 4 MBytes, 8-way set associative, 64 byte line size, 2 lines per sector';
   RsIntelCacheDescr2C = '1st level data cache: 32 KBytes, 8-way set associative, 64 byte line size';
   RsIntelCacheDescr30 = '1st level instruction cache: 32 KBytes, 8-way set associative, 64 byte line size';
+  RsIntelCacheDescr39 = '2nd-level cache: 128 KBytes, 4-way set associative, sectored cache, 64-byte line size';
+  RsIntelCacheDescr3A = '2nd-level cache: 192 KBytes, 6-way set associative, sectored cache, 64-byte line size';
+  RsIntelCacheDescr3B = '2nd-level cache: 128 KBytes, 2-way set associative, sectored cache, 64-byte line size';
+  RsIntelCacheDescr3C = '2nd-level cache: 256 KBytes, 4-way set associative, sectored cache, 64-byte line size';
+  RsIntelCacheDescr3D = '2nd-level cache: 384 KBytes, 6-way set associative, sectored cache, 64-byte line size';
+  RsIntelCacheDescr3E = '2nd-level cache: 512 KBytes, 4-way set associative, sectored cache, 64-byte line size';
   RsIntelCacheDescr40 = 'No 2nd-level cache or, if processor contains a valid 2nd-level cache, no 3rd-level cache';
   RsIntelCacheDescr41 = '2nd-level cache: 128 KBytes, 4-way set associative, 32 byte line size';
   RsIntelCacheDescr42 = '2nd-level cache: 256 KBytes, 4-way set associative, 32 byte line size';
@@ -1722,12 +1793,22 @@ resourcestring
   RsIntelCacheDescr45 = '2nd-level cache: 2 MBytes, 4-way set associative, 32 byte line size';
   RsIntelCacheDescr46 = '3rd-level cache: 4 MBytes, 4-way set associative, 64 byte line size';
   RsIntelCacheDescr47 = '3rd-level cache: 8 MBytes, 4-way set associative, 64 byte line size';
+  RsIntelCacheDescr48 = '3rd-level cache: 8 MByte, 8-way set associative, 64 byte line size';
   RsIntelCacheDescr49 = '2nd-level cache: 4 MBytes, 16-way set associative, 64 byte line size';
+  RsIntelCacheDescr4A = '3rd-level cache: 6MByte, 12-way set associative, 64 byte line size';
+  RsIntelCacheDescr4B = '3rd-level cache: 8MByte, 16-way set associative, 64 byte line size';
+  RsIntelCacheDescr4C = '3rd-level cache: 12MByte, 12-way set associative, 64 byte line size';
+  RsIntelCacheDescr4D = '3rd-level cache: 16MByte, 16-way set associative, 64 byte line size';
+  RsIntelCacheDescr4E = '2nd-level cache: 6MByte, 24-way set associative, 64 byte line size';
+  RsIntelCacheDescr4F = 'Instruction TLB: 4 KByte pages, 32 Entries';
   RsIntelCacheDescr50 = 'Instruction TLB: 4 KByte and 2 MByte or 4 MByte pages, 64 Entries';
   RsIntelCacheDescr51 = 'Instruction TLB: 4 KByte and 2 MByte or 4 MByte pages, 128 Entries';
   RsIntelCacheDescr52 = 'Instruction TLB: 4 KByte and 2 MByte or 4 MByte pages, 256 Entries';
+  RsIntelCacheDescr55 = 'Instruction TLB: 2-MByte or 4-MByte pages, fully associative, 7 entries';
   RsIntelCacheDescr56 = 'Data TLB0: 4 MByte pages, 4-way set associative, 16 entries';
   RsIntelCacheDescr57 = 'Data TLB0: 4 KByte pages, 4-way associative, 16 entries';
+  RsIntelCacheDescr59 = 'Data TLB0: 4 KByte pages, fully associative, 16 entries';
+  RsIntelCacheDescr5A = 'Data TLB0: 2 MByte or 4 MByte pages, 4-way set associative, 32 entries';
   RsIntelCacheDescr5B = 'Data TLB: 4 KByte and 4 MByte pages, 64 Entries';
   RsIntelCacheDescr5C = 'Data TLB: 4 KByte and 4 MByte pages, 128 Entries';
   RsIntelCacheDescr5D = 'Data TLB: 4 KByte and 4 MByte pages, 256 Entries';
@@ -1738,6 +1819,7 @@ resourcestring
   RsIntelCacheDescr70 = 'Trace cache: 12 K-Ops, 8-way set associative';
   RsIntelCacheDescr71 = 'Trace cache: 16 K-Ops, 8-way set associative';
   RsIntelCacheDescr72 = 'Trace cache: 32 K-Ops, 8-way set associative';
+  RsIntelCacheDescr73 = 'Trace cache: 64 K-Ops, 8-way set associative';
   RsIntelCacheDescr78 = '2nd-level cache: 1 MBytes, 4-way set associative, 64 bytes line size';
   RsIntelCacheDescr79 = '2nd-level cache: 128 KBytes, 8-way set associative, 64 bytes line size, 2 lines per sector';
   RsIntelCacheDescr7A = '2nd-level cache: 256 KBytes, 8-way set associative, 64 bytes line size, 2 lines per sector';
@@ -1745,6 +1827,7 @@ resourcestring
   RsIntelCacheDescr7C = '2nd-level cache: 1 MBytes, 8-way set associative, 64 bytes line size, 2 lines per sector';
   RsIntelCacheDescr7D = '2nd-level cache: 2 MBytes, 8-way set associative, 64 byte line size';
   RsIntelCacheDescr7F = '2nd-level cache: 512 KBytes, 2-way set associative, 64 byte line size';
+  RsIntelCacheDescr80 = '2nd-level cache: 512 KBytes, 8-way set associative, 64 byte line size';
   RsIntelCacheDescr82 = '2nd-level cache: 256 KBytes, 8-way associative, 32 byte line size';
   RsIntelCacheDescr83 = '2nd-level cache: 512 KBytes, 8-way associative, 32 byte line size';
   RsIntelCacheDescr84 = '2nd-level cache: 1 MBytes, 8-way associative, 32 byte line size';
@@ -1752,27 +1835,76 @@ resourcestring
   RsIntelCacheDescr86 = '2nd-level cache: 512 KByte, 4-way set associative, 64 byte line size';
   RsIntelCacheDescr87 = '2nd-level cache: 1 MByte, 8-way set associative, 64 byte line size';
   RsIntelCacheDescrB0 = 'Instruction TLB: 4 KByte pages, 4-way set associative, 128 entries';
+  RsIntelCacheDescrB1 = 'Instruction TLB: 2 MByte pages, 4-way, 8 entries or 4 MByte pages, 4-way, 4 entries';
+  RsIntelCacheDescrB2 = 'Instruction TLB: 4 KByte pages, 4-way set associative, 64 entries';
   RsIntelCacheDescrB3 = 'Data TLB: 4 KByte pages, 4-way set associative, 128 entries';
   RsIntelCacheDescrB4 = 'Data TLB1: 4 KByte pages, 4-way set associative, 256 entries';
+  RsIntelCacheDescrBA = 'Data TLB1: 4 KByte pages, 4-way set associative, 64 entries';
+  RsIntelCacheDescrC0 = 'Data TLB: 4 KByte and 4 MByte pages, 4-way set associative, 8 entries';
+  RsIntelCacheDescrCA = 'Shared 2nd-Level TLB: 4 KByte pages, 4-way associative, 512 entries';
+  RsIntelCacheDescrD0 = '3rd-level cache: 512 KByte, 4-way set associative, 64 byte line size';
+  RsIntelCacheDescrD1 = '3rd-level cache: 1 MByte, 4-way set associative, 64 byte line size';
+  RsIntelCacheDescrD2 = '3rd-level cache: 2 MByte, 4-way set associative, 64 byte line size';
+  RsIntelCacheDescrD6 = '3rd-level cache: 1 MByte, 8-way set associative, 64 byte line size';
+  RsIntelCacheDescrD7 = '3rd-level cache: 2 MByte, 8-way set associative, 64 byte line size';
+  RsIntelCacheDescrD8 = '3rd-level cache: 4 MByte, 8-way set associative, 64 byte line size';
+  RsIntelCacheDescrDC = '3rd-level cache: 1.5 MByte, 12-way set associative, 64 byte line size';
+  RsIntelCacheDescrDD = '3rd-level cache: 3 MByte, 12-way set associative, 64 byte line size';
+  RsIntelCacheDescrDE = '3rd-level cache: 6 MByte, 12-way set associative, 64 byte line size';
+  RsIntelCacheDescrE2 = '3rd-level cache: 2 MByte, 16-way set associative, 64 byte line size';
+  RsIntelCacheDescrE3 = '3rd-level cache: 4 MByte, 16-way set associative, 64 byte line size';
+  RsIntelCacheDescrE4 = '3rd-level cache: 8 MByte, 16-way set associative, 64 byte line size';
+  RsIntelCacheDescrEA = '3rd-level cache: 12 MByte, 24-way set associative, 64 byte line size';
+  RsIntelCacheDescrEB = '3rd-level cache: 18 MByte, 24-way set associative, 64 byte line size';
+  RsIntelCacheDescrEC = '3rd-level cache: 24 MByte, 24-way set associative, 64 byte line size';
   RsIntelCacheDescrF0 = '64-Byte Prefetching';
   RsIntelCacheDescrF1 = '128-Byte Prefetching';
+  RsIntelCacheDescrFF = 'CPUID leaf 2 does not report cache descriptor information, use CPUID leaf 4 to query cache parameters';
 
   RsUnknownAMDModel = 'Unknown AMD (Model %d)';
 
-  RsOSVersionWin95 = 'Windows 95';
-  RsOSVersionWin95OSR2 = 'Windows 95 OSR2';
-  RsOSVersionWin98 = 'Windows 98';
-  RsOSVersionWin98SE = 'Windows 98 SE';
-  RsOSVersionWinME = 'Windows ME';
-  RsOSVersionWinNT3 = 'Windows NT 3.%u';
-  RsOSVersionWinNT4 = 'Windows NT 4.%u';
-  RsOSVersionWin2000 = 'Windows 2000';
-  RsOSVersionWinXP = 'Windows XP';
-  RsOSVersionWin2003 = 'Windows Server 2003';
-  RsOSVersionWin2003R2 = 'Windows Server 2003 "R2"';
-  RsOSVersionWinXP64 = 'Windows XP x64';
-  RsOSVersionWinVista = 'Windows Vista';
-  RsOSVersionWinServer2008 = 'Windows Server 2008';
+  RsOSVersionWin95              = 'Windows 95';
+  RsOSVersionWin95OSR2          = 'Windows 95 OSR2';
+  RsOSVersionWin98              = 'Windows 98';
+  RsOSVersionWin98SE            = 'Windows 98 SE';
+  RsOSVersionWinME              = 'Windows ME';
+  RsOSVersionWinNT3             = 'Windows NT 3.%u';
+  RsOSVersionWinNT4             = 'Windows NT 4.%u';
+  RsOSVersionWin2000            = 'Windows 2000';
+  RsOSVersionWinXP              = 'Windows XP';
+  RsOSVersionWin2003            = 'Windows Server 2003';
+  RsOSVersionWin2003R2          = 'Windows Server 2003 R2';
+  RsOSVersionWinXP64            = 'Windows XP x64';
+  RsOSVersionWinVista           = 'Windows Vista';
+  RsOSVersionWinServer2008      = 'Windows Server 2008';
+  RsOSVersionWin7               = 'Windows 7';
+  RsOSVersionWinServer2008R2    = 'Windows Server 2008 R2';
+
+  RsEditionWinXPHome            = 'Home Edition';
+  RsEditionWinXPPro             = 'Professional';
+  RsEditionWinXPHomeN           = 'Home Edition N';
+  RsEditionWinXPProN            = 'Professional N';
+  RsEditionWinXPHomeK           = 'Home Edition K';
+  RsEditionWinXPProK            = 'Professional K';
+  RsEditionWinXPHomeKN          = 'Home Edition KN';
+  RsEditionWinXPProKN           = 'Professional KN';
+  RsEditionWinXPStarter         = 'Starter Edition';
+  RsEditionWinXPMediaCenter     = 'Media Center Edition';
+  RsEditionWinXPTablet          = 'Tablet PC Edition';
+  RsEditionWinVistaStarter      = 'Starter';
+  RsEditionWinVistaHomeBasic    = 'Home Basic';
+  RsEditionWinVistaHomeBasicN   = 'Home Basic N';
+  RsEditionWinVistaHomePremium  = 'Home Premium';
+  RsEditionWinVistaBusiness     = 'Business';
+  RsEditionWinVistaBusinessN    = 'Business N';
+  RsEditionWinVistaEnterprise   = 'Enterprise';
+  RsEditionWinVistaUltimate     = 'Ultimate';
+  RsEditionWin7Starter          = 'Starter';
+  RsEditionWin7HomeBasic        = 'Home Basic';
+  RsEditionWin7HomePremium      = 'Home Premium';
+  RsEditionWin7Professional     = 'Professional';
+  RsEditionWin7Enterprise       = 'Enterprise';
+  RsEditionWin7Ultimate         = 'Ultimate';
 
   RsProductTypeWorkStation      = 'Workstation';
   RsProductTypeServer           = 'Server';
@@ -1782,8 +1914,6 @@ resourcestring
   RsProductTypeDatacenterServer = 'Datacenter Server';
   RsProductTypeEnterprise       = 'Enterprise';
   RsProductTypeWebEdition       = 'Web Edition';
-
-  RsOpenGLInfoError = 'Err';
 
   RsEOpenGLInfo = 'GetOpenGLVersion: %s failed';
 
@@ -1795,8 +1925,11 @@ resourcestring
   RsInvalidProcessID = 'Invalid process ID %d';
   {$ENDIF UNIX}
 
+  RsOpenGLInfoError = 'Err';
+
 //=== JclSysUtils ============================================================
 resourcestring
+  RsVMTMemoryWriteError  = 'Error writing VMT memory (%s)';
   RsCannotWriteRefStream = 'Can not write to a read-only memory stream';
   RsStringToBoolean      = 'Unable to convert the string "%s" to a boolean';
   RsInvalidDigit         = 'Invalid base %d digit ''%s'' encountered.';
@@ -1815,6 +1948,12 @@ resourcestring
 resourcestring
   RsHasNotTD32Info = 'File [%s] has not TD32 debug information!';
 
+//=== JclTimeZones ===========================================================
+resourcestring
+  RsEDaylightSavingsNotSupported = 'Daylight Savings not supported by this timezone';
+  RsEAutoAdjustNotEnabled = 'Auto adjust for Daylight Savings is not enabled.  Date is not available';
+  RsENoCallbackFunc = 'No callback function assigned';
+
 //=== JclUnicode =============================================================
 resourcestring
   RsUREErrorFmt               = '%s%s%s';
@@ -1830,22 +1969,16 @@ resourcestring
   RsCasedUnicodeChar          = 'cased Unicode character > $FFFFFF found';
   RsDecomposedUnicodeChar     = 'decomposed Unicode character > $FFFFFF found';
   RsCombiningClassUnicodeChar = 'combining class for Unicode character > $FFFFFF found';
+  RsEUnexpectedEOSeq          = 'Unexpected end of sequence';
 
 //=== JclUnitConv ============================================================
 resourcestring
   RsTempConvTypeError = 'An invalid type has been provided for the %s parameter';
   RsConvTempBelowAbsoluteZero = 'Temperature can not be below Absolute Zero!';
 
-//=== JclWideFormat ==========================================================
-resourcestring
-  RsFormatSyntaxError = 'Syntax error at index %u';
-  RsFormatNoArgument = 'No argument at index %u';
-  RsFormatBadArgumentType = 'Invalid argument type (%s) at index %u. Expected [%s]';
-  RsFormatBadArgumentTypeEx = 'Invalid argument type (%s) at index %u for format ''%s''. Expected [%s]';
-  RsFormatNoArgumentEx = 'No argument at index %u for format ''%s''';
-
 //=== JclWin32 ===============================================================
 resourcestring
+  RsWin32Error        = 'Win32 error: %s (%u)%s%s';
   RsELibraryNotFound  = 'Library not found: %s';
   RsEFunctionNotFound = 'Function not found: %s.%s';
 
@@ -1857,10 +1990,12 @@ resourcestring
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jcl.svn.sourceforge.net/svnroot/jcl/tags/JCL-1.101-Build2725/jcl/source/common/JclResources.pas $';
-    Revision: '$Revision: 2084 $';
-    Date: '$Date: 2007-07-19 21:04:25 +0200 (jeu., 19 juil. 2007) $';
-    LogPath: 'JCL\source\common'
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/source/common/JclResources.pas $';
+    Revision: '$Revision: 3266 $';
+    Date: '$Date: 2010-07-25 13:44:27 +0200 (dim., 25 juil. 2010) $';
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -1875,3 +2010,4 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
+

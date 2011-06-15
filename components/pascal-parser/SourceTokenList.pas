@@ -101,7 +101,7 @@ uses
   { delphi }
   SysUtils,
   { jcl }
-  JclStrings;
+  JclAnsiStrings;
 
 constructor TSourceTokenList.Create;
 begin

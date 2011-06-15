@@ -44,7 +44,7 @@ type
     { Private declarations }
     RE: TJclAnsiRegEx;
     FMatchIndex: integer;
-    procedure SelectText(Range: TJclAnsiCaptureRange);
+    procedure SelectText(const Range: TJclAnsiCaptureRange);
     procedure Match;
     function GetUIOptions: TJclAnsiRegExOptions;
     procedure UpdateUIOptions;
@@ -88,10 +88,10 @@ begin
     Match;
 end;
 
-procedure TfrmMain.SelectText(Range: TJclAnsiCaptureRange);
+procedure TfrmMain.SelectText(const Range: TJclAnsiCaptureRange);
 begin
-  reFile.SelStart := Range.FirstPos;
-  reFile.SelLength := Range.LastPos - Range.FirstPos;
+  reFile.SelStart := Range.FirstPos - 1;
+  reFile.SelLength := Range.LastPos - Range.FirstPos + 1;
 end;
 
 procedure TfrmMain.Match;
@@ -105,7 +105,7 @@ begin
   else
   begin
     SelectText(RE.CaptureRanges[0]);
-    FMatchIndex := RE.CaptureRanges[0].LastPos;
+    FMatchIndex := RE.CaptureRanges[0].LastPos + 1;
   end;
   UpdateUIOptions;
 end;

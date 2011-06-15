@@ -82,7 +82,7 @@ begin
       ModInfo := GetLocationInfo(HandlerLocation);
       TmpS := Format(
         '    Frame at $%p (type: %s',
-        [ExceptFrame.ExcFrame,
+        [ExceptFrame.FrameLocation,
          GetEnumName(TypeInfo(TExceptFrameKind), Ord(ExceptFrame.FrameKind))]);
       if ExceptionHandled then
         TmpS := TmpS + ', handles exception)'
@@ -143,7 +143,7 @@ procedure TForm1.Button3Click(Sender: TObject);
 begin
   mmLog.Lines.Add(TButton(Sender).Caption);
   try
-    PChar(nil)^ := 'a';
+    ShowMessage(IntToStr(StrToInt('a')));
   except
     on E: EConvertError do
       ShowMessage('EConvertError or descendant');

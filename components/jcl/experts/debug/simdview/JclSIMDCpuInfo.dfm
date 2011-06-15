@@ -2,8 +2,8 @@ object JclFormCpuInfo: TJclFormCpuInfo
   Left = 468
   Top = 438
   BorderStyle = bsDialog
-  Caption = 'Local CPU Informations'
-  ClientHeight = 208
+  Caption = 'RsCpuInfoTitle'
+  ClientHeight = 296
   ClientWidth = 322
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -17,24 +17,24 @@ object JclFormCpuInfo: TJclFormCpuInfo
   TextHeight = 13
   object LabelName: TLabel
     Left = 8
-    Top = 8
-    Width = 34
+    Top = 11
+    Width = 39
     Height = 13
-    Caption = 'Name :'
+    Caption = 'RsName'
   end
   object LabelVendor: TLabel
     Left = 8
-    Top = 40
-    Width = 41
+    Top = 43
+    Width = 46
     Height = 13
-    Caption = 'Vendor :'
+    Caption = 'RsVendor'
   end
   object LabelFrequency: TLabel
-    Left = 160
-    Top = 40
-    Width = 58
+    Left = 161
+    Top = 43
+    Width = 63
     Height = 13
-    Caption = 'Frequency :'
+    Caption = 'RsFrequency'
   end
   object EditName: TEdit
     Left = 64
@@ -44,7 +44,6 @@ object JclFormCpuInfo: TJclFormCpuInfo
     Enabled = False
     ParentColor = True
     TabOrder = 0
-    Text = 'EditName'
   end
   object EditVendor: TEdit
     Left = 64
@@ -54,7 +53,6 @@ object JclFormCpuInfo: TJclFormCpuInfo
     Enabled = False
     ParentColor = True
     TabOrder = 1
-    Text = 'EditVendor'
   end
   object EditFrequency: TEdit
     Left = 232
@@ -64,7 +62,6 @@ object JclFormCpuInfo: TJclFormCpuInfo
     Enabled = False
     ParentColor = True
     TabOrder = 2
-    Text = 'EditFrequency'
   end
   object CheckBoxMMX: TCheckBox
     Left = 8
@@ -72,87 +69,167 @@ object JclFormCpuInfo: TJclFormCpuInfo
     Width = 137
     Height = 17
     Alignment = taLeftJustify
-    Caption = 'MMX'
+    Caption = 'RsMMX'
     Enabled = False
     TabOrder = 3
   end
   object CheckBoxExMMX: TCheckBox
     Left = 8
-    Top = 96
+    Top = 95
     Width = 137
     Height = 17
     Alignment = taLeftJustify
-    Caption = 'MMX Extensions'
+    Caption = 'RsMMXExt'
     Enabled = False
     TabOrder = 4
   end
   object CheckBox3DNow: TCheckBox
     Left = 8
-    Top = 120
+    Top = 118
     Width = 137
     Height = 17
     Alignment = taLeftJustify
-    Caption = '3DNow!'
+    Caption = 'Rs3DNow'
     Enabled = False
     TabOrder = 5
   end
   object CheckBoxEx3DNow: TCheckBox
     Left = 8
-    Top = 144
+    Top = 141
     Width = 137
     Height = 17
     Alignment = taLeftJustify
-    Caption = '3DNow! Extensions'
+    Caption = 'Rs3DNowExt'
     Enabled = False
     TabOrder = 6
   end
   object CheckBox64Bits: TCheckBox
-    Left = 160
-    Top = 144
-    Width = 153
+    Left = 8
+    Top = 164
+    Width = 137
     Height = 17
     Alignment = taLeftJustify
-    Caption = '64 bits'
+    Caption = 'RsLong'
     Enabled = False
     TabOrder = 7
   end
   object CheckBoxSSE1: TCheckBox
-    Left = 160
+    Left = 161
     Top = 72
     Width = 153
     Height = 17
     Alignment = taLeftJustify
-    Caption = 'SSE Version 1'
+    Caption = 'RsSSE1'
     Enabled = False
     TabOrder = 8
   end
   object CheckBoxSSE2: TCheckBox
-    Left = 160
-    Top = 96
+    Left = 161
+    Top = 95
     Width = 153
     Height = 17
     Alignment = taLeftJustify
-    Caption = 'SSE Version 2'
+    Caption = 'RsSSE2'
     Enabled = False
     TabOrder = 9
   end
   object CheckBoxSSE3: TCheckBox
-    Left = 160
-    Top = 120
+    Left = 161
+    Top = 118
     Width = 153
     Height = 17
     Alignment = taLeftJustify
-    Caption = 'SSE Version 3'
+    Caption = 'RsSSE3'
     Enabled = False
     TabOrder = 10
   end
   object ButtonClose: TButton
     Left = 128
-    Top = 176
+    Top = 263
     Width = 83
     Height = 25
-    Caption = 'Close'
+    Caption = 'RsClose'
     ModalResult = 2
+    TabOrder = 15
+  end
+  object CheckBoxSSSE3: TCheckBox
+    Left = 161
+    Top = 141
+    Width = 153
+    Height = 17
+    Alignment = taLeftJustify
+    Caption = 'RsSSE3Ext'
+    Enabled = False
     TabOrder = 11
+  end
+  object CheckBoxSSE4A: TCheckBox
+    Left = 161
+    Top = 164
+    Width = 153
+    Height = 17
+    Alignment = taLeftJustify
+    Caption = 'RsSSE4A'
+    Enabled = False
+    TabOrder = 12
+  end
+  object CheckBoxSSE5: TCheckBox
+    Left = 161
+    Top = 210
+    Width = 153
+    Height = 17
+    Alignment = taLeftJustify
+    Caption = 'RsSSE5'
+    Enabled = False
+    TabOrder = 14
+  end
+  object CheckBoxSSE4B: TCheckBox
+    Left = 161
+    Top = 187
+    Width = 153
+    Height = 17
+    Alignment = taLeftJustify
+    Caption = 'RsSSE4B'
+    Enabled = False
+    TabOrder = 13
+  end
+  object CheckBoxAVX: TCheckBox
+    Left = 161
+    Top = 233
+    Width = 153
+    Height = 17
+    Alignment = taLeftJustify
+    Caption = 'RsAVX'
+    Enabled = False
+    TabOrder = 16
+  end
+  object CheckBoxEnabledFPU: TCheckBox
+    Left = 8
+    Top = 187
+    Width = 137
+    Height = 17
+    Alignment = taLeftJustify
+    Caption = 'RsEnabledFPU'
+    Enabled = False
+    TabOrder = 17
+  end
+  object CheckBoxEnabledSSE: TCheckBox
+    Left = 8
+    Top = 210
+    Width = 137
+    Height = 17
+    Alignment = taLeftJustify
+    Caption = 'RsEnabledSSE'
+    Enabled = False
+    TabOrder = 18
+  end
+  object CheckBoxEnabledAVX: TCheckBox
+    Left = 8
+    Top = 233
+    Width = 137
+    Height = 17
+    Alignment = taLeftJustify
+    Caption = 'RsEnabledAVX'
+    Enabled = False
+    TabOrder = 19
   end
 end

@@ -21,8 +21,12 @@
 { located at http://jcl.sourceforge.net                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// $Id: JclSIMDView.pas 2044 2007-06-17 11:33:14Z outchy $
+{                                                                                                  }
+{ Last modified: $Date:: 2009-10-16 19:11:39 +0200 (ven., 16 oct. 2009)                          $ }
+{ Revision:      $Rev:: 3044                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclSIMDView;
 
@@ -33,7 +37,11 @@ interface
 uses
   Windows, Classes, Menus, ActnList, ToolsAPI, SysUtils, Graphics, Dialogs,
   Forms, ComCtrls,
-  JclOtaUtils, JclSIMDViewForm, JclSysInfo;
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  JclSysInfo,
+  JclOtaUtils, JclSIMDViewForm;
 
 {$R 'JclSIMDIcon.dcr'}
 
@@ -118,9 +126,22 @@ function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
   RegisterProc: TWizardRegisterProc;
   var TerminateProc: TWizardTerminateProc): Boolean; stdcall;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/experts/debug/simdview/JclSIMDView.pas $';
+    Revision: '$Revision: 3044 $';
+    Date: '$Date: 2009-10-16 19:11:39 +0200 (ven., 16 oct. 2009) $';
+    LogPath: 'JCL\experts\debug\simdview';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
+  TypInfo,
   JclOtaConsts, JclOtaResources, 
   JclSIMDUtils;
 
@@ -132,7 +153,6 @@ begin
     on ExceptObj: TObject do
     begin
       JclExpertShowExceptionDialog(ExceptObj);
-      raise;
     end;
   end;
 end;
@@ -141,18 +161,10 @@ var
   JCLWizardIndex: Integer = -1;
 
 procedure JclWizardTerminate;
-var
-  OTAWizardServices: IOTAWizardServices;
 begin
   try
     if JCLWizardIndex <> -1 then
-    begin
-      Supports(BorlandIDEServices, IOTAWizardServices, OTAWizardServices);
-      if not Assigned(OTAWizardServices) then
-        raise EJclExpertException.CreateTrace(RsENoWizardServices);
-
-      OTAWizardServices.RemoveWizard(JCLWizardIndex);
-    end;
+      TJclOTAExpertBase.GetOTAWizardServices.RemoveWizard(JCLWizardIndex);
   except
     on ExceptionObj: TObject do
     begin
@@ -164,17 +176,11 @@ end;
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
     RegisterProc: TWizardRegisterProc;
     var TerminateProc: TWizardTerminateProc): Boolean stdcall;
-var
-  OTAWizardServices: IOTAWizardServices;
 begin
   try
     TerminateProc := JclWizardTerminate;
 
-    Supports(BorlandIDEServices, IOTAWizardServices, OTAWizardServices);
-    if not Assigned(OTAWizardServices) then
-      raise EJclExpertException.CreateTrace(RsENoWizardServices);
-
-    JCLWizardIndex := OTAWizardServices.AddWizard(TJclSIMDWizard.Create);
+    JCLWizardIndex := TJclOTAExpertBase.GetOTAWizardServices.AddWizard(TJclSIMDWizard.Create);
 
     Result := True;
   except
@@ -208,8 +214,8 @@ end;
 procedure TJclSIMDWizard.SIMDActionExecute(Sender: TObject);
 begin
   try
-    if CpuInfo.SSE = 0 then
-      raise EJclExpertException.CreateTrace(RsNoSSE);
+    if CpuInfo.SSE = [] then
+      raise EJclExpertException.CreateRes(@RsNoSSE);
 
     if not Assigned(FForm) then
     begin
@@ -227,7 +233,6 @@ begin
     on ExceptObj: TObject do
     begin
       JclExpertShowExceptionDialog(ExceptObj);
-      raise;
     end;
   end;
 end;
@@ -241,7 +246,7 @@ begin
   try
     AAction := Sender as TAction;
 
-    if (CpuInfo.SSE <> 0) or CPUInfo.MMX or CPUInfo._3DNow then
+    if (CpuInfo.SSE <> []) or CPUInfo.MMX or CPUInfo._3DNow then
     begin
       AThread := nil;
       AProcess := nil;
@@ -255,12 +260,11 @@ begin
         AAction.Enabled := False;
     end
     else
-      AAction.Enabled := False
+      AAction.Enabled := False;
   except
     on ExceptObj: TObject do
     begin
       JclExpertShowExceptionDialog(ExceptObj);
-      raise;
     end;
   end;
 end;
@@ -288,12 +292,12 @@ var
   IDEMenu: TMenu;
   ViewMenu: TMenuItem;
   Category: string;
+  NTAServices: INTAServices;
 begin
   inherited RegisterCommands;
 
-  Supports(Services, IOTADebuggerServices, FDebuggerServices);
-  if not Assigned(FDebuggerServices) then
-    raise EJclExpertException.CreateTrace(RsENoDebuggerServices);
+  NTAServices := GetNTAServices;
+  FDebuggerServices := GetOTADebuggerServices;
 
   Category := '';
   for I := 0 to NTAServices.ActionList.ActionCount - 1 do
@@ -304,7 +308,7 @@ begin
   FIcon.Handle := LoadIcon(FindResourceHInstance(ModuleHInstance), 'SIMDICON');
 
   FSIMDAction := TAction.Create(nil);
-  FSIMDAction.Caption := RsSIMD;
+  FSIMDAction.Caption := LoadResString(@RsSIMD);
   FSIMDAction.Visible := True;
   FSIMDAction.OnExecute := SIMDActionExecute;
   FSIMDAction.OnUpdate := SIMDActionUpdate;
@@ -320,21 +324,21 @@ begin
 
   IDEMenu := NTAServices.MainMenu;
   if not Assigned(IDEMenu) then
-    raise EJclExpertException.CreateTrace(RsENoIDEMenu);
+    raise EJclExpertException.CreateRes(@RsENoIDEMenu);
 
   ViewMenu := nil;
   for I := 0 to IDEMenu.Items.Count - 1 do
     if CompareText(IDEMenu.Items[I].Name, 'ViewsMenu') = 0 then
       ViewMenu := IDEMenu.Items[I];
   if not Assigned(ViewMenu) then
-    raise EJclExpertException.CreateTrace(RsENoViewMenuItem);
+    raise EJclExpertException.CreateRes(@RsENoViewMenuItem);
 
   FViewDebugMenu := nil;
   for I := 0 to ViewMenu.Count - 1 do
     if CompareText(ViewMenu.Items[I].Name, 'ViewDebugItem') = 0 then
       FViewDebugMenu := ViewMenu.Items[I];
   if not Assigned(FViewDebugMenu) then
-    raise EJclExpertException.CreateTrace(RsENoDebugWindowsMenuItem);
+    raise EJclExpertException.CreateRes(@RsENoDebugWindowsMenuItem);
 
   FViewDebugMenu.Add(FSIMDMenuItem);
 
@@ -369,26 +373,25 @@ function TJclSIMDWizard.GetSIMDString: string;
       Result := LeftValue + ',' + RightValue;
   end;
 
+var
+  SSESupport: TSSESupport;
 begin
   Result := '';
   with CpuInfo do
   begin
     if MMX then
-      Result := RsMMX;
+      Result := LoadResString(@RsMMX);
     if ExMMX then
-      Result := Concat(Result, RsExMMX);
+      Result := Concat(Result, LoadResString(@RsMMXExt));
     if _3DNow then
-      Result := Concat(Result, Rs3DNow);
+      Result := Concat(Result, LoadResString(@Rs3DNow));
     if Ex3DNow then
-      Result := Concat(Result, RsEx3DNow);
-    if SSE >= 1 then
-      Result := Concat(Result, RsSSE1);
-    if SSE >= 2 then
-      Result := Concat(Result, RsSSE2);
-    if SSE >= 3 then
-      Result := Concat(Result, RsSSE3);
+      Result := Concat(Result, LoadResString(@Rs3DNowExt));
+    for SSESupport := Low(TSSESupport) to High(TSSESupport) do
+      if SSESupport in SSE then
+        Result := Concat(Result, GetEnumName(TypeInfo(TSSESupport), Integer(SSESupport)));
     if Is64Bits then
-      Result := Result + ',' + RsLong;
+      Result := Result + ',' + LoadResString(@RsLong);
   end;
 end;
 
@@ -462,7 +465,6 @@ begin
     on ExceptObj: TObject do
     begin
       JclExpertShowExceptionDialog(ExceptObj);
-      raise;
     end;
   end;
 end;
@@ -515,7 +517,6 @@ begin
     on ExceptObj: TObject do
     begin
       JclExpertShowExceptionDialog(ExceptObj);
-      raise;
     end;
   end;
 end;
@@ -552,7 +553,6 @@ begin
     on ExceptObj: TObject do
     begin
       JclExpertShowExceptionDialog(ExceptObj);
-      raise;
     end;
   end;
 end;
@@ -585,7 +585,6 @@ begin
     on ExceptObj: TObject do
     begin
       JclExpertShowExceptionDialog(ExceptObj);
-      raise;
     end;
   end;
 end;
@@ -606,7 +605,6 @@ begin
     on ExceptObj: TObject do
     begin
       JclExpertShowExceptionDialog(ExceptObj);
-      raise;
     end;
   end;
 end;
@@ -619,9 +617,16 @@ begin
     on ExceptObj: TObject do
     begin
       JclExpertShowExceptionDialog(ExceptObj);
-      raise;
     end;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

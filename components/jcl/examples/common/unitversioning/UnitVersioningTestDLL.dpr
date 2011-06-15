@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Date: 2006-05-18 18:04:47 +0200 (jeu., 18 mai 2006) $
+// Last modified: $Date: 2009-08-10 17:00:08 +0200 (lun., 10 août 2009) $
 
 library UnitVersioningTestDLL;
 
@@ -37,10 +37,12 @@ uses
 
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision: 1658 $';
-    Date: '$Date: 2006-05-18 18:04:47 +0200 (jeu., 18 mai 2006) $';
-    LogPath: '';
+    RCSfile: '$Url:$';
+    Revision: '$Revision: 2936 $';
+    Date: '$Date: 2009-08-10 17:00:08 +0200 (lun., 10 août 2009) $';
+    LogPath: 'JCL\examples\common\unitversioning';
+    Extra: '';
+    Data: nil
   );
 
 begin

@@ -22,10 +22,20 @@
 { Contributors:                                                                                    }
 {   Marcel van Brakel                                                                              }
 {   Matthias Thoma (mthoma)                                                                        }
+{   Karl Ivar Hansen                                                                               }
+{   Martin Cakrt                                                                                   }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date: 2007-06-28 22:06:21 +0200 (jeu., 28 juin 2007) $
+{                                                                                                  }
+{ This unit contains print-related classes and functions.                                          }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date:: 2010-02-02 21:05:46 +0100 (mar., 02 févr. 2010)                        $ }
+{ Revision:      $Rev:: 3160                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclPrint;
 
@@ -60,7 +70,7 @@ type
     FDriver: PChar;
     FPort: PChar;
     FHandle: THandle;
-    FDeviceMode: PDeviceModeA;
+    FDeviceMode: PDeviceMode;
     FPrinter: Integer;
     FBinArray: PWordArray;
     FNumBins: Byte;
@@ -108,11 +118,9 @@ type
   public
     constructor Create; virtual;
     destructor Destroy; override;
-    {$IFDEF KEEP_DEPRECATED}
-    { TODO : Find a solution for deprecated }
-    function GetBinSourceList: TStringList; overload; {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
-    function GetPaperList: TStringList; overload; {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
-    {$ENDIF KEEP_DEPRECATED}
+    // use the other implementations
+    //function GetBinSourceList: TStringList; overload;
+    //function GetPaperList: TStringList; overload;
     procedure GetBinSourceList(List: TStrings); overload;
     procedure GetPaperList(List: TStrings); overload;
     procedure SetDeviceMode(Creating: Boolean);
@@ -153,7 +161,7 @@ type
     property DpiY: Integer read FiDpiY write FiDpiY;
   end;
 
-procedure DirectPrint(const Printer, Data: string);
+procedure DirectPrint(const Printer, Data: string; const DocumentName: string = '');
 procedure SetPrinterPixelsPerInch;
 function GetPrinterResolution: TPoint;
 function CharFitsWithinDots(const Text: string; const Dots: Integer): Integer;
@@ -167,10 +175,12 @@ function DPSetDefaultPrinter(const PrinterName: string): Boolean;
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jcl.svn.sourceforge.net/svnroot/jcl/tags/JCL-1.101-Build2725/jcl/source/vcl/JclPrint.pas $';
-    Revision: '$Revision: 2056 $';
-    Date: '$Date: 2007-06-28 22:06:21 +0200 (jeu., 28 juin 2007) $';
-    LogPath: 'JCL\source\vcl'
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/source/vcl/JclPrint.pas $';
+    Revision: '$Revision: 3160 $';
+    Date: '$Date: 2010-02-02 21:05:46 +0100 (mar., 02 févr. 2010) $';
+    LogPath: 'JCL\source\vcl';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -178,7 +188,7 @@ implementation
 
 uses
   Graphics, IniFiles, Messages, Printers, WinSpool,
-  JclSysInfo, JclResources;
+  JclSysInfo, JclVclResources;
 
 const
   PrintIniPrinterName   = 'PrinterName';
@@ -201,7 +211,7 @@ const
   cPrintSpool = 'winspool.drv';
 
 // Misc. functions
-procedure DirectPrint(const Printer, Data: string);
+procedure DirectPrint(const Printer, Data, DocumentName: string);
 const
   cRaw = 'RAW';
 type
@@ -227,7 +237,10 @@ begin
   if not OpenPrinter(PChar(Printer), PrinterHandle, @Defaults) then
     raise EJclPrinterError.CreateRes(@RsInvalidPrinter);
   // Fill in the structure with info about this "document"
-  DocInfo.DocName := PChar(RsSpoolerDocName);
+  if DocumentName = '' then
+    DocInfo.DocName := PChar(LoadResString(@RsSpoolerDocName))
+  else
+    DocInfo.DocName := PChar(DocumentName);
   DocInfo.OutputFile := nil;
   DocInfo.Datatype := cRaw;
   try
@@ -240,7 +253,7 @@ begin
         EJclPrinterError.CreateRes(@RsNAStartPage);
       try
         // Send the data to the printer
-        if not WritePrinter(PrinterHandle, @Data, Count, BytesWritten) then
+        if not WritePrinter(PrinterHandle, PChar(Data), Count, BytesWritten) then
           EJclPrinterError.CreateRes(@RsNASendData);
       finally
         // End the page
@@ -376,7 +389,11 @@ begin
     hWinSpool := SafeLoadLibrary(cPrintSpool);
     if hWinSpool <> 0 then
       try
+        {$IFDEF UNICODE}
+        @GetDefPrint := GetProcAddress(hWinSpool, 'GetDefaultPrinterW');
+        {$ELSE}
         @GetDefPrint := GetProcAddress(hWinSpool, 'GetDefaultPrinterA');
+        {$ENDIF UNICODE}
         if not Assigned(GetDefPrint) then
           Exit;
         Size := BUFSIZE;
@@ -478,7 +495,11 @@ begin
     hWinSpool := SafeLoadLibrary(cPrintSpool);
     if hWinSpool <> 0 then
       try
+        {$IFDEF UNICODE}
+        @SetDefPrint := GetProcAddress(hWinSpool, 'SetDefaultPrinterW');
+        {$ELSE}
         @SetDefPrint := GetProcAddress(hWinSpool, 'SetDefaultPrinterA');
+        {$ENDIF UNICODE}
         if Assigned(SetDefPrint) then
           Result := SetDefPrint(PChar(PrinterName));
       finally
@@ -568,76 +589,63 @@ function TJclPrintSet.DefaultPaperName(const PaperID: Word): string;
 begin
   case PaperID of
     dmpaper_Letter:
-      Result := RsPSLetter;
+      Result := LoadResString(@RsPSLetter);
     dmpaper_LetterSmall:
-      Result := RsPSLetter;
+      Result := LoadResString(@RsPSLetter);
     dmpaper_Tabloid:
-      Result := RsPSTabloid;
+      Result := LoadResString(@RsPSTabloid);
     dmpaper_Ledger:
-      Result := RsPSLedger;
+      Result := LoadResString(@RsPSLedger);
     dmpaper_Legal:
-      Result := RsPSLegal;
+      Result := LoadResString(@RsPSLegal);
     dmpaper_Statement:
-      Result := RsPSStatement;
+      Result := LoadResString(@RsPSStatement);
     dmpaper_Executive:
-      Result := RsPSExecutive;
+      Result := LoadResString(@RsPSExecutive);
     dmpaper_A3:
-      Result := RsPSA3;
+      Result := LoadResString(@RsPSA3);
     dmpaper_A4:
-      Result := RsPSA4;
+      Result := LoadResString(@RsPSA4);
     dmpaper_A4Small:
-      Result := RsPSA4;
+      Result := LoadResString(@RsPSA4);
     dmpaper_A5:
-      Result := RsPSA5;
+      Result := LoadResString(@RsPSA5);
     dmpaper_B4:
-      Result := RsPSB4;
+      Result := LoadResString(@RsPSB4);
     dmpaper_B5:
-      Result := RsPSB5;
+      Result := LoadResString(@RsPSB5);
     dmpaper_Folio:
-      Result := RsPSFolio;
+      Result := LoadResString(@RsPSFolio);
     dmpaper_Quarto:
-      Result := RsPSQuarto;
+      Result := LoadResString(@RsPSQuarto);
     dmpaper_10X14:
-      Result := RsPS10x14;
+      Result := LoadResString(@RsPS10x14);
     dmpaper_11X17:
-      Result := RsPS11x17;
+      Result := LoadResString(@RsPS11x17);
     dmpaper_Note:
-      Result := RsPSNote;
+      Result := LoadResString(@RsPSNote);
     dmpaper_Env_9:
-      Result := RsPSEnv9;
+      Result := LoadResString(@RsPSEnv9);
     dmpaper_Env_10:
-      Result := RsPSEnv10;
+      Result := LoadResString(@RsPSEnv10);
     dmpaper_Env_11:
-      Result := RsPSEnv11;
+      Result := LoadResString(@RsPSEnv11);
     dmpaper_Env_12:
-      Result := RsPSEnv12;
+      Result := LoadResString(@RsPSEnv12);
     dmpaper_Env_14:
-      Result := RsPSEnv14;
+      Result := LoadResString(@RsPSEnv14);
     dmpaper_CSheet:
-      Result := RsPSCSheet;
+      Result := LoadResString(@RsPSCSheet);
     dmpaper_DSheet:
-      Result := RsPSDSheet;
+      Result := LoadResString(@RsPSDSheet);
     dmpaper_ESheet:
-      Result := RsPSESheet;
+      Result := LoadResString(@RsPSESheet);
     dmpaper_User:
-      Result := RsPSUser;
+      Result := LoadResString(@RsPSUser);
   else
-    Result := RsPSUnknown;
+    Result := LoadResString(@RsPSUnknown);
   end;
 end;
-
-{$IFDEF KEEP_DEPRECATED}
-function TJclPrintSet.GetBinSourceList: TStringList;
-begin
-  Result := TStringList.Create;
-  try
-    GetBinSourceList(Result);
-  except
-    FreeAndNil(Result);
-    raise;
-  end;
-end;
-{$ENDIF KEEP_DEPRECATED}
 
 procedure TJclPrintSet.GetBinSourceList(List: TStrings);
 type
@@ -673,19 +681,6 @@ begin
       FreeMem(BinArray, FNumBins * SizeOf(TBinName));
   end;
 end;
-
-{$IFDEF KEEP_DEPRECATED}
-function TJclPrintSet.GetPaperList: TStringList;
-begin
-  Result := TStringList.Create;
-  try
-    GetPaperList(Result);
-  except
-    FreeAndNil(Result);
-    raise;
-  end;
-end;
-{$ENDIF KEEP_DEPRECATED}
 
 procedure TJclPrintSet.GetPaperList(List: TStrings);
 type

@@ -32,8 +32,12 @@
 { temperature, angle, mass and pressure conversions.                                               }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date: 2006-12-30 10:04:59 +0100 (sam., 30 déc. 2006) $
+{                                                                                                  }
+{ Last modified: $Date:: 2009-07-30 12:08:05 +0200 (jeu., 30 juil. 2009)                         $ }
+{ Revision:      $Rev:: 2892                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclUnitConv;
 
@@ -232,10 +236,12 @@ function WattToHpMetric(const W: Float): Float;
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jcl.svn.sourceforge.net/svnroot/jcl/tags/JCL-1.101-Build2725/jcl/source/common/JclUnitConv.pas $';
-    Revision: '$Revision: 1856 $';
-    Date: '$Date: 2006-12-30 10:04:59 +0100 (sam., 30 déc. 2006) $';
-    LogPath: 'JCL\source\common'
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/source/common/JclUnitConv.pas $';
+    Revision: '$Revision: 2892 $';
+    Date: '$Date: 2009-07-30 12:08:05 +0200 (jeu., 30 juil. 2009) $';
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -259,11 +265,7 @@ end;
 
 procedure TemperatureBelowAbsoluteError;
 begin
-  {$IFDEF CLR}
-  raise ETemperatureConversionError.Create(RsConvTempBelowAbsoluteZero);
-  {$ELSE}
   raise ETemperatureConversionError.CreateRes(@RsConvTempBelowAbsoluteZero);
-  {$ENDIF CLR}
 end;
 
 function CelsiusToFahrenheit(const Temperature: Float): Float;
@@ -477,11 +479,7 @@ begin
           ttReaumur:
             Result := CelsiusToReaumur(Temperature);
         else
-          {$IFDEF CLR}
-          raise EInvalidOp.CreateFmt(RsTempConvTypeError, [cToType]);
-          {$ELSE}
           raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cToType]);
-          {$ENDIF CLR}
         end;
       end;
     { All conversions from Fahrenheit to other formats are listed here }
@@ -497,11 +495,7 @@ begin
           ttReaumur:
             Result := FahrenheitToReaumur(Temperature);
         else
-          {$IFDEF CLR}
-          raise EInvalidOp.CreateFmt(RsTempConvTypeError, [cToType]);
-          {$ELSE}
           raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cToType]);
-          {$ENDIF CLR}
         end;
       end;
     { All conversions from Kelvin to other formats are listed here }
@@ -517,11 +511,7 @@ begin
           ttReaumur:
             Result := KelvinToReaumur(Temperature);
         else
-          {$IFDEF CLR}
-          raise EInvalidOp.CreateFmt(RsTempConvTypeError, [cToType]);
-          {$ELSE}
           raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cToType]);
-          {$ENDIF CLR}
         end;
       end;
     { All conversions from Kelvin to other formats are listed here }
@@ -537,11 +527,7 @@ begin
           ttReaumur:
             Result := RankineToReaumur(Temperature);
         else
-          {$IFDEF CLR}
-          raise EInvalidOp.CreateFmt(RsTempConvTypeError, [cToType]);
-          {$ELSE}
           raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cToType]);
-          {$ENDIF CLR}
         end;
       end;
     { All conversions from Reaumur to other formats are listed here }
@@ -557,19 +543,11 @@ begin
           ttRankine:
             Result := ReaumurToRankine(Temperature);
         else
-          {$IFDEF CLR}
-          raise EInvalidOp.CreateFmt(RsTempConvTypeError, [cToType]);
-          {$ELSE}
           raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cToType]);
-          {$ENDIF CLR}
         end;
       end;
   else
-    {$IFDEF CLR}
-    raise EInvalidOp.CreateFmt(RsTempConvTypeError, [cFromType]);
-    {$ELSE}
     raise EInvalidOp.CreateResFmt(@RsTempConvTypeError, [cFromType]);
-    {$ENDIF CLR}
   end;
 end;
 

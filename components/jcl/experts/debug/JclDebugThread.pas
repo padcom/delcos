@@ -1,24 +1,27 @@
-{******************************************************************************}
-{                                                                              }
-{ Project JEDI Code Library (JCL) extension                                    }
-{                                                                              }
-{ The contents of this file are subject to the Mozilla Public License Version  }
-{ 1.0 (the "License"); you may not use this file except in compliance with the }
-{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
-{                                                                              }
-{ Software distributed under the License is distributed on an "AS IS" basis,   }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
-{ the specific language governing rights and limitations under the License.    }
-{                                                                              }
-{ The Original Code is JclDebugThread.pas.                                     }
-{                                                                              }
-{ The Initial Developer of the Original Code is documented in the accompanying }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C)   }
-{ of these individuals.                                                        }
-{                                                                              }
-{ Last modified: July 16, 2001                                                 }
-{                                                                              }
-{******************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL) extension                                                        }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.0 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclDebugThread.pas.                                                         }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying help file JCL.chm.  }
+{ Portions created by these individuals are Copyright (C) of these individuals.                    }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date:: 2009-07-30 12:08:05 +0200 (jeu., 30 juil. 2009)                         $ }
+{ Revision:      $Rev:: 2892                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclDebugThread;
 
@@ -27,6 +30,9 @@ unit JclDebugThread;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Classes, SysUtils;
 
 procedure RegisterThread(ThreadID: DWORD; const ThreadName: string); overload;
@@ -39,6 +45,18 @@ procedure ChangeThreadName(ThreadID: DWORD; const ThreadName: string); overload;
 procedure ChangeThreadName(Thread: TThread; const ThreadName: string; IncludeClassName: Boolean = True); overload;
 
 function ThreadNamesAvailable: Boolean;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/experts/debug/JclDebugThread.pas $';
+    Revision: '$Revision: 2892 $';
+    Date: '$Date: 2009-07-30 12:08:05 +0200 (jeu., 30 juil. 2009) $';
+    LogPath: 'JCL\experts\debug';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -176,11 +194,17 @@ begin
 end;
 
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
   Init;
 
 finalization
   FreeAndNil(HookImports);
   FreeAndNil(SharedThreadNames);
   FreeAndNil(Notifier);
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
 
 end.

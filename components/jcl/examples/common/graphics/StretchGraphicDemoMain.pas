@@ -5,11 +5,9 @@
 
 {$I jcl.inc}
 
-{$IFDEF RTL140_UP}
-  {$IFDEF VCL}
-    {$DEFINE HasShellCtrls} // $(Delphi)\Demos\ShellControls\ShellCtrls.pas
-  {$ENDIF VCL}
-{$ENDIF RTL140_UP}
+{$IFDEF VCL}
+  {$DEFINE HasShellCtrls} // $(Delphi)\Demos\ShellControls\ShellCtrls.pas
+{$ENDIF VCL}
 
 unit StretchGraphicDemoMain;
 
@@ -20,16 +18,9 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, Messages, JPEG, ShellAPI,
   {$ENDIF MSWINDOWS}
-  {$IFDEF VCL}
   Graphics, Controls, Forms,
   Dialogs, ComCtrls, StdCtrls, Menus, ExtCtrls, ExtDlgs,
   JclGraphics,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Qt, QGraphics, QMenus, QTypes, QExtCtrls, QComCtrls, QStdCtrls,
-  QControls, QForms, QDialogs,
-  JclQGraphics,
-  {$ENDIF VisualCLX}
   {$IFDEF HasShellCtrls}
     {$WARN UNIT_PLATFORM OFF} 
   ShellCtrls,
@@ -129,10 +120,7 @@ implementation
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
+{$ENDIF VCL}
 
 var
   FileMask: string;

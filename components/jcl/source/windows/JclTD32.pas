@@ -26,11 +26,13 @@
 {                                                                                                  }
 { Borland TD32 symbolic debugging information support routines and classes.                        }
 {                                                                                                  }
-{ Unit owner: Flier Lu                                                                             }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date:: 2010-02-02 21:05:46 +0100 (mar., 02 févr. 2010)                        $ }
+{ Revision:      $Rev:: 3160                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date: 2007-06-20 10:42:59 +0200 (mer., 20 juin 2007) $
 
 unit JclTD32;
 
@@ -46,7 +48,11 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   Classes, SysUtils, Contnrs,
-  JclBase, JclFileUtils, JclPeImage;
+  JclBase,
+  {$IFDEF BORLAND}
+  JclPeImage,
+  {$ENDIF BORLAND}
+  JclFileUtils;
 
 { TODO -cDOC : Original code: "Flier Lu" <flier_lu att yahoo dott com dott cn> }
 
@@ -606,166 +612,155 @@ type
 
 // TD32 information related classes
 type
-  TJclModuleInfo = class(TObject)
+  TJclTD32ModuleInfo = class(TObject)
   private
     FNameIndex: DWORD;
     FSegments: PSegmentInfoArray;
     FSegmentCount: Integer;
     function GetSegment(const Idx: Integer): TSegmentInfo;
-  protected
-    constructor Create(pModInfo: PModuleInfo);
   public
+    constructor Create(pModInfo: PModuleInfo);
     property NameIndex: DWORD read FNameIndex;
     property SegmentCount: Integer read FSegmentCount; //GetSegmentCount;
     property Segment[const Idx: Integer]: TSegmentInfo read GetSegment; default;
   end;
 
-  TJclLineInfo = class(TObject)
+  TJclTD32LineInfo = class(TObject)
   private
     FLineNo: DWORD;
     FOffset: DWORD;
-  protected
-    constructor Create(ALineNo, AOffset: DWORD);
   public
+    constructor Create(ALineNo, AOffset: DWORD);
     property LineNo: DWORD read FLineNo;
     property Offset: DWORD read FOffset;
   end;
 
-  TJclSourceModuleInfo = class(TObject)
+  TJclTD32SourceModuleInfo = class(TObject)
   private
     FLines: TObjectList;
     FSegments: POffsetPairArray;
     FSegmentCount: Integer;
     FNameIndex: DWORD;
-    function GetLine(const Idx: Integer): TJclLineInfo;
+    function GetLine(const Idx: Integer): TJclTD32LineInfo;
     function GetLineCount: Integer;
     function GetSegment(const Idx: Integer): TOffsetPair;
-  protected
-    constructor Create(pSrcFile: PSourceFileEntry; Base: DWORD);
   public
+    constructor Create(pSrcFile: PSourceFileEntry; Base: TJclAddr);
     destructor Destroy; override;
-    function FindLine(const AAddr: DWORD; var ALine: TJclLineInfo): Boolean;
+    function FindLine(const AAddr: DWORD; out ALine: TJclTD32LineInfo): Boolean;
     property NameIndex: DWORD read FNameIndex;
     property LineCount: Integer read GetLineCount;
-    property Line[const Idx: Integer]: TJclLineInfo read GetLine; default;
+    property Line[const Idx: Integer]: TJclTD32LineInfo read GetLine; default;
     property SegmentCount: Integer read FSegmentCount; //GetSegmentCount;
     property Segment[const Idx: Integer]: TOffsetPair read GetSegment;
   end;
 
-  TJclSymbolInfo = class(TObject)
+  TJclTD32SymbolInfo = class(TObject)
   private
     FSymbolType: Word;
-  protected
+  public
     constructor Create(pSymInfo: PSymbolInfo); virtual;
     property SymbolType: Word read FSymbolType;
   end;
 
-  TJclProcSymbolInfo = class(TJclSymbolInfo)
+  TJclTD32ProcSymbolInfo = class(TJclTD32SymbolInfo)
   private
     FNameIndex: DWORD;
     FOffset: DWORD;
     FSize: DWORD;
-  protected
-    constructor Create(pSymInfo: PSymbolInfo); override;
   public
+    constructor Create(pSymInfo: PSymbolInfo); override;
     property NameIndex: DWORD read FNameIndex;
     property Offset: DWORD read FOffset;
     property Size: DWORD read FSize;
   end;
 
-  TJclLocalProcSymbolInfo = class(TJclProcSymbolInfo);
-  TJclGlobalProcSymbolInfo = class(TJclProcSymbolInfo);
+  TJclTD32LocalProcSymbolInfo = class(TJclTD32ProcSymbolInfo);
+  TJclTD32GlobalProcSymbolInfo = class(TJclTD32ProcSymbolInfo);
 
   { not used by Delphi }
-  TJclObjNameSymbolInfo = class(TJclSymbolInfo)
+  TJclTD32ObjNameSymbolInfo = class(TJclTD32SymbolInfo)
   private
     FSignature: DWORD;
     FNameIndex: DWORD;
-  protected
-    constructor Create(pSymInfo: PSymbolInfo); override;
   public
+    constructor Create(pSymInfo: PSymbolInfo); override;
     property NameIndex: DWORD read FNameIndex;
     property Signature: DWORD read FSignature;
   end;
 
-  TJclDataSymbolInfo = class(TJclSymbolInfo)
+  TJclTD32DataSymbolInfo = class(TJclTD32SymbolInfo)
   private
     FOffset: DWORD;
     FTypeIndex: DWORD;
     FNameIndex: DWORD;
-  protected
-    constructor Create(pSymInfo: PSymbolInfo); override;
   public
+    constructor Create(pSymInfo: PSymbolInfo); override;
     property NameIndex: DWORD read FNameIndex;
     property TypeIndex: DWORD read FTypeIndex;
     property Offset: DWORD read FOffset;
   end;
 
-  TJclLDataSymbolInfo = class(TJclDataSymbolInfo);
-  TJclGDataSymbolInfo = class(TJclDataSymbolInfo);
-  TJclPublicSymbolInfo = class(TJclDataSymbolInfo);
+  TJclTD32LDataSymbolInfo = class(TJclTD32DataSymbolInfo);
+  TJclTD32GDataSymbolInfo = class(TJclTD32DataSymbolInfo);
+  TJclTD32PublicSymbolInfo = class(TJclTD32DataSymbolInfo);
 
-  TJclWithSymbolInfo = class(TJclSymbolInfo)
+  TJclTD32WithSymbolInfo = class(TJclTD32SymbolInfo)
   private
     FOffset: DWORD;
     FSize: DWORD;
     FNameIndex: DWORD;
-  protected
-    constructor Create(pSymInfo: PSymbolInfo); override;
   public
+    constructor Create(pSymInfo: PSymbolInfo); override;
     property NameIndex: DWORD read FNameIndex;
     property Offset: DWORD read FOffset;
     property Size: DWORD read FSize;
   end;
 
   { not used by Delphi }
-  TJclLabelSymbolInfo = class(TJclSymbolInfo)
+  TJclTD32LabelSymbolInfo = class(TJclTD32SymbolInfo)
   private
     FOffset: DWORD;
     FNameIndex: DWORD;
-  protected
-    constructor Create(pSymInfo: PSymbolInfo); override;
   public
+    constructor Create(pSymInfo: PSymbolInfo); override;
     property NameIndex: DWORD read FNameIndex;
     property Offset: DWORD read FOffset;
   end;
 
   { not used by Delphi }
-  TJclConstantSymbolInfo = class(TJclSymbolInfo)
+  TJclTD32ConstantSymbolInfo = class(TJclTD32SymbolInfo)
   private
     FValue: DWORD;
     FTypeIndex: DWORD;
     FNameIndex: DWORD;
-  protected
-    constructor Create(pSymInfo: PSymbolInfo); override;
   public
+    constructor Create(pSymInfo: PSymbolInfo); override;
     property NameIndex: DWORD read FNameIndex;
     property TypeIndex: DWORD read FTypeIndex; // for enums
     property Value: DWORD read FValue;
   end;
 
-  TJclUdtSymbolInfo = class(TJclSymbolInfo)
+  TJclTD32UdtSymbolInfo = class(TJclTD32SymbolInfo)
   private
     FTypeIndex: DWORD;
     FNameIndex: DWORD;
     FProperties: Word;
-  protected
-    constructor Create(pSymInfo: PSymbolInfo); override;
   public
+    constructor Create(pSymInfo: PSymbolInfo); override;
     property NameIndex: DWORD read FNameIndex;
     property TypeIndex: DWORD read FTypeIndex;
     property Properties: Word read FProperties;
   end;
 
   { not used by Delphi }
-  TJclVftPathSymbolInfo = class(TJclSymbolInfo)
+  TJclTD32VftPathSymbolInfo = class(TJclTD32SymbolInfo)
   private
     FRootIndex: DWORD;
     FPathIndex: DWORD;
     FOffset: DWORD;
-  protected
-    constructor Create(pSymInfo: PSymbolInfo); override;
   public
+    constructor Create(pSymInfo: PSymbolInfo); override;
     property RootIndex: DWORD read FRootIndex;
     property PathIndex: DWORD read FPathIndex;
     property Offset: DWORD read FOffset;
@@ -784,13 +779,13 @@ type
     FValidData: Boolean;
     function GetName(const Idx: Integer): string;
     function GetNameCount: Integer;
-    function GetSymbol(const Idx: Integer): TJclSymbolInfo;
+    function GetSymbol(const Idx: Integer): TJclTD32SymbolInfo;
     function GetSymbolCount: Integer;
-    function GetProcSymbol(const Idx: Integer): TJclProcSymbolInfo;
+    function GetProcSymbol(const Idx: Integer): TJclTD32ProcSymbolInfo;
     function GetProcSymbolCount: Integer;
-    function GetModule(const Idx: Integer): TJclModuleInfo;
+    function GetModule(const Idx: Integer): TJclTD32ModuleInfo;
     function GetModuleCount: Integer;
-    function GetSourceModule(const Idx: Integer): TJclSourceModuleInfo;
+    function GetSourceModule(const Idx: Integer): TJclTD32SourceModuleInfo;
     function GetSourceModuleCount: Integer;
   protected
     procedure Analyse;
@@ -804,21 +799,21 @@ type
   public
     constructor Create(const ATD32Data: TCustomMemoryStream); // Data mustn't be freed before the class is destroyed
     destructor Destroy; override;
-    function FindModule(const AAddr: DWORD; var AMod: TJclModuleInfo): Boolean;
-    function FindSourceModule(const AAddr: DWORD; var ASrcMod: TJclSourceModuleInfo): Boolean;
-    function FindProc(const AAddr: DWORD; var AProc: TJclProcSymbolInfo): Boolean;
+    function FindModule(const AAddr: DWORD; out AMod: TJclTD32ModuleInfo): Boolean;
+    function FindSourceModule(const AAddr: DWORD; out ASrcMod: TJclTD32SourceModuleInfo): Boolean;
+    function FindProc(const AAddr: DWORD; out AProc: TJclTD32ProcSymbolInfo): Boolean;
     class function IsTD32Sign(const Sign: TJclTD32FileSignature): Boolean;
     class function IsTD32DebugInfoValid(const DebugData: Pointer; const DebugDataSize: LongWord): Boolean;
     property Data: TCustomMemoryStream read FData;
     property Names[const Idx: Integer]: string read GetName;
     property NameCount: Integer read GetNameCount;
-    property Symbols[const Idx: Integer]: TJclSymbolInfo read GetSymbol;
+    property Symbols[const Idx: Integer]: TJclTD32SymbolInfo read GetSymbol;
     property SymbolCount: Integer read GetSymbolCount;
-    property ProcSymbols[const Idx: Integer]: TJclProcSymbolInfo read GetProcSymbol;
+    property ProcSymbols[const Idx: Integer]: TJclTD32ProcSymbolInfo read GetProcSymbol;
     property ProcSymbolCount: Integer read GetProcSymbolCount;
-    property Modules[const Idx: Integer]: TJclModuleInfo read GetModule;
+    property Modules[const Idx: Integer]: TJclTD32ModuleInfo read GetModule;
     property ModuleCount: Integer read GetModuleCount;
-    property SourceModules[const Idx: Integer]: TJclSourceModuleInfo read GetSourceModule;
+    property SourceModules[const Idx: Integer]: TJclTD32SourceModuleInfo read GetSourceModule;
     property SourceModuleCount: Integer read GetSourceModuleCount;
     property ValidData: Boolean read FValidData;
   end;
@@ -826,14 +821,15 @@ type
   // TD32 scanner with source location methods
   TJclTD32InfoScanner = class(TJclTD32InfoParser)
   public
-    function LineNumberFromAddr(AAddr: DWORD; var Offset: Integer): Integer; overload;
+    function LineNumberFromAddr(AAddr: DWORD; out Offset: Integer): Integer; overload;
     function LineNumberFromAddr(AAddr: DWORD): Integer; overload;
     function ProcNameFromAddr(AAddr: DWORD): string; overload;
-    function ProcNameFromAddr(AAddr: DWORD; var Offset: Integer): string; overload;
+    function ProcNameFromAddr(AAddr: DWORD; out Offset: Integer): string; overload;
     function ModuleNameFromAddr(AAddr: DWORD): string;
     function SourceNameFromAddr(AAddr: DWORD): string;
   end;
 
+  {$IFDEF BORLAND}
   // PE Image with TD32 information and source location support 
   TJclPeBorTD32Image = class(TJclPeBorImage)
   private
@@ -852,28 +848,33 @@ type
     property TD32DebugData: TCustomMemoryStream read FTD32DebugData;
     property TD32Scanner: TJclTD32InfoScanner read FTD32Scanner;
   end;
+  {$ENDIF BORLAND}
 
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jcl.svn.sourceforge.net/svnroot/jcl/tags/JCL-1.101-Build2725/jcl/source/windows/JclTD32.pas $';
-    Revision: '$Revision: 2048 $';
-    Date: '$Date: 2007-06-20 10:42:59 +0200 (mer., 20 juin 2007) $';
-    LogPath: 'JCL\source\windows'
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/source/windows/JclTD32.pas $';
+    Revision: '$Revision: 3160 $';
+    Date: '$Date: 2010-02-02 21:05:46 +0100 (mar., 02 févr. 2010) $';
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
 implementation
 
 uses
-  JclResources, JclSysUtils;
+  JclResources, JclSysUtils, JclStringConversions;
 
+{$IFDEF BORLAND}
 const
   TurboDebuggerSymbolExt = '.tds';
+{$ENDIF BORLAND}
 
 //=== { TJclModuleInfo } =====================================================
 
-constructor TJclModuleInfo.Create(pModInfo: PModuleInfo);
+constructor TJclTD32ModuleInfo.Create(pModInfo: PModuleInfo);
 begin
   Assert(Assigned(pModInfo));
   inherited Create;
@@ -882,7 +883,7 @@ begin
   FSegmentCount := pModInfo.SegmentCount;
 end;
 
-function TJclModuleInfo.GetSegment(const Idx: Integer): TSegmentInfo;
+function TJclTD32ModuleInfo.GetSegment(const Idx: Integer): TSegmentInfo;
 begin
   Assert((0 <= Idx) and (Idx < FSegmentCount));
   Result := FSegments[Idx];
@@ -890,7 +891,7 @@ end;
 
 //=== { TJclLineInfo } =======================================================
 
-constructor TJclLineInfo.Create(ALineNo, AOffset: DWORD);
+constructor TJclTD32LineInfo.Create(ALineNo, AOffset: DWORD);
 begin
   inherited Create;
   FLineNo := ALineNo;
@@ -899,7 +900,7 @@ end;
 
 //=== { TJclSourceModuleInfo } ===============================================
 
-constructor TJclSourceModuleInfo.Create(pSrcFile: PSourceFileEntry; Base: DWORD);
+constructor TJclTD32SourceModuleInfo.Create(pSrcFile: PSourceFileEntry; Base: TJclAddr);
 type
   PArrayOfWord = ^TArrayOfWord;
   TArrayOfWord = array [0..0] of Word;
@@ -916,7 +917,7 @@ begin
   begin
     pLineEntry := PLineMappingEntry(Base + pSrcFile.BaseSrcLines[I]);
     for J := 0 to pLineEntry.PairCount - 1 do
-      FLines.Add(TJclLineInfo.Create(
+      FLines.Add(TJclTD32LineInfo.Create(
         PArrayOfWord(@pLineEntry.Offsets[pLineEntry.PairCount])^[J],
         pLineEntry.Offsets[J]));
   end;
@@ -928,29 +929,29 @@ begin
   {$ENDIF RANGECHECKS_ON}
 end;
 
-destructor TJclSourceModuleInfo.Destroy;
+destructor TJclTD32SourceModuleInfo.Destroy;
 begin
   FreeAndNil(FLines);
   inherited Destroy;
 end;
 
-function TJclSourceModuleInfo.GetLine(const Idx: Integer): TJclLineInfo;
+function TJclTD32SourceModuleInfo.GetLine(const Idx: Integer): TJclTD32LineInfo;
 begin
-  Result := TJclLineInfo(FLines.Items[Idx]);
+  Result := TJclTD32LineInfo(FLines.Items[Idx]);
 end;
 
-function TJclSourceModuleInfo.GetLineCount: Integer;
+function TJclTD32SourceModuleInfo.GetLineCount: Integer;
 begin
   Result := FLines.Count;
 end;
 
-function TJclSourceModuleInfo.GetSegment(const Idx: Integer): TOffsetPair;
+function TJclTD32SourceModuleInfo.GetSegment(const Idx: Integer): TOffsetPair;
 begin
   Assert((0 <= Idx) and (Idx < FSegmentCount));
   Result := FSegments[Idx];
 end;
 
-function TJclSourceModuleInfo.FindLine(const AAddr: DWORD; var ALine: TJclLineInfo): Boolean;
+function TJclTD32SourceModuleInfo.FindLine(const AAddr: DWORD; out ALine: TJclTD32LineInfo): Boolean;
 var
   I: Integer;
 begin
@@ -977,7 +978,7 @@ end;
 
 //=== { TJclSymbolInfo } =====================================================
 
-constructor TJclSymbolInfo.Create(pSymInfo: PSymbolInfo);
+constructor TJclTD32SymbolInfo.Create(pSymInfo: PSymbolInfo);
 begin
   Assert(Assigned(pSymInfo));
   inherited Create;
@@ -986,7 +987,7 @@ end;
 
 //=== { TJclProcSymbolInfo } =================================================
 
-constructor TJclProcSymbolInfo.Create(pSymInfo: PSymbolInfo);
+constructor TJclTD32ProcSymbolInfo.Create(pSymInfo: PSymbolInfo);
 begin
   Assert(Assigned(pSymInfo));
   inherited Create(pSymInfo);
@@ -1000,7 +1001,7 @@ end;
 
 //=== { TJclObjNameSymbolInfo } ==============================================
 
-constructor TJclObjNameSymbolInfo.Create(pSymInfo: PSymbolInfo);
+constructor TJclTD32ObjNameSymbolInfo.Create(pSymInfo: PSymbolInfo);
 begin
   Assert(Assigned(pSymInfo));
   inherited Create(pSymInfo);
@@ -1013,7 +1014,7 @@ end;
 
 //=== { TJclDataSymbolInfo } =================================================
 
-constructor TJclDataSymbolInfo.Create(pSymInfo: PSymbolInfo);
+constructor TJclTD32DataSymbolInfo.Create(pSymInfo: PSymbolInfo);
 begin
   Assert(Assigned(pSymInfo));
   inherited Create(pSymInfo);
@@ -1027,7 +1028,7 @@ end;
 
 //=== { TJclWithSymbolInfo } =================================================
 
-constructor TJclWithSymbolInfo.Create(pSymInfo: PSymbolInfo);
+constructor TJclTD32WithSymbolInfo.Create(pSymInfo: PSymbolInfo);
 begin
   Assert(Assigned(pSymInfo));
   inherited Create(pSymInfo);
@@ -1041,7 +1042,7 @@ end;
 
 //=== { TJclLabelSymbolInfo } ================================================
 
-constructor TJclLabelSymbolInfo.Create(pSymInfo: PSymbolInfo);
+constructor TJclTD32LabelSymbolInfo.Create(pSymInfo: PSymbolInfo);
 begin
   Assert(Assigned(pSymInfo));
   inherited Create(pSymInfo);
@@ -1054,7 +1055,7 @@ end;
 
 //=== { TJclConstantSymbolInfo } =============================================
 
-constructor TJclConstantSymbolInfo.Create(pSymInfo: PSymbolInfo);
+constructor TJclTD32ConstantSymbolInfo.Create(pSymInfo: PSymbolInfo);
 begin
   Assert(Assigned(pSymInfo));
   inherited Create(pSymInfo);
@@ -1068,7 +1069,7 @@ end;
 
 //=== { TJclUdtSymbolInfo } ==================================================
 
-constructor TJclUdtSymbolInfo.Create(pSymInfo: PSymbolInfo);
+constructor TJclTD32UdtSymbolInfo.Create(pSymInfo: PSymbolInfo);
 begin
   Assert(Assigned(pSymInfo));
   inherited Create(pSymInfo);
@@ -1082,7 +1083,7 @@ end;
 
 //=== { TJclVftPathSymbolInfo } ==============================================
 
-constructor TJclVftPathSymbolInfo.Create(pSymInfo: PSymbolInfo);
+constructor TJclTD32VftPathSymbolInfo.Create(pSymInfo: PSymbolInfo);
 begin
   Assert(Assigned(pSymInfo));
   inherited Create(pSymInfo);
@@ -1166,10 +1167,10 @@ end;
 procedure TJclTD32InfoParser.AnalyseNames(const pSubsection: Pointer; const Size: DWORD);
 var
   I, Count, Len: Integer;
-  pszName: PChar;
+  pszName: PAnsiChar;
 begin
   Count := PDWORD(pSubsection)^;
-  pszName := PChar(DWORD(pSubsection) + SizeOf(DWORD));
+  pszName := PAnsiChar(TJclAddr(pSubsection) + SizeOf(DWORD));
   if Count > 0 then
   begin
     FNames.Capacity := FNames.Capacity + Count;
@@ -1186,6 +1187,7 @@ begin
   end;
 end;
 
+{ // unused
 const
   // Leaf indices for type records that can be referenced from symbols
   LF_MODIFIER  = $0001;
@@ -1267,6 +1269,7 @@ const
   LF_PAD13 = $fd;
   LF_PAD14 = $fe;
   LF_PAD15 = $ff;
+}
 
 type
   PSymbolTypeInfo = ^TSymbolTypeInfo;
@@ -1278,11 +1281,13 @@ type
     ParentIndex: DWORD;
   end;
 
+{ unused
 const
   TID_VOID   = $00;       // Unknown or no type
   TID_LSTR   = $01;       // Basic Literal string
   TID_DSTR   = $02;       // Basic Dynamic string
   TID_PSTR   = $03;       // Pascal style string
+}
 
 procedure TJclTD32InfoParser.AnalyseGlobalTypes(const pTypes: Pointer; const Size: DWORD);
 var
@@ -1293,49 +1298,49 @@ begin
     {case pTyp.TypeId of
       TID_VOID: ;
     end;}
-    pTyp := PSymbolTypeInfo(DWORD(pTyp) + pTyp.Size + SizeOf(pTyp^));
-  until DWORD(pTyp) >= DWORD(pTypes) + Size;
+    pTyp := PSymbolTypeInfo(TJclAddr(pTyp) + pTyp.Size + SizeOf(pTyp^));
+  until TJclAddr(pTyp) >= TJclAddr(pTypes) + Size;
 end;
 
 procedure TJclTD32InfoParser.AnalyseAlignSymbols(pSymbols: PSymbolInfos; const Size: DWORD);
 var
-  Offset: DWORD;
+  Offset: TJclAddr;
   pInfo: PSymbolInfo;
-  Symbol: TJclSymbolInfo;
+  Symbol: TJclTD32SymbolInfo;
 begin
-  Offset := DWORD(@pSymbols.Symbols[0]) - DWORD(pSymbols);
+  Offset := TJclAddr(@pSymbols.Symbols[0]) - TJclAddr(pSymbols);
   while Offset < Size do
   begin
-    pInfo := PSymbolInfo(DWORD(pSymbols) + Offset);
+    pInfo := PSymbolInfo(TJclAddr(pSymbols) + Offset);
     case pInfo.SymbolType of
       SYMBOL_TYPE_LPROC32:
         begin
-          Symbol := TJclLocalProcSymbolInfo.Create(pInfo);
+          Symbol := TJclTD32LocalProcSymbolInfo.Create(pInfo);
           FProcSymbols.Add(Symbol);
         end;
       SYMBOL_TYPE_GPROC32:
         begin
-          Symbol := TJclGlobalProcSymbolInfo.Create(pInfo);
+          Symbol := TJclTD32GlobalProcSymbolInfo.Create(pInfo);
           FProcSymbols.Add(Symbol);
         end;
       SYMBOL_TYPE_OBJNAME:
-        Symbol := TJclObjNameSymbolInfo.Create(pInfo);
+        Symbol := TJclTD32ObjNameSymbolInfo.Create(pInfo);
       SYMBOL_TYPE_LDATA32:
-        Symbol := TJclLDataSymbolInfo.Create(pInfo);
+        Symbol := TJclTD32LDataSymbolInfo.Create(pInfo);
       SYMBOL_TYPE_GDATA32:
-        Symbol := TJclGDataSymbolInfo.Create(pInfo);
+        Symbol := TJclTD32GDataSymbolInfo.Create(pInfo);
       SYMBOL_TYPE_PUB32:
-        Symbol := TJclPublicSymbolInfo.Create(pInfo);
+        Symbol := TJclTD32PublicSymbolInfo.Create(pInfo);
       SYMBOL_TYPE_WITH32:
-        Symbol := TJclWithSymbolInfo.Create(pInfo);
+        Symbol := TJclTD32WithSymbolInfo.Create(pInfo);
       SYMBOL_TYPE_LABEL32:
-        Symbol := TJclLabelSymbolInfo.Create(pInfo);
+        Symbol := TJclTD32LabelSymbolInfo.Create(pInfo);
       SYMBOL_TYPE_CONST:
-        Symbol := TJclConstantSymbolInfo.Create(pInfo);
+        Symbol := TJclTD32ConstantSymbolInfo.Create(pInfo);
       SYMBOL_TYPE_UDT:
-        Symbol := TJclUdtSymbolInfo.Create(pInfo);
+        Symbol := TJclTD32UdtSymbolInfo.Create(pInfo);
       SYMBOL_TYPE_VFTPATH32:
-        Symbol := TJclVftPathSymbolInfo.Create(pInfo);
+        Symbol := TJclTD32VftPathSymbolInfo.Create(pInfo);
     else
       Symbol := nil;
     end;
@@ -1347,7 +1352,7 @@ end;
 
 procedure TJclTD32InfoParser.AnalyseModules(pModInfo: PModuleInfo; const Size: DWORD);
 begin
-  FModules.Add(TJclModuleInfo.Create(pModInfo));
+  FModules.Add(TJclTD32ModuleInfo.Create(pModInfo));
 end;
 
 procedure TJclTD32InfoParser.AnalyseSourceModules(pSrcModInfo: PSourceModuleInfo; const Size: DWORD);
@@ -1358,9 +1363,9 @@ begin
   {$RANGECHECKS OFF}
   for I := 0 to pSrcModInfo.FileCount - 1 do
   begin
-    pSrcFile := PSourceFileEntry(DWORD(pSrcModInfo) + pSrcModInfo.BaseSrcFiles[I]);
+    pSrcFile := PSourceFileEntry(TJclAddr(pSrcModInfo) + pSrcModInfo.BaseSrcFiles[I]);
     if pSrcFile.NameIndex > 0 then
-      FSourceModules.Add(TJclSourceModuleInfo.Create(pSrcFile, DWORD(pSrcModInfo)));
+      FSourceModules.Add(TJclTD32SourceModuleInfo.Create(pSrcFile, TJclAddr(pSrcModInfo)));
   end;
   {$IFDEF RANGECHECKS_ON}
   {$RANGECHECKS ON}
@@ -1372,9 +1377,9 @@ begin
   // do nothing
 end;
 
-function TJclTD32InfoParser.GetModule(const Idx: Integer): TJclModuleInfo;
+function TJclTD32InfoParser.GetModule(const Idx: Integer): TJclTD32ModuleInfo;
 begin
-  Result := TJclModuleInfo(FModules.Items[Idx]);
+  Result := TJclTD32ModuleInfo(FModules.Items[Idx]);
 end;
 
 function TJclTD32InfoParser.GetModuleCount: Integer;
@@ -1384,7 +1389,7 @@ end;
 
 function TJclTD32InfoParser.GetName(const Idx: Integer): string;
 begin
-  Result := PChar(FNames.Items[Idx]);
+  Result := UTF8ToString(PAnsiChar(FNames.Items[Idx]));
 end;
 
 function TJclTD32InfoParser.GetNameCount: Integer;
@@ -1392,9 +1397,9 @@ begin
   Result := FNames.Count;
 end;
 
-function TJclTD32InfoParser.GetSourceModule(const Idx: Integer): TJclSourceModuleInfo;
+function TJclTD32InfoParser.GetSourceModule(const Idx: Integer): TJclTD32SourceModuleInfo;
 begin
-  Result := TJclSourceModuleInfo(FSourceModules.Items[Idx]);
+  Result := TJclTD32SourceModuleInfo(FSourceModules.Items[Idx]);
 end;
 
 function TJclTD32InfoParser.GetSourceModuleCount: Integer;
@@ -1402,9 +1407,9 @@ begin
   Result := FSourceModules.Count;
 end;
 
-function TJclTD32InfoParser.GetSymbol(const Idx: Integer): TJclSymbolInfo;
+function TJclTD32InfoParser.GetSymbol(const Idx: Integer): TJclTD32SymbolInfo;
 begin
-  Result := TJclSymbolInfo(FSymbols.Items[Idx]);
+  Result := TJclTD32SymbolInfo(FSymbols.Items[Idx]);
 end;
 
 function TJclTD32InfoParser.GetSymbolCount: Integer;
@@ -1412,9 +1417,9 @@ begin
   Result := FSymbols.Count;
 end;
 
-function TJclTD32InfoParser.GetProcSymbol(const Idx: Integer): TJclProcSymbolInfo;
+function TJclTD32InfoParser.GetProcSymbol(const Idx: Integer): TJclTD32ProcSymbolInfo;
 begin
-  Result := TJclProcSymbolInfo(FProcSymbols.Items[Idx]);
+  Result := TJclTD32ProcSymbolInfo(FProcSymbols.Items[Idx]);
 end;
 
 function TJclTD32InfoParser.GetProcSymbolCount: Integer;
@@ -1422,8 +1427,7 @@ begin
   Result := FProcSymbols.Count;
 end;
 
-function TJclTD32InfoParser.FindModule(const AAddr: DWORD;
-  var AMod: TJclModuleInfo): Boolean;
+function TJclTD32InfoParser.FindModule(const AAddr: DWORD; out AMod: TJclTD32ModuleInfo): Boolean;
 var
   I, J: Integer;
 begin
@@ -1432,7 +1436,7 @@ begin
     with Modules[I] do
       for J := 0 to SegmentCount - 1 do
       begin
-        if (AAddr >= FSegments[J].Offset) and (AAddr - FSegments[J].Offset <= Segment[J].Size) then
+        if (FSegments[J].Flags = 1) and (AAddr >= FSegments[J].Offset) and (AAddr - FSegments[J].Offset <= Segment[J].Size) then
         begin
           Result := True;
           AMod := Modules[I];
@@ -1443,8 +1447,7 @@ begin
   AMod := nil;
 end;
 
-function TJclTD32InfoParser.FindSourceModule(const AAddr: DWORD;
-  var ASrcMod: TJclSourceModuleInfo): Boolean;
+function TJclTD32InfoParser.FindSourceModule(const AAddr: DWORD; out ASrcMod: TJclTD32SourceModuleInfo): Boolean;
 var
   I, J: Integer;
 begin
@@ -1463,7 +1466,7 @@ begin
   Result := False;
 end;
 
-function TJclTD32InfoParser.FindProc(const AAddr: DWORD; var AProc: TJclProcSymbolInfo): Boolean;
+function TJclTD32InfoParser.FindProc(const AAddr: DWORD; out AProc: TJclTD32ProcSymbolInfo): Boolean;
 var
   I: Integer;
 begin
@@ -1486,11 +1489,11 @@ class function TJclTD32InfoParser.IsTD32DebugInfoValid(
   const DebugData: Pointer; const DebugDataSize: LongWord): Boolean;
 var
   Sign: TJclTD32FileSignature;
-  EndOfDebugData: LongWord;
+  EndOfDebugData: TJclAddr;
 begin
   Assert(not IsBadReadPtr(DebugData, DebugDataSize));
   Result := False;
-  EndOfDebugData := LongWord(DebugData) + DebugDataSize;
+  EndOfDebugData := TJclAddr(DebugData) + DebugDataSize;
   if DebugDataSize > SizeOf(Sign) then
   begin
     Sign := PJclTD32FileSignature(EndOfDebugData - SizeOf(Sign))^;
@@ -1510,7 +1513,7 @@ end;
 
 function TJclTD32InfoParser.LfaToVa(Lfa: DWORD): Pointer;
 begin
-  Result := Pointer(DWORD(FBase) + Lfa)
+  Result := Pointer(TJclAddr(FBase) + Lfa)
 end;
 
 //=== { TJclTD32InfoScanner } ================================================
@@ -1522,10 +1525,10 @@ begin
   Result := LineNumberFromAddr(AAddr, Dummy);
 end;
 
-function TJclTD32InfoScanner.LineNumberFromAddr(AAddr: DWORD; var Offset: Integer): Integer;
+function TJclTD32InfoScanner.LineNumberFromAddr(AAddr: DWORD; out Offset: Integer): Integer;
 var
-  ASrcMod: TJclSourceModuleInfo;
-  ALine: TJclLineInfo;
+  ASrcMod: TJclTD32SourceModuleInfo;
+  ALine: TJclTD32LineInfo;
 begin
   if FindSourceModule(AAddr, ASrcMod) and ASrcMod.FindLine(AAddr, ALine) then
   begin
@@ -1541,7 +1544,7 @@ end;
 
 function TJclTD32InfoScanner.ModuleNameFromAddr(AAddr: DWORD): string;
 var
-  AMod: TJclModuleInfo;
+  AMod: TJclTD32ModuleInfo;
 begin
   if FindModule(AAddr, AMod) then
     Result := Names[AMod.NameIndex]
@@ -1556,9 +1559,9 @@ begin
   Result := ProcNameFromAddr(AAddr, Dummy);
 end;
 
-function TJclTD32InfoScanner.ProcNameFromAddr(AAddr: DWORD; var Offset: Integer): string;
+function TJclTD32InfoScanner.ProcNameFromAddr(AAddr: DWORD; out Offset: Integer): string;
 var
-  AProc: TJclProcSymbolInfo;
+  AProc: TJclTD32ProcSymbolInfo;
 
   function FormatProcName(const ProcName: string): string;
   var
@@ -1599,11 +1602,13 @@ end;
 
 function TJclTD32InfoScanner.SourceNameFromAddr(AAddr: DWORD): string;
 var
-  ASrcMod: TJclSourceModuleInfo;
+  ASrcMod: TJclTD32SourceModuleInfo;
 begin
   if FindSourceModule(AAddr, ASrcMod) then
     Result := Names[ASrcMod.NameIndex];
 end;
+
+{$IFDEF BORLAND}
 
 //=== { TJclPeBorTD32Image } =================================================
 
@@ -1689,6 +1694,7 @@ begin
   end;
 end;
 
+{$ENDIF BORLAND}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);

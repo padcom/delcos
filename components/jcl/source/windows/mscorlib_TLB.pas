@@ -1,3 +1,11 @@
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date:: 2010-02-22 11:08:20 +0100 (lun., 22 févr. 2010)                        $ }
+{ Revision:      $Rev:: 3196                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
+{                                                                                                  }
+{**************************************************************************************************}
+
 unit mscorlib_TLB;
 
 // ************************************************************************ //
@@ -11,7 +19,7 @@ unit mscorlib_TLB;
 // manual modifications will be lost.                                         
 // ************************************************************************ //
 
-// PASTLWTR : $Revision: 1726 $
+// PASTLWTR : $Revision: 3196 $
 // File generated on 14.12.2003 01:40:37 from Type Library described below.
 
 // ************************************************************************  //
@@ -48,15 +56,24 @@ unit mscorlib_TLB;
 { $WRITEABLECONST ON}
 { $VARPROPSETTER ON}
 
-{$I jedi.inc}
+{$I jcl.inc}
 
 {$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-{$WEAKPACKAGEUNIT ON}
+  {$IFDEF UNITVERSIONING}
+    {$WEAKPACKAGEUNIT OFF}
+  {$ELSE ~UNITVERSIONING}
+    {$WEAKPACKAGEUNIT ON}
+  {$ENDIF ~UNITVERSIONING} 
 {$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 interface
 
-uses ActiveX, Classes;
+uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  ActiveX,
+  Classes;
 
 
 // *********************************************************************//
@@ -4614,9 +4631,11 @@ type
     m_value: LongWord;
   end;
 
+  {$IFNDEF FPC}
   UInt64 = packed record
     m_value: Largeuint;
   end;
+  {$ENDIF ~FPC}
 
   UIntPtr = packed record
     m_value: Pointer;
@@ -26608,6 +26627,18 @@ type
     class function CreateRemote(const MachineName: string): _EnumBuilder;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/source/windows/mscorlib_TLB.pas $';
+    Revision: '$Revision: 3196 $';
+    Date: '$Date: 2010-02-22 11:08:20 +0100 (lun., 22 févr. 2010) $';
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses ComObj;
@@ -32321,5 +32352,13 @@ class function CoEnumBuilder.CreateRemote(const MachineName: string): _EnumBuild
 begin
   Result := CreateRemoteComObject(MachineName, CLASS_EnumBuilder) as _EnumBuilder;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

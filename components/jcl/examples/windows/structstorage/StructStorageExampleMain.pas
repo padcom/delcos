@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: $Date: 2006-05-30 00:02:45 +0200 (mar., 30 mai 2006) $
+Last Modified: $Date: 2008-09-09 21:32:17 +0200 (mar., 09 sept. 2008) $
 
 You may retrieve the latest version of this file at the Project JEDI's Code Library home page,
 located at http://jcl.sourceforge.net
@@ -525,10 +525,10 @@ begin
       cbSize := sizeof(TMsgBoxParamsA);
       hwndOwner := Handle;
       hInstance := SysInit.hInstance;
-      lpszText := PChar(SAboutMsg);
-      lpszCaption := PChar(SAboutCaption);
+      lpszText := PAnsiChar(AnsiString(SAboutMsg));
+      lpszCaption := PAnsiChar(AnsiString(SAboutCaption));
       dwStyle := MB_OK or MB_USERICON;
-      lpszIcon := PChar('MAINICON');
+      lpszIcon := PAnsiChar('MAINICON');
       dwContextHelpId := 0;
       lpfnMsgBoxCallback := nil;
       dwLanguageId := GetUserDefaultLangID;

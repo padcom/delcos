@@ -24,8 +24,12 @@
 { It also works with units in DLLs.                                                                }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date: 2006-05-30 00:02:45 +0200 (mar., 30 mai 2006) $
+{                                                                                                  }
+{ Last modified: $Date:: 2010-02-11 13:14:06 +0100 (jeu., 11 févr. 2010)                        $ }
+{ Revision:      $Rev:: 3188                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclUnitVersioning;
 
@@ -139,7 +143,22 @@ procedure UnregisterUnitVersion(Instance: THandle);
 
 function GetUnitVersioning: TUnitVersioning;
 
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/source/common/JclUnitVersioning.pas $';
+    Revision: '$Revision: 3188 $';
+    Date: '$Date: 2010-02-11 13:14:06 +0100 (jeu., 11 févr. 2010) $';
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
+  );
+
 implementation
+
+uses
+  // make TObjectList functions inlined
+  Classes,
+  JclSysUtils, JclSynch;
 
 // Delphi 5 does not know this function //(usc) D6/7 Per does have StartsWith
 // a fast version of Pos(SubStr, S) = 1
@@ -178,7 +197,7 @@ end;
 
 function TUnitVersion.RCSfile: string;
 var
-  I: Integer;
+  I, P: Integer;
 begin
   Result := Trim(FInfo.RCSfile);
   // the + is to have CVS not touch the string
@@ -192,6 +211,19 @@ begin
         Delete(Result, I, MaxInt);
         Break;
       end;
+  end;
+  // the + is to have SVN not touch the string
+  if StartsWith('$' + 'URL: ', Result) then // a SVN command
+  begin
+    Delete(Result, 1, 6);
+    Delete(Result, Length(Result) - 1, 2);
+    { TODO -oUSc : Is there any need for a function that returns the URL? }
+    P := Pos('/', Result);
+    while P > 0 do
+    begin
+      Delete(Result, 1, P);
+      P := Pos('/', Result);
+    end;
   end;
 end;
 
@@ -468,6 +500,13 @@ begin
   Result := TUnitVersioningModule(FModules[Index]);
 end;
 
+{$UNDEF FPCUNIX}   // Temporary, will move to .inc's in time.
+{$IFDEF FPC}
+ {$IFDEF UNIX}
+ {$DEFIN FPCUNIX}
+{$ENDIF}
+{$ENDIF}
+
 procedure TUnitVersioning.ValidateModules;
 var
   I: Integer;
@@ -476,7 +515,11 @@ begin
   for I := FModules.Count - 1 downto 0 do
   begin
     SetLength(Buffer, 1024);
+    {$IFDEF FPCUNIX}
+    if dlsym(Pointer(Modules[I].Instance), '_init') = nil then
+    {$ELSE ~FPCUNIX}
     if GetModuleFileName(Modules[I].Instance, PChar(Buffer), 1024) = 0 then
+    {$ENDIF ~FPCUNIX}
       // This module is no more in memory but has not unregistered itself so
       // unregister it here.
       UnregisterModule(Modules[I]);
@@ -537,166 +580,6 @@ begin
     TCustomUnitVersioningProvider(FProviders[I]).LoadModuleUnitVersioningInfo(Instance);
 end;
 
-function GetNamedProcessAddress(const Id: ShortString; out RefCount: Integer): Pointer; forward;
-  // Returns a 3820 Bytes large block [= 4096 - 276 = 4096 - (8+256+4+8)]
-  // max 20 blocks can be allocated
-function ReleaseNamedProcessAddress(P: Pointer): Integer; forward;
-
-// (rom) PAGE_OFFSET is clearly Linux specific
-{$IFDEF LINUX}
-const
-  PAGE_OFFSET = $C0000000; // from linux/include/asm-i386/page.h
-{$ENDIF LINUX}
-
-const
-  Signature1 = $ABCDEF0123456789;
-  Signature2 = $9876543210FEDCBA;
-
-type
-  PNPARecord = ^TNPARecord;
-  TNPARecord = record
-    Signature1: Int64;
-    Id: ShortString;
-    RefCount: Integer;
-    Signature2: Int64;
-    Data: record end;
-  end;
-
-function GetNamedProcessAddress(const Id: ShortString; out RefCount: Integer): Pointer;
-const
-  MaxPages = 20;
-var
-  {$IFDEF MSWINDOWS}
-  SysInfo: TSystemInfo;
-  MemInfo: TMemoryBasicInformation;
-  pid: THandle;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  pid: __pid_t;
-  {$ENDIF LINUX}
-  Requested, Allocated: PNPARecord;
-  Pages: Integer;
-  PageSize: Cardinal;
-  MaximumApplicationAddress: Pointer;
-begin
-  RefCount := 0;
-  {$IFDEF MSWINDOWS}
-  GetSystemInfo(SysInfo);
-  PageSize := SysInfo.dwPageSize;
-  pid := GetCurrentProcessId;
-  MaximumApplicationAddress := SysInfo.lpMaximumApplicationAddress;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  PageSize := getpagesize;
-  pid := getpid;
-  MaximumApplicationAddress := Pointer(PAGE_OFFSET - 1);
-  {$ENDIF UNIX}
-  Pages := 0;
-  repeat
-    Requested := MaximumApplicationAddress;
-    Requested := Pointer((Cardinal(Requested) div $10000) * $10000);
-    Dec(Cardinal(Requested), Pages * $10000);
-    Requested := Pointer((Cardinal(Requested) div PageSize) * PageSize);
-    {$IFDEF MSWINDOWS}
-    Allocated := VirtualAlloc(Requested, PageSize, MEM_RESERVE or MEM_COMMIT, PAGE_READWRITE);
-    if Assigned(Allocated) and (Requested <> Allocated) then
-    begin
-      // We got relocated (should not happen at all)
-      VirtualFree(Allocated, 0, MEM_RELEASE);
-      Inc(Pages);
-      Continue;
-    end;
-    {$ENDIF MSWINDOWS}
-    {$IFDEF UNIX}
-    // Do not use MAP_FIXED because it replaces the already allocated map by a
-    // new map.
-    Allocated := mmap(Requested, PageSize, PROT_READ or PROT_WRITE,
-      MAP_PRIVATE or MAP_ANONYMOUS, 0, 0);
-    if Allocated = MAP_FAILED then
-    begin
-      // Prevent SEGV by signature-test code and try the next memory page.
-      Inc(Pages);
-      Continue;
-    end
-    else
-    if Allocated <> Requested then
-    begin
-      // It was relocated, means the requested address is already allocated
-      munmap(Allocated, PageSize);
-      Allocated := nil;
-    end;
-    {$ENDIF UNIX}
-
-    if Assigned(Allocated) then
-      Break // new block allocated
-    else
-    begin
-      {$IFDEF MSWINDOWS}
-      VirtualQuery(Requested, MemInfo, SizeOf(MemInfo));
-      if (MemInfo.RegionSize >= SizeOf(TNPARecord)) and
-        (MemInfo.Protect and PAGE_READWRITE = PAGE_READWRITE) then
-      {$ENDIF MSWINDOWS}
-      {$IFDEF UNIX}
-      try
-      {$ENDIF UNIX}
-        if (Requested.Signature1 = Signature1 xor pid) and
-          (Requested.Signature2 = Signature2 xor pid) and
-          (Requested.Id = Id) then
-          Break; // Found correct, already existing block.
-      {$IFDEF UNIX}
-      except
-        // ignore
-      end;
-      {$ENDIF UNIX}
-    end;
-
-    Inc(Pages);
-    Requested := nil;
-  until Pages > MaxPages;
-
-  Result := nil;
-  if Allocated <> nil then
-  begin
-    if Requested = Allocated then
-    begin
-      // initialize the block
-      Requested.Signature1 := Signature1 xor pid;
-      Requested.Id := Id;
-      Requested.Signature2 := Signature2 xor pid;
-      Requested.RefCount := 1;
-      Result := @Requested.Data;
-      RefCount := 1;
-    end;
-  end
-  else
-  if Requested <> nil then
-  begin
-    Inc(Requested.RefCount);
-    Result := @Requested.Data;
-    RefCount := Requested.RefCount;
-  end;
-end;
-
-function ReleaseNamedProcessAddress(P: Pointer): Integer;
-var
-  Requested: PNPARecord;
-begin
-  Result := 0;
-  if P <> nil then
-  begin
-    Requested := PNPARecord(Cardinal(P) - SizeOf(TNPARecord));
-    Dec(Requested.RefCount);
-    Result := Requested.RefCount;
-    if Requested.RefCount = 0 then
-      {$IFDEF MSWINDOWS}
-      VirtualFree(Requested, 0, MEM_RELEASE);
-      {$ENDIF MSWINDOWS}
-      {$IFDEF UNIX}
-      munmap(Requested, getpagesize);
-      {$ENDIF UNIX}
-  end;
-end;
-
 type
   PUnitVersioning = ^TUnitVersioning;
 
@@ -704,55 +587,79 @@ var
   UnitVersioningOwner: Boolean = False;
   GlobalUnitVersioning: TUnitVersioning = nil;
   UnitVersioningNPA: PUnitVersioning = nil;
+  UnitVersioningMutex: TJclMutex;
+  UnitVersioningFinalized: Boolean = False;
 
 function GetUnitVersioning: TUnitVersioning;
-var
-  RefCount: Integer;
 begin
+  if UnitVersioningFinalized then
+  begin
+    Result := nil;
+    Exit;
+  end;
+
+  if UnitVersioningMutex = nil then
+    UnitVersioningMutex := TJclMutex.Create(nil, False, 'MutexNPA_UnitVersioning_' + IntToStr(GetCurrentProcessId));
+
   if GlobalUnitVersioning = nil then
   begin
-    UnitVersioningNPA := GetNamedProcessAddress('UnitVersioning', RefCount);
-    if UnitVersioningNPA <> nil then
-    begin
-      GlobalUnitVersioning := UnitVersioningNPA^;
-      if (GlobalUnitVersioning = nil) or (RefCount = 1) then
+    UnitVersioningMutex.WaitFor(INFINITE);
+    try
+      if UnitVersioningNPA = nil then
+        SharedGetMem(UnitVersioningNPA, 'ShmNPA_UnitVersioning_' + IntToStr(GetCurrentProcessId), SizeOf(TUnitVersioning));
+      if UnitVersioningNPA <> nil then
+      begin
+        GlobalUnitVersioning := UnitVersioningNPA^;
+        if GlobalUnitVersioning = nil then
+        begin
+          GlobalUnitVersioning := TUnitVersioning.Create;
+          UnitVersioningNPA^ := GlobalUnitVersioning;
+          UnitVersioningOwner := True;
+        end;
+      end
+      else
       begin
         GlobalUnitVersioning := TUnitVersioning.Create;
-        UnitVersioningNPA^ := GlobalUnitVersioning;
         UnitVersioningOwner := True;
       end;
-    end
-    else
-    begin
-      GlobalUnitVersioning := TUnitVersioning.Create;
-      UnitVersioningOwner := True;
+    finally
+      UnitVersioningMutex.Release;
     end;
   end
   else
   if UnitVersioningNPA <> nil then
-    GlobalUnitVersioning := UnitVersioningNPA^; // update (maybe the owner has destroyed the instance)
+  begin
+    UnitVersioningMutex.WaitFor(INFINITE);
+    try
+      GlobalUnitVersioning := UnitVersioningNPA^; // update (maybe the owner has destroyed the instance)
+    finally
+      UnitVersioningMutex.Release;
+    end;
+  end;
   Result := GlobalUnitVersioning;
 end;
 
 procedure FinalizeUnitVersioning;
-var
-  RefCount: Integer;
 begin
+  UnitVersioningFinalized := True;
   try
-    if GlobalUnitVersioning <> nil then
+    if UnitVersioningNPA <> nil then
     begin
-      RefCount := ReleaseNamedProcessAddress(UnitVersioningNPA);
-      if UnitVersioningOwner then
-      begin
-        if RefCount > 0 then
-          UnitVersioningNPA^ := nil;
-        GlobalUnitVersioning.Free;
+      UnitVersioningMutex.WaitFor(INFINITE);
+      try
+        UnitVersioningNPA^ := nil;
+        SharedCloseMem(UnitVersioningNPA);
+      finally
+        UnitVersioningMutex.Release;
       end;
-      GlobalUnitVersioning := nil;
     end;
+    if (GlobalUnitVersioning <> nil) and UnitVersioningOwner then
+      GlobalUnitVersioning.Free;
+    GlobalUnitVersioning := nil;
   except
     // ignore - should never happen
   end;
+  FreeAndNil(UnitVersioningMutex);
 end;
 
 procedure RegisterUnitVersion(Instance: THandle; const Info: TUnitVersionInfo);
@@ -772,14 +679,6 @@ begin
   if Assigned(UnitVersioning) then
     UnitVersioning.UnregisterModule(Instance);
 end;
-
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jcl.svn.sourceforge.net/svnroot/jcl/tags/JCL-1.101-Build2725/jcl/source/common/JclUnitVersioning.pas $';
-    Revision: '$Revision: 1671 $';
-    Date: '$Date: 2006-05-30 00:02:45 +0200 (mar., 30 mai 2006) $';
-    LogPath: 'JCL\common';
-  );
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);

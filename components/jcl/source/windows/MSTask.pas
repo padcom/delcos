@@ -1,3 +1,11 @@
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date:: 2011-01-13 12:26:25 +0100 (jeu., 13 janv. 2011)                         $ }
+{ Revision:      $Rev:: 3470                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
+{                                                                                                  }
+{**************************************************************************************************}
+
 (*****************************************************************************
   This IDL-file has been converted by "the fIDLer".
   [written by -=Assarbad=- <oliver at assarbad dot net> Sept-2004] under MPL
@@ -27,12 +35,25 @@ unit MSTask;
 
 {$ALIGN ON}
 {$MINENUMSIZE 4}
-{$WEAKPACKAGEUNIT}
+
 interface
 
+{$I jcl.inc}
+
+{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
+  {$IFDEF UNITVERSIONING}
+    {$WEAKPACKAGEUNIT OFF}
+  {$ELSE ~UNITVERSIONING}
+    {$WEAKPACKAGEUNIT ON}
+  {$ENDIF ~UNITVERSIONING}
+{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
+
 uses
-  Windows,
-  ActiveX;
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  ActiveX,
+  Windows;
 
 
 (*$HPPEMIT '#include <MSTask.h>' *)
@@ -319,6 +340,7 @@ type
 
   end;
 {$EXTERNALSYM TASK_TRIGGER}
+
   TASK_TRIGGER = _TASK_TRIGGER;
   TTaskTrigger = _TASK_TRIGGER;
 
@@ -580,9 +602,11 @@ type
 {$EXTERNALSYM _PSP}
   _PSP = record end;
 
+{$IFNDEF FPC}
 type
 {$EXTERNALSYM HPROPSHEETPAGE}
   HPROPSHEETPAGE = ^_PSP;
+{$ENDIF ~FPC}
 
 type
 {$EXTERNALSYM _TASKPAGE}
@@ -642,7 +666,27 @@ const
 {$EXTERNALSYM CLSID_CSchedulingAgent}
   CLSID_CSchedulingAgent: TCLSID = (D1: $148BD52A; D2: $A2AB; D3: $11CE; D4: ($B1, $1F, $00, $AA, $00, $53, $05, $03));
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/source/windows/MSTask.pas $';
+    Revision: '$Revision: 3470 $';
+    Date: '$Date: 2011-01-13 12:26:25 +0100 (jeu., 13 janv. 2011) $';
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

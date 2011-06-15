@@ -19,8 +19,9 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Unit owner: Robert Marquardt                                                                     }
-{ Last modified: $Date: 2006-05-30 00:02:45 +0200 (mar., 30 mai 2006) $                                                      }
+{ Last modified: $Date:: 2009-09-14 18:00:50 +0200 (lun., 14 sept. 2009)                         $ }
+{ Revision:      $Rev:: 3012                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -33,6 +34,9 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   StdCtrls, ExtCtrls, ComCtrls;
 
 type
@@ -58,6 +62,18 @@ type
     property ConfigFileName: TFileName read GetConfigFileName write SetConfigFileName;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/experts/useswizard/JCLOptionsFrame.pas $';
+    Revision: '$Revision: 3012 $';
+    Date: '$Date: 2009-09-14 18:00:50 +0200 (lun., 14 sept. 2009) $';
+    LogPath: 'JCL\experts\useswizard';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
@@ -70,11 +86,11 @@ uses
 constructor TFrameJclOptions.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  OpenDialog.Filter := RsUsesOpenFilters;
-  OpenDialog.Title := RsUsesOpenTitle;
-  LabelIniFile.Caption := RsUsesConfigurationFile;
-  CheckBoxWizardActive.Caption := RsUsesActive;
-  CheckBoxWizardConfirm.Caption := RsUsesConfirm;
+  OpenDialog.Filter := LoadResString(@RsUsesOpenFilters);
+  OpenDialog.Title := LoadResString(@RsUsesOpenTitle);
+  LabelIniFile.Caption := LoadResString(@RsUsesConfigurationFile);
+  CheckBoxWizardActive.Caption := LoadResString(@RsUsesActive);
+  CheckBoxWizardConfirm.Caption := LoadResString(@RsUsesConfirm);
 end;
 
 function TFrameJclOptions.GetActive: Boolean;
@@ -125,5 +141,13 @@ begin
     end;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

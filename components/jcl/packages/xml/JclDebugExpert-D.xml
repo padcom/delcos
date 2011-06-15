@@ -1,29 +1,22 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JclDebugExpert" Design="-1">
   <Description>JCL Debug IDE extension</Description>
-  <GUID/>
-  <C5PFlags>-LUvcl50 -LUdsnide50 -LUJclC50 -LUJclBaseExpertC50</C5PFlags>
+  <GUID>{FC16FA9B-0429-42EB-9B53-30D19AAB3EE4}</GUID>
   <C6PFlags>-LUdesignide</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
+  <CompilerDefines>RELEASE</CompilerDefines>
   <ImageBase>58020000</ImageBase>
-  <VersionMajorNumber/>
-  <VersionMinorNumber/>
-  <ReleaseNumber/>
-  <BuildNumber/>
   <Requires>
-    <Package Name="rtl" Targets="WinLibSuffix" Condition=""/>
-    <Package Name="vcl50" Targets="c5,d5" Condition=""/>
-    <Package Name="vcl" Targets="WinLibSuffix" Condition=""/>
-    <Package Name="dsnide50" Targets="c5,d5" Condition=""/>
-    <Package Name="designide" Targets="WinLibSuffix" Condition=""/>
-    <Package Name="Jcl" Targets="WinLibSuffix" Condition=""/>
-    <Package Name="Jcl50" Targets="c5,d5" Condition=""/>
-    <Package Name="JclBaseExpert-D" Targets="Windows" Condition=""/>
+    <Package Name="rtl" Targets="Delphi,Bcb,Bds" Condition=""/>
+    <Package Name="vcl" Targets="Delphi,Bcb,Bds" Condition=""/>
+    <Package Name="designide" Targets="Delphi,Bcb,Bds" Condition=""/>
+    <Package Name="Jcl-R" Targets="all" Condition=""/>
+    <Package Name="JclBaseExpert-D" Targets="all" Condition=""/>
+    <Package Name="JclDeveloperTools-R" Targets="all" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\experts\debug\converter\JclDebugIdeResult.pas" Targets="Windows" Formname="JclDebugResultForm" Condition=""/>
-    <File Name="..\..\experts\debug\converter\JclDebugIdeImpl.pas" Targets="Windows" Formname="" Condition=""/>
-    <File Name="..\..\experts\debug\converter\JclDebugIdeConfigFrame.pas" Targets="Windows" Formname="JclDebugIdeConfigFrame: TFrame" Condition=""/>
+    <File Name="..\..\experts\debug\converter\JclDebugIdeResult.pas" Targets="runtimeIDE" Formname="JclDebugResultForm" Condition=""/>
+    <File Name="..\..\experts\debug\converter\JclDebugIdeImpl.pas" Targets="runtimeIDE" Formname="" Condition=""/>
+    <File Name="..\..\experts\debug\converter\JclDebugIdeConfigFrame.pas" Targets="runtimeIDE" Formname="JclDebugIdeConfigFrame: TFrame" Condition=""/>
   </Contains>
 </Package>

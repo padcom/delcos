@@ -17,8 +17,9 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Unit owner: Petr Vones                                                                           }
-{ Last modified: $Date: 2006-10-01 14:05:30 +0200 (dim., 01 oct. 2006) $                                                      }
+{ Last modified: $Date:: 2009-07-30 12:08:05 +0200 (jeu., 30 juil. 2009)                         $ }
+{ Revision:      $Rev:: 2892                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -30,6 +31,9 @@ interface
 
 uses
   Windows, SysUtils, Classes,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclBase, JclFileUtils, JclSynch;
 
 type
@@ -59,6 +63,18 @@ type
     property ThreadName[ThreadID: DWORD]: string read GetThreadName write SetThreadName; default;
     property NotifyEvent: TJclEvent read FNotifyEvent;
   end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/experts/debug/threadnames/ThreadExpertSharedNames.pas $';
+    Revision: '$Revision: 2892 $';
+    Date: '$Date: 2009-07-30 12:08:05 +0200 (jeu., 30 juil. 2009) $';
+    LogPath: 'JCL\experts\debug\threadnames';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -207,7 +223,7 @@ begin
       for I := Low(Threads) to High(Threads) do
         if Threads[I].ThreadID = ThreadID then
         begin
-          Result := Threads[I].ThreadName;
+          Result := string(Threads[I].ThreadName);
           Break;
         end;
   finally
@@ -242,7 +258,7 @@ begin
         try
           Threads[Slot].ProcessID := FProcessID;
           Threads[Slot].ThreadID := ThreadID;
-          Threads[Slot].ThreadName := ThreadName;
+          Threads[Slot].ThreadName := ShortString(ThreadName);
         finally
           FReadMutex.Release;
         end;
@@ -279,7 +295,7 @@ begin
         for I := Low(Threads) to High(Threads) do
           if Threads[I].ThreadID = ThreadID then
           begin
-            ThreadName := Threads[I].ThreadName;
+            ThreadName := string(Threads[I].ThreadName);
             Break;
           end;
     finally
@@ -324,7 +340,7 @@ begin
         begin
           FReadMutex.WaitForever;
           try
-            SetIdeDebuggerThreadName(Threads[I].ThreadID, Threads[I].ThreadName);
+            SetIdeDebuggerThreadName(Threads[I].ThreadID, string(Threads[I].ThreadName));
           finally
             FReadMutex.Release;
           end;
@@ -333,5 +349,13 @@ begin
     FMutex.Release;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

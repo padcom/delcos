@@ -3,12 +3,25 @@
     <ProjectGuid>{d1a27daf-2d03-4297-b322-3fa95f07a7d2}</ProjectGuid>
   </PropertyGroup>
   <ItemGroup />
-  <ItemGroup />
+  <ItemGroup>
+    <Projects Include="d11\Jcl.dproj" />
+    <Projects Include="d11\JclBaseExpert.dproj" />
+    <Projects Include="d11\JclContainers.dproj" />
+    <Projects Include="d11\JclDeveloperTools.dproj" />
+    <Projects Include="d11\JclDebugExpert.dproj" />
+    <Projects Include="d11\JclFavoriteFoldersExpert.dproj" />
+    <Projects Include="d11\JclProjectAnalysisExpert.dproj" />
+    <Projects Include="d11\JclRepositoryExpert.dproj" />
+    <Projects Include="d11\JclSIMDViewExpert.dproj" />
+    <Projects Include="d11\JclStackTraceViewerExpert.dproj" />
+    <Projects Include="d11\JclVcl.dproj" />
+    <Projects Include="d11\JclVersionControlExpert.dproj" />
+  </ItemGroup>
   <ProjectExtensions>
     <Borland.Personality>Default.Personality</Borland.Personality>
     <Borland.ProjectType />
     <BorlandProject>
-  <BorlandProject xmlns=""> <Default.Personality> </Default.Personality> </BorlandProject></BorlandProject>
+<BorlandProject xmlns=""><Default.Personality></Default.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
   <Target Name="Jcl">
     <MSBuild Projects="d11\Jcl.dproj" Targets="" />
@@ -27,6 +40,24 @@
   </Target>
   <Target Name="JclVcl:Make">
     <MSBuild Projects="d11\JclVcl.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JclContainers">
+    <MSBuild Projects="d11\JclContainers.dproj" Targets="" />
+  </Target>
+  <Target Name="JclContainers:Clean">
+    <MSBuild Projects="d11\JclContainers.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JclContainers:Make">
+    <MSBuild Projects="d11\JclContainers.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JclDeveloperTools">
+    <MSBuild Projects="d11\JclDeveloperTools.dproj" Targets="" />
+  </Target>
+  <Target Name="JclDeveloperTools:Clean">
+    <MSBuild Projects="d11\JclDeveloperTools.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JclDeveloperTools:Make">
+    <MSBuild Projects="d11\JclDeveloperTools.dproj" Targets="Make" />
   </Target>
   <Target Name="JclBaseExpert">
     <MSBuild Projects="d11\JclBaseExpert.dproj" Targets="" />
@@ -73,6 +104,24 @@
   <Target Name="JclRepositoryExpert:Make">
     <MSBuild Projects="d11\JclRepositoryExpert.dproj" Targets="Make" />
   </Target>
+  <Target Name="JclSIMDViewExpert">
+    <MSBuild Projects="d11\JclSIMDViewExpert.dproj" Targets="" />
+  </Target>
+  <Target Name="JclSIMDViewExpert:Clean">
+    <MSBuild Projects="d11\JclSIMDViewExpert.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JclSIMDViewExpert:Make">
+    <MSBuild Projects="d11\JclSIMDViewExpert.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JclStackTraceViewerExpert">
+    <MSBuild Projects="d11\JclStackTraceViewerExpert.dproj" Targets="" />
+  </Target>
+  <Target Name="JclStackTraceViewerExpert:Clean">
+    <MSBuild Projects="d11\JclStackTraceViewerExpert.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JclStackTraceViewerExpert:Make">
+    <MSBuild Projects="d11\JclStackTraceViewerExpert.dproj" Targets="Make" />
+  </Target>
   <Target Name="JclVersionControlExpert">
     <MSBuild Projects="d11\JclVersionControlExpert.dproj" Targets="" />
   </Target>
@@ -83,12 +132,13 @@
     <MSBuild Projects="d11\JclVersionControlExpert.dproj" Targets="Make" />
   </Target>
   <Target Name="Build">
-    <CallTarget Targets="Jcl;JclVcl;JclBaseExpert;JclDebugExpert;JclFavoriteFoldersExpert;JclProjectAnalysisExpert;JclRepositoryExpert;JclVersionControlExpert" />
+    <CallTarget Targets="Jcl;JclVcl;JclContainers;JclDeveloperTools;JclBaseExpert;JclDebugExpert;JclFavoriteFoldersExpert;JclProjectAnalysisExpert;JclRepositoryExpert;JclSIMDViewExpert;JclStackTraceViewerExpert;JclVersionControlExpert" />
   </Target>
   <Target Name="Clean">
-    <CallTarget Targets="Jcl:Clean;JclVcl:Clean;JclBaseExpert:Clean;JclDebugExpert:Clean;JclFavoriteFoldersExpert:Clean;JclProjectAnalysisExpert:Clean;JclRepositoryExpert:Clean;JclVersionControlExpert:Clean" />
+    <CallTarget Targets="Jcl:Clean;JclVcl:Clean;JclContainers:Clean;JclDeveloperTools:Clean;JclBaseExpert:Clean;JclDebugExpert:Clean;JclFavoriteFoldersExpert:Clean;JclProjectAnalysisExpert:Clean;JclRepositoryExpert:Clean;JclSIMDViewExpert:Clean;JclStackTraceViewerExpert:Clean;JclVersionControlExpert:Clean" />
   </Target>
   <Target Name="Make">
-    <CallTarget Targets="Jcl:Make;JclVcl:Make;JclBaseExpert:Make;JclDebugExpert:Make;JclFavoriteFoldersExpert:Make;JclProjectAnalysisExpert:Make;JclRepositoryExpert:Make;JclVersionControlExpert:Make" />
+    <CallTarget Targets="Jcl:Make;JclVcl:Make;JclContainers:Make;JclDeveloperTools:Make;JclBaseExpert:Make;JclDebugExpert:Make;JclFavoriteFoldersExpert:Make;JclProjectAnalysisExpert:Make;JclRepositoryExpert:Make;JclSIMDViewExpert:Make;JclStackTraceViewerExpert:Make;JclVersionControlExpert:Make" />
   </Target>
+  <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
 </Project>

@@ -1,13 +1,9 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="en-us">
 <head>
-  <title>JEDI Code Library Release 1.101</title>
+  <title>JEDI Code Library Release 2.2</title>
   <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
-
-
   <link rel="stylesheet" type="text/css" href="styles/default.css">
-
-
   <meta content="Project JEDI" name="author">
 </head>
 
@@ -18,9 +14,9 @@
 
 <h1>JEDI Code Library</h1>
 
-<p>Release 1.101<br>
-Build 2725
-17-August-2007</p>
+<p>Release 2.2<br>
+Build 3970<br>
+13-January-2011</p>
 
 <hr><br>
 
@@ -53,10 +49,15 @@ Build 2725
 <hr><br>
 
 <h3><a name="about">About this release</a></h3>
-<p>JCL release 1.101 provides an updated support for all targets (including CodeGear RAD Studio 2007).</p>
+<p>JCL release 2.2 provides support for RAD Studio XE Update 1 (including
+Delphi XE Update 1 and C++Builder XE Update 1) an updated support for all targets.</p>
 
-<p>As always, multiple bugs have been fixed; for detailed change logs,
-use the facilities of our Subversion repository at Sourceforge.net&nbsp;
+<p>JCL release 2.2 Build 3970 is not compatible with RAD Studio XE without Update 1,
+use previously released JCL 2.2.1.3886 instead.</p>
+
+<p>Multiple bugs have been
+fixed; for detailed change logs, use the facilities of our Subversion repository
+at Sourceforge.net&nbsp;
 <a href="http://sourceforge.net/projects/jcl/">http://sourceforge.net/projects/jcl/</a>
 , see below.</p>
 
@@ -65,17 +66,16 @@ use the facilities of our Subversion repository at Sourceforge.net&nbsp;
 
 <ul>
 
-  <li>New functions to copy and move directories and to handle command line parameters in JclFileUtils.</li>
-
-  <li>A function for Vista detecting UAC in JclSysInfo.</li>
-
-  <li>JclFont is introduced to initialize a TFont object to standard system fonts.</li>
-
-  <li>JclExprEval now supports operators: and, or, bor (bitwise), not, bnot (bitwise), cmp, xor, bxor(bitwise), div, mod, shl, shr.</li>
-
-  <li>Three new stream classes in JclStream: TJclSectoredStream (class to handle accesses to a sectored storage), TJclCRC16Stream and TJclCRC32Stream (a CRC is added to each sector preventing data corruption).</li>
-
-  <li>Unicode support is updated to version 5.1.0.</li>
+ <li>BZip2 is updated to 1.0.6</li>
+ <li>PCRE is updated to 8.02</li>
+ <li>The JEDI PreProcessor is now merged to JCL runtime code, you can embed it in your own application</li>
+ <li>ZLib is updated to 1.2.5</li>
+ <li>7z is updated to 9.15</li>
+ <li>The JCL packages are heavily reorganized: all developer tools (JclBorlandTools has been split for instance, JclParseUses is moved to runtime code) are moved to a separate package</li>
+ <li>The JCLDebug code was heavily reworked to avoid internal exceptions</li>
+ <li>The Unicode Character Database (UCD) is updated to 5.2.0, this resource is now more packed than previously</li>
+ <li>The EDI units are removed from the library because of maintenance lack</li>
+ <li>The MoveArray functions are moved to JclAlgorithms, this move breaks backward compatibility</li>
 
 </ul>
 
@@ -85,18 +85,7 @@ use the facilities of our Subversion repository at Sourceforge.net&nbsp;
 <ul>
 
   <li>
-    <p>Note that the package naming has changed: the same package name is used by
-all versions of the compiler supporting suffixes (C++Builder 6, Delphi 6,
-Delphi 7, C#Builder 1, Delphi 8, Delphi 2005, BDS 2006 and RAD Studio 2007); a different suffix
-is added for each target to the BPL file name (for BDS 2006, the library file is named jcl100.bpl).
-The installer tries to remove old packages. 3rd party packages requiring old DJcl* resp. CJcl* packages need to be changed
-to accomodate the new naming scheme or they will cause conflicts in the IDE at load time.</p>
-  </li>
-
-  <li>
-    <p>DCP files are now created in the lib\target subdirectory of the JCL
-installation. 3rd party packages requiring JCL packages need to have this path
-in their "browse path" option to compile.</p>
+   <p>As of JCL 2.0, the library does not support Delphi 5, C++Builder 5, Kylix 3 and Delphi.net anymore;</p>
   </li>
 
 </ul>
@@ -114,14 +103,10 @@ them if the "Packages" node is checked.</p>
 can be linked into binaries to become JCL debug data or be converted to .jdbg files.
 Once linked MAP files could be deleted. These options are subnodes of the "Packages" node.</p>
 
-<p>For BDS 2006 and RAD Studio 2007, the compiler introduced a new option to make the same packages
-available in C++, by checking the "Dual packages" option of the "Packages" node, you will be able
+<p>For BDS 2006, RAD Studio 2007, RAD Studio 2009, RAD Studio 2010 and RAD Studio XE the
+compiler introduced a new option to make the same packages available in C++,
+by checking the "Dual packages" option of the "Packages" node, you will be able
 to call functions of the JCL from C++ code.</p>
-
-<p><span style="font-weight: bold;">.net Framework support:</span></p>
-
-<p>A subset of JCL units was worked over to support Delphi.Net (Delphi 2005, BDS 2006 and RAD
-Studio 2007). The packages belong to the Jedi.Jcl namespace.</p>
 
 <hr><br>
 
@@ -133,7 +118,7 @@ Studio 2007). The packages belong to the Jedi.Jcl namespace.</p>
 
 <ul>
 
-  <li>Kylix 3 (cf <a href="#notes">Installation notes</a>)</li>
+  <li>FreePascal (tested with 2.2.2 and 2.2.4).</li>
 
 </ul>
 
@@ -142,9 +127,9 @@ Studio 2007). The packages belong to the Jedi.Jcl namespace.</p>
 
 <ul>
 
-  <li>C#Builder 1 (cf <a href="#notes">Installation notes</a>).</li>
+  <li>C#Builder 1 (cf <a href="#notes">Installation notes</a>);</li>
 
-  <li>Delphi 8.net (cf <a href="#notes">Installation notes</a>).</li>
+  <li>Delphi 8.net (cf <a href="#notes">Installation notes</a>);</li>
 
 </ul>
 
@@ -152,17 +137,23 @@ Studio 2007). The packages belong to the Jedi.Jcl namespace.</p>
 
 <ul>
 
-  <li>Delphi version 5, 6, 7.</li>
+  <li>Delphi 6, Delphi 7 and Delphi 2005;</li>
 
-  <li>C++Builder version 5 &amp; 6.</li>
+  <li>C++Builder 6;</li>
 
-  <li>Delphi 2005 (Delphi for Win32 and Delphi.net personalities).</li>
+  <li>Delphi 2005 (without unit versioning support);</li>
 
-  <li>Borland Developer Studio 2006 (Delphi for Win32, C++Builder Win32, Delphi.net and C#Builder personalities).</li>
+  <li>Borland Developer Studio 2006 (Delphi for Win32, C++Builder Win32, Delphi.net and C#Builder personalities);</li>
 
-  <li>Turbo Delphi (explorer and professional - cf <a href="#notes">Installation notes</a>).</li>
+  <li>Turbo Delphi (explorer and professional - cf <a href="#notes">Installation notes</a>);</li>
 
-  <li>CodeGear RAD Studio 2007 (Delphi for Win32, C++Builder for Win32 and Delphi.net personalities).</li>
+  <li>CodeGear RAD Studio 2007 (Delphi for Win32 and C++Builder for Win32 personalities);</li>
+
+  <li>Delphi 2009 and C++Builder 2009;</li>
+
+  <li>Delphi 2010 and C++Builder 2010.</li>
+
+  <li>Delphi XE and C++Builder XE.</li>
 
 </ul>
 
@@ -172,18 +163,8 @@ Studio 2007). The packages belong to the Jedi.Jcl namespace.</p>
 
 <ul>
 
-  <li>Not every unit supports all tools. Look out for <tt>*.exc</tt>
-  files in the tool-specific <tt>lib/</tt>subdirectories for a list of units
-  excluded from compilation.</li>
-
-  <li>Kylix 3 Delphi/C++ installation is back but specific code has not been tested with the latest
-  versions of the kernel. Please ensure you use the flavor of the JCL with Unix EOL.</li>
-
-  <li>Free Pascal (<a href="http://www.freepascal.org/">http://www.freepascal.org/</a>)
-  support has not been updated for this release; most units from
-  source/common should work with FP 2.0, as tests with a 2.0 beta (1.9.8)
-  indicated, but this has not been verified. Note that there are no plans
-  to support FP versions from the 1.0 branch.</li>
+  <li>Free Pascal (http://www.freepascal.org/) support has been updated for
+   this release; most units fromsource/common work with FP 2.2.</li>
 
 </ul>
 
@@ -251,32 +232,25 @@ file.
   <li>Open and edit included file to customize options:</li>
   <ul>
 
-    <li>For Kylix 3 (Delphi): source\jclkd3.inc</li>
+    <li>For C++Builder 6: source\include\jclc6.inc</li>
 
-    <li>For Kylix 3 (C++Builder): source\jclkc3.inc</li>
+    <li>For Delphi 6: source\include\jcld6.inc</li>
 
-    <li>For C++Builder 5: source\jclc5.inc</li>
+    <li>For Delphi 7: source\include\jcld7.inc</li>
 
-    <li>For C++Builder 6: source\jclc6.inc</li>
+    <li>For Delphi 2005: source\include\jcld9.inc</li>
 
-    <li>For Delphi 5: source\jcld5.inc</li>
+    <li>For BDS 2006 (Delphi and C++Builder): source\include\jcld10.inc</li>
 
-    <li>For Delphi 6: source\jcld6.inc</li>
+    <li>For CodeGear RAD Studio 2007 (Delphi for Win32 and C++Builder): source\include\jcld11.inc</li>
 
-    <li>For Delphi 7: source\jcld7.inc</li>
+    <li>For Delphi 2009 and C++Builder 2009: source\include\jcld12.inc</li>
 
-    <li>For Delphi 2005: source\jcld9.inc</li>
+    <li>For Delphi 2010 and C++Builder 2010: source\include\jcld14.inc</li>
 
-    <li>For Delphi.net 2005: source\jcld9.net.inc</li>
+    <li>For Delphi XE and C++Builder XE: source\include\jcld15.inc</li>
 
-    <li>For BDS 2006 (Delphi and C++Builder): source\jcld10.inc</li>
-
-    <li>For Delphi.net 2006: source\jcld10.net.inc</li>
-
-    <li>For CodeGear RAD Studio 2007 (Delphi for Win32 and C++Builder): source\jcld11.inc</li>
-
-    <li>For Delphi.net 2007: source\jcld11.net.inc</li>
-
+    <li>For FreePascal: source\include\jclfpc.inc</li>
   </ul>
 
   <li>In the IDE, open and compile package Jcl.dpk (or Jcl.bpk for C++Builder)
@@ -294,7 +268,38 @@ file.
 
 <h3><a name="files">Distribution content</a></h3>
 
-<pre>Install.bat                   - Compile and run VCL version of the JCL Installer (Win32)<br>QInstall.bat                  - Compile and run CLX version of JCL Installer (Win32)<br>install.sh                    - Compile and run JCL Installer (Linux)<br>bin                           - Common place for sample application EXE files<br>lib                           - Common place for compiled units.<br>docs                          - Readme (this file) and other documents<br>docs\Readme.html              - This file<br>docs\Experts.html             - Readme file about the experts<br>docs\MPL-1.1.txt              - The Mozilla Public Licence (MPL) version 1.1<br>docs\MPL FAQ.html             - Frequently Asked Questions about the MPL<br>docs\cps.html                 - Cross Platform Strategy<br>experts                       - JCL IDE experts source code<br>experts\debug                 - JCL Debug IDE expert for using JclDebug unit<br>experts\debug\dialog          - Application exception dialog replacement<br>experts\debug\simdview        - Low-level debug window for XMM registers<br>experts\debug\threadnames     - IDE expert showing class names for debugged threads<br>experts\debug\tools           - Tools for creating files with JCL debug information<br>experts\favfolders            - Favorite folders combobox in IDE open/save file dialogs<br>experts\projectanalyzer       - Project Analyzer IDE expert<br>experts\useswizard            - JCL uses wizard<br>experts\versioncontrol        - Integration of TortoiseCVS and TortoiseSVN in the IDE<br>examples                      - JCL example applications<br>examples\common               - CLX and Win32 example applications in Delphi<br>examples\dotnet               - JCL example applications for Delphi.net<br>examples\windows              - JCL example applications for Delphi.Win32<br>examples\windows\delphitools  - Collection of system tools using JCL<br>help                          - Help file (distributed in a separate archive)<br>install                       - Installer source code<br>packages                      - JCL package sources<br>source                        - JCL source code<br></pre>
+<pre>
+Install.bat                   - Compile and run VCL version of the JCL Installer (Win32)
+bin                           - Common place for sample application EXE files
+lib                           - Common place for compiled units.
+docs                          - Readme (this file) and other documents
+docs\Readme.html              - This file
+docs\Experts.html             - Readme file about the experts
+docs\MPL-1.1.txt              - The Mozilla Public Licence (MPL) version 1.1
+docs\MPL FAQ.html             - Frequently Asked Questions about the MPL
+docs\cps.html                 - Cross Platform Strategy
+experts                       - JCL IDE experts source code
+experts\debug                 - JCL Debug IDE expert for using JclDebug unit
+experts\debug\simdview        - Low-level debug window for XMM registers
+experts\debug\threadnames     - IDE expert showing class names for debugged threads
+experts\favfolders            - Favorite folders combobox in IDE open/save file dialogs
+experts\projectanalyzer       - Project Analyzer IDE expert
+experts\repository            - Repository expert
+experts\repository\ExceptionDialog - Repository expert for exception dialogs
+experts\repository\ExceptionDialog\StandardDialogs - standard exception dialogs
+experts\stacktraceviewer      - stack trace expert
+experts\useswizard            - JCL uses wizard
+experts\versioncontrol        - Integration of TortoiseCVS and TortoiseSVN in the IDE
+examples                      - JCL example applications
+examples\common               - CLX and Win32 example applications in Delphi
+examples\windows              - JCL example applications for Delphi.Win32
+examples\windows\delphitools  - Collection of system tools using JCL
+examples\windows\debug\tools           - Tools for creating files with JCL debug information
+help                          - Help file (distributed in a separate archive)
+install                       - Installer source code
+packages                      - JCL package sources
+source                        - JCL source code
+</pre>
 
 <hr><br>
 
@@ -305,7 +310,7 @@ drop us a note. There are several ways to get in contact with us:
 <ul>
 
   <li>Newsgroup is the recommended way to contact other JCL users and the team itself.
-They are hosted at&nbsp;<a href="news://forums.talkto.net/jedi.jcl">news://forums.talkto.net/jedi.jcl</a>.</li>
+They are hosted at&nbsp;<a href="news://forums.talkto.net/jedi.jcl">news://news.delphi-jedi.org/jedi.jcl</a>.</li>
 
   <li>Write to&nbsp;<a href="mailto:jcl@delphi-jedi.org">jcl@delphi-jedi.org</a>&nbsp;
 or to&nbsp;<a href="mailto:jcl-testing@delphi-jedi.org">jcl-testing@delphi-jedi.org</a>&nbsp;
@@ -325,7 +330,7 @@ You can also use this list to voice your opinion, comments or suggestions.</li>
 bug fixed you need to log it!</font></b></p>
 
 <p>An issue tracking tool can be accessed via ('Code Library' category):
-<a href="http://homepages.codegear.com/jedi/issuetracker/">http://homepages.codegear.com/jedi/issuetracker/</a></p>
+<a href="http://issuetracker.delphi-jedi.org/">http://issuetracker.delphi-jedi.org/</a></p>
 
 <p>Please be aware that you are allowed there to enter feature request and code donations as well.</p>
 
@@ -361,7 +366,7 @@ feedback from users.</p>
 should install a Subversion client (we recommend TortoiseSVN <a href="http://tortoisesvn.tigris.org/">http://tortoisesvn.tigris.org/</a>
 and RapidSVN <a href="http://rapidsvn.tigris.org/">http://rapidsvn.tigris.org/</a>) and download the
 SVN repository files to your computer as explained in the repository page of the JEDI Wiki at
-<a href="http://homepages.codegear.com/jedi/wiki/index.php?title=Repository">http://homepages.codegear.com/jedi/wiki/index.php?title=Repository</a>&nbsp;
+<a href="http://wiki.delphi-jedi.org/index.php?title=Repository">http://wiki.delphi-jedi.org/index.php?title=Repository</a>&nbsp;
 With the SVN client, you can update your local repository at any time.
 You can also view the repository online via the web interface at <a href="http://jcl.svn.sourceforge.net/">http://jcl.svn.sourceforge.net/</a></p>
 
@@ -388,7 +393,7 @@ things we need your help on:
 
 <p>JCL accepts donations from developers as long as the source fullfills the
 requirements set up by the JEDI and JCL teams. To read more about these
-requirements, visit the page <a href="http://homepages.codegear.com/jedi/jcl">http://homepages.codegear.com/jedi/jcl</a></p>
+requirements, visit the page <a href="http://jcl.delphi-jedi.org/">http://jcl.delphi-jedi.org/</a></p>
 
 <p>You can also donate your time by writing help for the source already
 in JCL. We currently use Doc-o-Matic to create the finished help files but

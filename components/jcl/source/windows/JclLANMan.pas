@@ -28,8 +28,12 @@
 { implies, it uses the LAN Manager API.                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date: 2007-06-10 22:42:40 +0200 (dim., 10 juin 2007) $
+{                                                                                                  }
+{ Last modified: $Date:: 2010-07-01 16:56:19 +0200 (jeu., 01 juil. 2010)                         $ }
+{ Revision:      $Rev:: 3260                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 // Comments to Win9x compatibility of the functions used in this unit
 
@@ -83,23 +87,25 @@ function GlobalGroupExists(const Server, Group: string): Boolean;
 
 function AddAccountToLocalGroup(const Accountname, Groupname: string): Boolean;
 function LookupGroupName(const Server: string; const RID: TNetWellKnownRID): string;
-procedure ParseAccountName(const QualifiedName: string; var Domain, UserName: string);
+procedure ParseAccountName(const QualifiedName: string; out Domain, UserName: string);
 function IsLocalAccount(const AccountName: string): Boolean;
 
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jcl.svn.sourceforge.net/svnroot/jcl/tags/JCL-1.101-Build2725/jcl/source/windows/JclLANMan.pas $';
-    Revision: '$Revision: 2036 $';
-    Date: '$Date: 2007-06-10 22:42:40 +0200 (dim., 10 juin 2007) $';
-    LogPath: 'JCL\source\windows'
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/source/windows/JclLANMan.pas $';
+    Revision: '$Revision: 3260 $';
+    Date: '$Date: 2010-07-01 16:56:19 +0200 (jeu., 01 juil. 2010) $';
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
 implementation
 
 uses
-  JclBase, JclStrings, JclSysInfo, JclWin32;
+  JclBase, JclStrings, JclSysUtils, JclSysInfo, JclWin32;
 
 function CreateAccount(const Server, Username, Fullname, Password, Description,
   Homedir, Script: string; const PasswordNeverExpires: Boolean): Boolean;
@@ -118,7 +124,7 @@ begin
   wScript := Script;
   wHomedir := Homedir;
 
-  FillChar(Details, SizeOf(Details), #0);
+  ResetMemory(Details, SizeOf(Details));
   with Details do
   begin
     usri2_name := PWideChar(wUsername);
@@ -172,7 +178,7 @@ begin
   wGroupname := Groupname;
   wDescription := Description;
 
-  FillChar(Details, SizeOf(Details), #0);
+  ResetMemory(Details, SizeOf(Details));
   Details.grpi1_name := PWideChar(wGroupName);
   Details.grpi1_comment := PWideChar(wDescription);
 
@@ -191,7 +197,7 @@ begin
   wGroupname := Groupname;
   wDescription := Description;
 
-  FillChar(Details, SizeOf(Details), #0);
+  ResetMemory(Details, SizeOf(Details));
   Details.lgrpi1_name := PWideChar(wGroupName);
   Details.lgrpi1_comment := PWideChar(wDescription);
 
@@ -379,8 +385,11 @@ var
   sd: PSID;
   AccountNameLen, DomainNameLen: DWORD;
   SidNameUse: SID_NAME_USE;
+  AccountName, DomainName: string;
 begin
   Result := '';
+  AccountName := '';
+  DomainName := '';
   rd2 := 0;
 
   if RID = wkrEveryOne then
@@ -396,25 +405,31 @@ begin
     rd2 := RIDToDWORD(RID);
     ridCount := 2;
   end;
+  sd := nil;
   if AllocateAndInitializeSid(sia, ridCount, rd1, rd2, 0, 0, 0, 0, 0, 0, sd) then
   try
     AccountNameLen := 0;
     DomainNameLen := 0;
-    if not LookupAccountSID(PChar(Server), sd, PChar(Result), AccountNameLen,
-      nil, DomainNameLen, SidNameUse) then
-      SetLength(Result, AccountNamelen);
+    SidNameUse := SidTypeUnknown;
+    if not LookupAccountSID(PChar(Server), sd, PChar(AccountName), AccountNameLen,
+      PChar(DomainName), DomainNameLen, SidNameUse) then
+    begin
+      SetLength(AccountName, AccountNamelen);
+      SetLength(DomainName, DomainNameLen);
+    end;
 
-    if LookupAccountSID(PChar(Server), sd, PChar(Result), AccountNameLen,
-      nil, DomainNameLen, sidNameUse) then
-      StrResetLength(Result)
+    if LookupAccountSID(PChar(Server), sd, PChar(AccountName), AccountNameLen,
+      PChar(DomainName), DomainNameLen, sidNameUse) then
+      StrResetLength(AccountName)
     else
       RaiseLastOSError;
+    Result := AccountName;
   finally
     FreeSID(sd);
   end;
 end;
 
-procedure ParseAccountName(const QualifiedName: string; var Domain, UserName: string);
+procedure ParseAccountName(const QualifiedName: string; out Domain, UserName: string);
 var
   Parts: TStringList;
 begin

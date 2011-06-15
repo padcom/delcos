@@ -19,8 +19,9 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Unit owner: Robert Marquardt                                                                     }
-{ Last modified: $Date: 2006-10-30 19:04:11 +0100 (lun., 30 oct. 2006) $                                                      }
+{ Last modified: $Date:: 2010-02-05 12:57:29 +0100 (ven., 05 févr. 2010)                        $ }
+{ Revision:      $Rev:: 3178                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -34,6 +35,9 @@ uses
   SysUtils, Windows, Classes, Messages, Forms, Controls, StdCtrls, ComCtrls,
   ExtCtrls,
   ToolsAPI,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclOtaUtils, JclOptionsFrame;
 
 type
@@ -105,11 +109,23 @@ function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
   RegisterProc: TWizardRegisterProc;
   var TerminateProc: TWizardTerminateProc): Boolean; stdcall;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/experts/useswizard/JCLUsesWizard.pas $';
+    Revision: '$Revision: 3178 $';
+    Date: '$Date: 2010-02-05 12:57:29 +0100 (ven., 05 févr. 2010) $';
+    LogPath: 'JCL\experts\useswizard';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
   IniFiles,
-  JclFileUtils, JclParseUses, JclRegistry, JclStrings,
+  JclFileUtils, JclUsesUtils, JclRegistry, JclStrings, JclStringConversions,
   JclUsesDialog,
   JclOtaConsts, JclOtaResources;
 
@@ -132,18 +148,10 @@ var
   JCLWizardIndex: Integer = -1;
 
 procedure JclWizardTerminate;
-var
-  OTAWizardServices: IOTAWizardServices;
 begin
   try
     if JCLWizardIndex <> -1 then
-    begin
-      Supports(BorlandIDEServices, IOTAWizardServices, OTAWizardServices);
-      if not Assigned(OTAWizardServices) then
-        raise EJclExpertException.CreateTrace(RsENoWizardServices);
-
-      OTAWizardServices.RemoveWizard(JCLWizardIndex);
-    end;
+      TJclOTAExpertBase.GetOTAWizardServices.RemoveWizard(JCLWizardIndex);
   except
     on ExceptionObj: TObject do
     begin
@@ -155,17 +163,11 @@ end;
 function JCLWizardInit(const BorlandIDEServices: IBorlandIDEServices;
     RegisterProc: TWizardRegisterProc;
     var TerminateProc: TWizardTerminateProc): Boolean stdcall;
-var
-  OTAWizardServices: IOTAWizardServices;
 begin
   try
     TerminateProc := JclWizardTerminate;
 
-    Supports(BorlandIDEServices, IOTAWizardServices, OTAWizardServices);
-    if not Assigned(OTAWizardServices) then
-      raise EJclExpertException.CreateTrace(RsENoWizardServices);
-
-    JCLWizardIndex := OTAWizardServices.AddWizard(TJCLUsesWizard.Create);
+    JCLWizardIndex := TJclOTAExpertBase.GetOTAWizardServices.AddWizard(TJCLUsesWizard.Create);
 
     Result := True;
   except
@@ -303,7 +305,7 @@ begin
       Read := Reader.GetText(ReaderPos, @Buf, BufSize);
       Inc(ReaderPos, Read);
       if (Read < 0) or (Read > BufSize) then
-        raise EJclExpertException.CreateTrace(RsEErrorReadingBuffer);
+        raise EJclExpertException.CreateRes(@RsEErrorReadingBuffer);
       Buf[Read] := #0;
       Stream.WriteString(Buf);
     until Read < BufSize;
@@ -379,7 +381,7 @@ begin
   FFrameJclOptions.Active := Active;
   FFrameJclOptions.ConfirmChanges := ConfirmChanges;
   FFrameJclOptions.ConfigFileName := IniFile;
-  AddPageFunc(FFrameJclOptions, RsUsesSheet, Self);
+  AddPageFunc(FFrameJclOptions, LoadResString(@RsUsesSheet), Self);
 end;
 
 procedure TJCLUsesWizard.ConfigurationClosed(AControl: TControl;
@@ -495,8 +497,10 @@ end;
 procedure TJCLUsesWizard.LoadSettings;
 var
   DefaultIniFile, DefaultRegKey: string;
+  OTAServices: IOTAServices;
 begin
-  DefaultRegKey := StrEnsureSuffix(AnsiBackslash, Services.GetBaseRegistryKey) + RegJclKey;
+  OTAServices := GetOTAServices;
+  DefaultRegKey := StrEnsureSuffix(NativeBackslash, OTAServices.GetBaseRegistryKey) + RegJclKey;
   DefaultIniFile := RegReadStringDef(HKCU, DefaultRegKey, JclRootDirValueName, '');
   if DefaultIniFile <> '' then
     DefaultIniFile := PathAddSeparator(DefaultIniFile) + JclIniFileLocation;
@@ -519,13 +523,8 @@ var
 
   procedure LoadDcc32Strings;
   const
-    {$IFDEF COMPILER6}
     SErrorID = 4147; // 'Error'
     SUndeclaredIdentID = 47; // 'Undeclared identifier: ''%s'''
-    {$ELSE}
-    SErrorID = 4200;
-    SUndeclaredIdentID = 2;
-    {$ENDIF COMPILER6}
   var
     Dcc32FileName: string;
     Dcc32: HMODULE;
@@ -539,11 +538,9 @@ var
 
     // try to retrieve and prepend Delphi bin path
     S := (BorlandIDEServices as IOTAServices).GetBaseRegistryKey;
-    {$IFDEF COMPILER6_UP}
     if RegKeyExists(HKEY_CURRENT_USER, S) then
       Dcc32FileName := PathAddSeparator(RegReadString(HKEY_CURRENT_USER, S, 'RootDir')) + 'Bin\' + Dcc32FileName
     else
-    {$ENDIF COMPILER6_UP}
     if RegKeyExists(HKEY_LOCAL_MACHINE, S) then
       Dcc32FileName := PathAddSeparator(RegReadString(HKEY_LOCAL_MACHINE, S, 'RootDir')) + 'Bin\' + Dcc32FileName;
 
@@ -724,7 +721,7 @@ var
   ChangeList: TStrings;
   IntfLength, ImplLength: Integer;
   Writer: IOTAEditWriter;
-  Project: IOTAProject;
+  ActiveProject: IOTAProject;
 begin
   GoalSource := '';
   with BorlandIDEServices as IOTAEditorServices do
@@ -767,7 +764,7 @@ begin
                 try
                   Writer.CopyTo(Length(TextBeforeUses));
                   Writer.DeleteTo(Length(TextBeforeUses) + IntfLength);
-                  Writer.Insert(PChar(UsesList.Text));
+                  Writer.Insert(PAnsiChar(StringToUTF8(UsesList.Text)));
                   Writer.CopyTo(Length(GoalSource));
                 finally
                   Writer := nil;
@@ -775,9 +772,9 @@ begin
               end;
 
             // attempt to recompile
-            Project := ActiveProject;
-            if Assigned(Project) and Assigned(Project.ProjectBuilder) then
-              Project.ProjectBuilder.BuildProject(cmOTAMake, True, True);
+            ActiveProject := GetActiveProject;
+            if Assigned(ActiveProject) and Assigned(ActiveProject.ProjectBuilder) then
+              ActiveProject.ProjectBuilder.BuildProject(cmOTAMake, True, True);
           end;
         finally
           ChangeList.Free;
@@ -813,7 +810,7 @@ begin
                 try
                   Writer.CopyTo(Length(TextBeforeUses));
                   Writer.DeleteTo(Length(TextBeforeUses) + IntfLength);
-                  Writer.Insert(PChar(UsesList.Text));
+                  Writer.Insert(PAnsiChar(StringToUTF8(UsesList.Text)));
                   Writer.CopyTo(Length(GoalSource));
                 finally
                   Writer := nil;
@@ -821,9 +818,9 @@ begin
               end;
 
             // attempt to recompile
-            Project := ActiveProject;
-            if Assigned(Project) and Assigned(Project.ProjectBuilder) then
-              Project.ProjectBuilder.BuildProject(cmOTAMake, True, True);
+            ActiveProject := GetActiveProject;
+            if Assigned(ActiveProject) and Assigned(ActiveProject.ProjectBuilder) then
+              ActiveProject.ProjectBuilder.BuildProject(cmOTAMake, True, True);
           end;
         finally
           ChangeList.Free;
@@ -889,10 +886,10 @@ begin
                 try
                   Writer.CopyTo(Length(TextBeforeIntf));
                   Writer.DeleteTo(Length(TextBeforeIntf) + IntfLength);
-                  Writer.Insert(PChar(UsesIntf.Text));
+                  Writer.Insert(PAnsiChar(StringToUTF8(UsesIntf.Text)));
                   Writer.CopyTo(Length(TextBeforeIntf) + IntfLength + Length(TextAfterIntf));
                   Writer.DeleteTo(Length(TextBeforeIntf) + IntfLength + Length(TextAfterIntf) + ImplLength);
-                  Writer.Insert(PChar(UsesImpl.Text));
+                  Writer.Insert(PAnsiChar(StringToUTF8(UsesImpl.Text)));
                   Writer.CopyTo(Length(GoalSource));
                 finally
                   Writer := nil;
@@ -900,9 +897,9 @@ begin
               end;
 
             // attempt to recompile
-            Project := ActiveProject;
-            if Assigned(Project) and Assigned(Project.ProjectBuilder) then
-              Project.ProjectBuilder.BuildProject(cmOTAMake, True, True);
+            ActiveProject := GetActiveProject;
+            if Assigned(ActiveProject) and Assigned(ActiveProject.ProjectBuilder) then
+              ActiveProject.ProjectBuilder.BuildProject(cmOTAMake, True, True);
           end;
         finally
           ChangeList.Free;
@@ -982,5 +979,13 @@ procedure TJCLUsesWizard.UnregisterCommands;
 begin
   SaveSettings;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

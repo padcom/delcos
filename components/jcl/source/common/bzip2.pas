@@ -24,19 +24,24 @@
 {                                                                                                  }
 { Header conversion of bzlib.h                                                                     }
 {                                                                                                  }
-{ Unit owner: Florent Ouchet                                                                       }
-{ Last modified: $Date: 2007-06-28 22:06:21 +0200 (jeu., 28 juin 2007) $                           }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date:: 2010-01-25 13:19:13 +0100 (lun., 25 janv. 2010)                        $ }
+{ Revision:      $Rev:: 3139                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
-
 unit bzip2;
-
-interface
 
 {$I jcl.inc}
 
+interface
+
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclBase; // PByte, PCardinal for Delphi 5 and C++Builder 5...
 
 {
@@ -226,7 +231,7 @@ function BZ2_bzBuffToBuffDecompress(dest: PByte; destLen: PCardinal; source: PBy
 --*/
 }
 
-function BZ2_bzlibVersion: PChar;
+function BZ2_bzlibVersion: PAnsiChar;
   {$IFDEF BZIP2_EXPORT_STDCALL}stdcall;{$ENDIF BZIP2_EXPORT_STDCALL}
   {$IFDEF BZIP2_EXPORT_CDECL}cdecl;{$ENDIF BZIP2_EXPORT_CDECL}
 
@@ -279,7 +284,7 @@ type
     source: PByte; sourceLen: Cardinal; small, verbosity: Integer): Integer;
     {$IFDEF BZIP2_EXPORT_STDCALL}stdcall;{$ENDIF BZIP2_EXPORT_STDCALL}
     {$IFDEF BZIP2_EXPORT_CDECL}cdecl;{$ENDIF BZIP2_EXPORT_CDECL}
-  BZ2_bzlibVersion_func = function: PChar;
+  BZ2_bzlibVersion_func = function: PAnsiChar;
     {$IFDEF BZIP2_EXPORT_STDCALL}stdcall;{$ENDIF BZIP2_EXPORT_STDCALL}
     {$IFDEF BZIP2_EXPORT_CDECL}cdecl;{$ENDIF BZIP2_EXPORT_CDECL}
 
@@ -302,23 +307,75 @@ function LoadBZip2: Boolean;
 function IsBZip2Loaded: Boolean;
 procedure UnloadBZip2;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/source/common/bzip2.pas $';
+    Revision: '$Revision: 3139 $';
+    Date: '$Date: 2010-01-25 13:19:13 +0100 (lun., 25 janv. 2010) $';
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses
-  SysUtils,
+  {$IFDEF BZIP2_LINKONREQUEST}
   {$IFDEF MSWINDOWS}
-  Windows;
+  Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  {$IFDEF HAS_UNIT_TYPES}
+  {$ENDIF BZIP2_LINKONREQUEST}
   Types,
-  {$ENDIF HAS_UNIT_TYPES}
   {$IFDEF HAS_UNIT_LIBC}
-  Libc;
-  {$ELSE ~HAS_UNIT_LIBC}
-  dl;
-  {$ENDIF ~HAS_UNIT_LIBC}
-  {$ENDIF UNIX}
+  Libc,
+  {$ENDIF HAS_UNIT_LIBC}
+  SysUtils;
+
+{$IFDEF BZIP2_STATICLINK}
+function BZ2_bzCompressInit; external;
+function BZ2_bzCompress; external;
+function BZ2_bzCompressEnd; external;
+function BZ2_bzDecompressInit; external;
+function BZ2_bzDecompress; external;
+function BZ2_bzDecompressEnd; external;
+function BZ2_bzBuffToBuffCompress; external;
+function BZ2_bzBuffToBuffDecompress; external;
+function BZ2_bzlibVersion; external;
+// workaround to make the compiler aware of _BZ2_indexIntoF
+// an external must be declared for this function in order to make the compiler considering
+// the corresponding PUBDEF in bzlib.obj
+// source: CodeGear QA team
+function _BZ2_indexIntoF: Pointer;
+  {$IFDEF BZIP2_EXPORT_STDCALL}stdcall;{$ENDIF BZIP2_EXPORT_STDCALL}
+  {$IFDEF BZIP2_EXPORT_CDECL}cdecl;{$ENDIF BZIP2_EXPORT_CDECL} external;
+
+{$LINK ..\windows\obj\bzip2\bzlib.obj}
+{$LINK ..\windows\obj\bzip2\randtable.obj}
+{$LINK ..\windows\obj\bzip2\crctable.obj}
+{$LINK ..\windows\obj\bzip2\compress.obj}
+{$LINK ..\windows\obj\bzip2\decompress.obj}
+{$LINK ..\windows\obj\bzip2\huffman.obj}
+{$LINK ..\windows\obj\bzip2\blocksort.obj}
+
+function _malloc(size: Longint): Pointer; cdecl;
+begin
+  GetMem(Result, Size);
+end;
+
+procedure _free(pBlock: Pointer); cdecl;
+begin
+  FreeMem(pBlock);
+end;
+
+procedure _bz_internal_error(errcode: Integer); cdecl;
+begin
+  if Assigned(bz2_internal_error_event) then
+    bz2_internal_error_event(errcode);
+end;
+
+{$ELSE ~BZIP2_STATICLINK}
 
 type
   {$IFDEF MSWINDOWS}
@@ -331,7 +388,6 @@ type
 const
   {$IFDEF MSWINDOWS}
   szBZIP2 = 'bzip2.dll'; // from http://gnuwin32.sourceforge.net/
-  szMSVCRT = 'MSVCRT.DLL';
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   szBZIP2 = 'libbz2.so.1';
@@ -347,39 +403,7 @@ const
   BZ2LibVersionExportName = 'BZ2_bzlibVersion';
   INVALID_MODULEHANDLE_VALUE = TModuleHandle(0);
 
-{$IFDEF BZIP2_STATICLINK}
-function BZ2_bzCompressInit; external;
-function BZ2_bzCompress; external;
-function BZ2_bzCompressEnd; external;
-function BZ2_bzDecompressInit; external;
-function BZ2_bzDecompress; external;
-function BZ2_bzDecompressEnd; external;
-function BZ2_bzBuffToBuffCompress; external;
-function BZ2_bzBuffToBuffDecompress; external;
-function BZ2_bzlibVersion; external;
-
-{$LINK ..\windows\obj\bzip2\bzlib.obj}
-{$LINK ..\windows\obj\bzip2\randtable.obj}
-{$LINK ..\windows\obj\bzip2\crctable.obj}
-{$LINK ..\windows\obj\bzip2\compress.obj}
-{$LINK ..\windows\obj\bzip2\decompress.obj}
-{$LINK ..\windows\obj\bzip2\huffman.obj}
-{$LINK ..\windows\obj\bzip2\blocksort.obj}
-// strange bug: bzlib.obj has to be listed two times to make BZ2_indexIntoF reachable
-{$LINK ..\windows\obj\bzip2\bzlib.obj}
-
-type
-  size_t = Longint;
-
-function _malloc(size: size_t): Pointer; cdecl; external szMSVCRT name 'malloc';
-procedure _free(pBlock: Pointer); cdecl; external szMSVCRT name 'free';
-
-procedure _bz_internal_error(errcode: Integer); cdecl;
-begin
-  if Assigned(bz2_internal_error_event) then
-    bz2_internal_error_event(errcode);
-end;
-{$ENDIF BZIP2_STATICLINK}
+{$ENDIF ~BZIP2_STATICLINK}
 
 {$IFDEF BZIP2_LINKDLL}
 function BZ2_bzCompressInit; external szBZIP2 name BZ2CompressInitExportName;
@@ -400,13 +424,13 @@ var
 
 function LoadBZip2: Boolean;
 {$IFDEF BZIP2_LINKONREQUEST}
-  function GetSymbol(SymbolName: PChar): Pointer;
+  function GetSymbol(SymbolName: PAnsiChar): Pointer;
   begin
     {$IFDEF MSWINDOWS}
-    Result := GetProcAddress(BZip2Lib, PChar(SymbolName));
+    Result := GetProcAddress(BZip2Lib, SymbolName);
     {$ENDIF MSWINDOWS}
     {$IFDEF UNIX}
-    Result := dlsym(BZip2Lib, PChar(SymbolName));
+    Result := dlsym(BZip2Lib, SymbolName);
     {$ENDIF UNIX}
   end;
 begin
@@ -419,7 +443,7 @@ begin
     BZip2Lib := SafeLoadLibrary(szBZIP2);
     {$ENDIF MSWINDOWS}
     {$IFDEF UNIX}
-    BZip2Lib := dlopen(PChar(szBZIP2), RTLD_NOW);
+    BZip2Lib := dlopen(PAnsiChar(szBZIP2), RTLD_NOW);
     {$ENDIF UNIX}
   Result := BZip2Lib <> INVALID_MODULEHANDLE_VALUE;
   if Result then
@@ -439,7 +463,7 @@ end;
 begin
   Result := True;
 end;
-  {$ENDIF ~BZIP2_LINKONREQUEST}
+{$ENDIF ~BZIP2_LINKONREQUEST}
 
 function IsBZip2Loaded: Boolean;
 begin
@@ -463,5 +487,13 @@ begin
   BZip2Lib := INVALID_MODULEHANDLE_VALUE;
   {$ENDIF BZIP2_LINKONREQUEST}
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

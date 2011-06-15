@@ -1,5 +1,4 @@
-USEUNIT("..\..\experts\favfolders\IdeOpenDlgFavoriteUnit.pas");
-USEUNIT("..\..\experts\favfolders\OpenDlgFavAdapter.pas");
+USEUNIT("..\..\experts\favfolders\JclIdeOpenDlgFavoriteUnit.pas");
 USEDEF("JclFavoriteFoldersExpertDLL.def");
 Project file
 DllEntryPoint

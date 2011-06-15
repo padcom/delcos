@@ -1,28 +1,38 @@
-{-----------------------------------------------------------------------------
-The contents of this file are subject to the Mozilla Public License
-Version 1.1 (the "License"); you may not use this file except in compliance
-with the License. You may obtain a copy of the License at
-http://www.mozilla.org/MPL/MPL-1.1.html
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JvSimpleXML.PAS, released on 2002-06-03.                                    }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is SÈbastien Buysse [sbuysse att buypin dott com].    }
+{ Portions created by SÈbastien Buysse are Copyright (C) 2001 SÈbastien Buysse.                    }
+{ All Rights Reserved.                                                                             }
+{                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Christophe Paris,                                                                              }
+{   Florent Ouchet (move from the JVCL to the JCL)                                                 }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ This unit contains Xml parser and writter classes                                                }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date:: 2010-08-12 13:53:27 +0200 (jeu., 12 ao√ªt 2010)                         $ }
+{ Revision:      $Rev:: 3306                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
-Software distributed under the License is distributed on an "AS IS" basis,
-WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
-the specific language governing rights and limitations under the License.
-
-The Original Code is: JvSimpleXML.PAS, released on 2002-06-03
-
-The Initial Developer of the Original Code is SÈbastien Buysse [sbuysse att buypin dott com]
-Portions created by SÈbastien Buysse are Copyright (C) 2001 SÈbastien Buysse.
-All Rights Reserved.
-
-Contributor(s): Christophe Paris,
-                Florent Ouchet (move from the JVCL to the JCL).
-
-You may retrieve the latest version of this file at the Project JEDI's JCL home page,
-located at http://jcl.sourceforge.net
-
-Known Issues: This component does not parse the !DOCTYPE tags but preserves them
------------------------------------------------------------------------------}
-// $Id: JclSimpleXml.pas 1874 2007-01-06 15:11:15Z UsChUsTeR $
+// Known Issues: This component does not parse the !DOCTYPE tags but preserves them
 
 unit JclSimpleXml;
 
@@ -37,26 +47,19 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, // Delphi 2005 inline
   {$ENDIF MSWINDOWS}
-  {$IFDEF CLR}
-  System.Text,
-  {$ENDIF CLR}
   SysUtils, Classes,
-  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
   IniFiles,
-  JclBase;
+  JclBase, JclStreams;
 
 type
-  {$IFDEF COMPILER5}
-  THashedStringList = class(TStringList);
-  THandle = Longword;
-  {$ENDIF COMPILER5}
   TJclSimpleXML = class;
   EJclSimpleXMLError = class(EJclError);
-  {$M+} // generate RTTI for published properties
+  {$TYPEINFO ON} // generate RTTI for published properties
   TJclSimpleXMLElem = class;
-  {$M-}
+  {$IFNDEF TYPEINFO_ON}
+  {$TYPEINFO OFF}
+  {$ENDIF ~TYPEINFO_ON}
   TJclSimpleXMLElems = class;
   TJclSimpleXMLProps = class;
   TJclSimpleXMLElemComment = class;
@@ -66,31 +69,14 @@ type
   TJclSimpleXMLElemText = class;
   TJclSimpleXMLElemHeader = class;
   TJclSimpleXMLElemSheet = class;
-  TJclOnSimpleXMLParsed = procedure(Sender: TObject; Name: string) of object;
-  TJclOnValueParsed = procedure(Sender: TObject; Name, Value: string) of object;
+  TJclSimpleXMLElemMSOApplication = class;
+  TJclOnSimpleXMLParsed = procedure(Sender: TObject; const Name: string) of object;
+  TJclOnValueParsed = procedure(Sender: TObject; const Name, Value: string) of object;
   TJclOnSimpleProgress = procedure(Sender: TObject; const Position, Total: Integer) of object;
 
   //Those hash stuffs are for future use only
   //Plans are to replace current hash by this mechanism
   TJclHashKind = (hkList, hkDirect);
-  {$IFDEF CLR}
-  TJclHashElem = class(TObject)
-    Next: TJclHashElem;
-    Obj: TObject;
-  end;
-  PJclHashElem = TJclHashElem;
-  TJclHashRecord = class;
-  TJclHashList = array [0..25] of TJclHashRecord;
-  PJclHashList = TJclHashList;
-  TJclHashRecord = class(TObject)
-  public
-    Count: Byte;
-    Kind: TJclHashKind;
-    List: PJclHashList;
-    FirstElem: PJclHashElem;
-  end;
-  PJclHashRecord = TJclHashRecord;
-  {$ELSE}
   PJclHashElem = ^TJclHashElem;
   TJclHashElem = packed record
     Next: PJclHashElem;
@@ -105,18 +91,6 @@ type
       hkList: (List: PJclHashList);
       hkDirect: (FirstElem: PJclHashElem);
   end;
-  {$ENDIF CLR}
-
-  TJclSimpleHashTable = class(TObject)
-  private
-    FList: PJclHashRecord;
-  public
-    constructor Create;
-    destructor Destroy; override;
-
-    procedure AddObject(const AName: string; AObject: TObject);
-    procedure Clear;
-  end;
 
   TJclSimpleXMLProp = class(TObject)
   private
@@ -124,28 +98,31 @@ type
     FValue: string;
     FParent: TJclSimpleXMLProps;
     FNameSpace: string;
-    FData: {$IFDEF CLR} TObject {$ELSE} Pointer {$ENDIF};
+    FData: Pointer;
     function GetBoolValue: Boolean;
     procedure SetBoolValue(const Value: Boolean);
     procedure SetName(const Value: string);
     function GetFloatValue: Extended;
     procedure SetFloatValue(const Value: Extended);
+    function GetAnsiValue: AnsiString;
+    procedure SetAnsiValue(const Value: AnsiString);
   protected
     function GetIntValue: Int64;
     procedure SetIntValue(const Value: Int64);
   public
     function GetSimpleXML: TJclSimpleXML;
-    function SaveToString: string;
+    procedure SaveToStringStream(StringStream: TJclStringStream);
     function FullName:string;
     property Parent: TJclSimpleXMLProps read FParent write FParent;
     property Name: string read FName write SetName;
     property Value: string read FValue write FValue;
+    property AnsiValue: AnsiString read GetAnsiValue write SetAnsiValue;
     property IntValue: Int64 read GetIntValue write SetIntValue;
     property BoolValue: Boolean read GetBoolValue write SetBoolValue;
     property FloatValue: Extended read GetFloatValue write SetFloatValue;
     property NameSpace: string read FNameSpace write FNameSpace;
 
-    property Data: {$IFDEF CLR} TObject {$ELSE} Pointer {$ENDIF} read FData write FData;
+    property Data: Pointer read FData write FData;
   end;
 
   TJclSimpleXMLProps = class(TObject)
@@ -158,13 +135,16 @@ type
   protected
     function GetSimpleXML: TJclSimpleXML;
     function GetItem(const Index: Integer): TJclSimpleXMLProp;
-    procedure DoItemRename(var Value: TJclSimpleXMLProp; const Name: string);
+    procedure DoItemRename(Value: TJclSimpleXMLProp; const Name: string);
     procedure Error(const S: string);
     procedure FmtError(const S: string; const Args: array of const);
   public
     constructor Create(Parent: TJclSimpleXMLElem);
     destructor Destroy; override;
     function Add(const Name, Value: string): TJclSimpleXMLProp; overload;
+    {$IFDEF SUPPORTS_UNICODE}
+    function Add(const Name: string; const Value: AnsiString): TJclSimpleXMLProp; overload;
+    {$ENDIF SUPPORTS_UNICODE}
     function Add(const Name: string; const Value: Int64): TJclSimpleXMLProp; overload;
     function Add(const Name: string; const Value: Boolean): TJclSimpleXMLProp; overload;
     function Insert(const Index: Integer; const Name, Value: string): TJclSimpleXMLProp; overload;
@@ -173,11 +153,12 @@ type
     procedure Clear; virtual;
     procedure Delete(const Index: Integer); overload;
     procedure Delete(const Name: string); overload;
-    function Value(const Name: string; Default: string = ''): string;
-    function IntValue(const Name: string; Default: Int64 = -1): Int64;
+    function Value(const Name: string; const Default: string = ''): string;
+    function IntValue(const Name: string; const Default: Int64 = -1): Int64;
     function BoolValue(const Name: string; Default: Boolean = True): Boolean;
-    procedure LoadFromStream(const Stream: TStream);
-    procedure SaveToStream(const Stream: TStream);
+    function FloatValue(const Name: string; const Default: Extended = 0): Extended;
+    procedure LoadFromStringStream(StringStream: TJclStringStream);
+    procedure SaveToStringStream(StringStream: TJclStringStream);
     property Item[const Index: Integer]: TJclSimpleXMLProp read GetItem; default;
     property ItemNamed[const Name: string]: TJclSimpleXMLProp read GetItemNamed;
     property Count: Integer read GetCount;
@@ -204,14 +185,48 @@ type
     function AddComment(const AValue: string): TJclSimpleXMLElemComment;
     function AddDocType(const AValue: string): TJclSimpleXMLElemDocType;
     procedure Clear;
-    function AddStyleSheet(AType, AHRef: string): TJclSimpleXMLElemSheet;
-    function LoadFromStream(const Stream: TStream; AParent: TJclSimpleXML = nil): string;
-    procedure SaveToStream(const Stream: TStream; AParent: TJclSimpleXML = nil);
+    function AddStyleSheet(const AType, AHRef: string): TJclSimpleXMLElemSheet;
+    function AddMSOApplication(const AProgId : string): TJclSimpleXMLElemMSOApplication;
+    procedure LoadFromStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML = nil);
+    procedure SaveToStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML = nil);
     property Item[const Index: Integer]: TJclSimpleXMLElem read GetItem; default;
     property Count: Integer read GetCount;
     property Encoding: string read GetEncoding write SetEncoding;
     property StandAlone: Boolean read GetStandAlone write SetStandAlone;
     property Version: string read GetVersion write SetVersion;
+  end;
+
+  TJclSimpleXMLNamedElems = class(TObject)
+  private
+    FElems: TJclSimpleXMLElems;
+    FName: string;
+    function GetCount: Integer;
+  protected
+    FItems: TList;
+    function GetItem(const Index: Integer): TJclSimpleXMLElem;
+  public
+    constructor Create(const AOwner: TJClSimpleXMLElems; const AName: string);
+    destructor Destroy; override;
+
+    function Add: TJclSimpleXmlElemClassic; overload;
+    function Add(const Value: string): TJclSimpleXmlElemClassic; overload;
+    function Add(const Value: Int64): TJclSimpleXmlElemClassic; overload;
+    function Add(const Value: Boolean): TJclSimpleXmlElemClassic; overload;
+    function Add(Value: TStream): TJclSimpleXmlElemClassic; overload;
+    function AddFirst: TJclSimpleXmlElemClassic;
+    function AddComment(const Value: string): TJclSimpleXMLElemComment;
+    function AddCData(const Value: string): TJclSimpleXMLElemCData;
+    function AddText(const Value: string): TJclSimpleXMLElemText;
+    procedure Clear; virtual;
+    procedure Delete(const Index: Integer);
+    procedure Move(const CurIndex, NewIndex: Integer);
+    function IndexOf(const Value: TJclSimpleXMLElem): Integer; overload;
+    function IndexOf(const Value: string): Integer; overload;
+
+    property Elems: TJclSimpleXMLElems read FElems;
+    property Item[const Index: Integer]: TJclSimpleXMLElem read GetItem; default;
+    property Count: Integer read GetCount;
+    property Name: string read FName;
   end;
 
   TJclSimpleXMLElemCompare = function(Elems: TJclSimpleXMLElems; Index1, Index2: Integer): Integer of object;
@@ -221,14 +236,16 @@ type
     function GetCount: Integer;
     function GetItemNamedDefault(const Name, Default: string): TJclSimpleXMLElem;
     function GetItemNamed(const Name: string): TJclSimpleXMLElem;
+    function GetNamedElems(const Name: string): TJclSimpleXMLNamedElems;
   protected
     FElems: THashedStringList;
     FCompare: TJclSimpleXMLElemCompare;
+    FNamedElems: THashedStringList;
     function GetItem(const Index: Integer): TJclSimpleXMLElem;
     procedure AddChild(const Value: TJclSimpleXMLElem);
     procedure AddChildFirst(const Value: TJclSimpleXMLElem);
     procedure InsertChild(const Value: TJclSimpleXMLElem; Index: Integer);
-    procedure DoItemRename(var Value: TJclSimpleXMLElem; const Name: string);
+    procedure DoItemRename(Value: TJclSimpleXMLElem; const Name: string);
     procedure CreateElems;
   public
     constructor Create(const AOwner: TJclSimpleXMLElem);
@@ -245,7 +262,7 @@ type
     function Add(const Name, Value: string): TJclSimpleXMLElemClassic; overload;
     function Add(const Name: string; const Value: Int64): TJclSimpleXMLElemClassic; overload;
     function Add(const Name: string; const Value: Boolean): TJclSimpleXMLElemClassic; overload;
-    function Add(const Name: string; const Value: TStream): TJclSimpleXMLElemClassic; overload;
+    function Add(const Name: string; Value: TStream): TJclSimpleXMLElemClassic; overload;
     function Add(Value: TJclSimpleXMLElem): TJclSimpleXMLElem; overload;
     function AddFirst(Value: TJclSimpleXMLElem): TJclSimpleXMLElem; overload;
     function AddFirst(const Name: string): TJclSimpleXMLElemClassic; overload;
@@ -257,24 +274,27 @@ type
     procedure Clear; virtual;
     procedure Delete(const Index: Integer); overload;
     procedure Delete(const Name: string); overload;
+    function Remove(Value: TJclSimpleXMLElem): Integer;
     procedure Move(const CurIndex, NewIndex: Integer);
     function IndexOf(const Value: TJclSimpleXMLElem): Integer; overload;
-    function IndexOf(const Value: string): Integer; overload;
-    function Value(const Name: string; Default: string = ''): string;
-    function IntValue(const Name: string; Default: Int64 = -1): Int64;
+    function IndexOf(const Name: string): Integer; overload;
+    function Value(const Name: string; const Default: string = ''): string;
+    function IntValue(const Name: string; const Default: Int64 = -1): Int64;
+    function FloatValue(const Name: string; const Default: Extended = 0): Extended;
     function BoolValue(const Name: string; Default: Boolean = True): Boolean;
-    procedure BinaryValue(const Name: string; const Stream: TStream);
-    function LoadFromStream(const Stream: TStream; AParent: TJclSimpleXML = nil): string;
-    procedure SaveToStream(const Stream: TStream; const Level: string = ''; AParent: TJclSimpleXML = nil);
+    procedure BinaryValue(const Name: string; Stream: TStream);
+    procedure LoadFromStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML = nil);
+    procedure SaveToStringStream(StringStream: TJclStringStream; const Level: string = ''; AParent: TJclSimpleXML = nil);
     procedure Sort;
     procedure CustomSort(AFunction: TJclSimpleXMLElemCompare);
     property Parent: TJclSimpleXMLElem read FParent write FParent;
     property Item[const Index: Integer]: TJclSimpleXMLElem read GetItem; default;
     property ItemNamed[const Name: string]: TJclSimpleXMLElem read GetItemNamed;
     property Count: Integer read GetCount;
+    property NamedElems[const Name: string]: TJclSimpleXMLNamedElems read GetNamedElems;
   end;
 
-  {$M+}
+  {$TYPEINFO ON}
   TJclSimpleXMLElem = class(TObject)
   private
     FName: string;
@@ -283,11 +303,13 @@ type
     FProps: TJclSimpleXMLProps;
     FValue: string;
     FNameSpace: string;
-    FData: {$IFDEF CLR} TObject {$ELSE} Pointer {$ENDIF};
+    FData: Pointer;
     FSimpleXML: TJclSimpleXML;
     FContainer: TJclSimpleXMLElems;
     function GetFloatValue: Extended;
     procedure SetFloatValue(const Value: Extended);
+    function GetAnsiValue: AnsiString;
+    procedure SetAnsiValue(const Value: AnsiString);
   protected
     function GetSimpleXML: TJclSimpleXML;
     function GetIntValue: Int64;
@@ -305,14 +327,15 @@ type
     destructor Destroy; override;
     procedure Assign(Value: TJclSimpleXMLElem); virtual;
     procedure Clear; virtual;
-    function SaveToString(AParent: TJclSimpleXML = nil): string;
-    procedure LoadFromString(const Value: string; AParent: TJclSimpleXML = nil);
-    procedure LoadFromStream(const Stream: TStream; AParent: TJclSimpleXML = nil); virtual; abstract;
-    procedure SaveToStream(const Stream: TStream; const Level: string = ''; AParent: TJclSimpleXML = nil); virtual;
+    procedure LoadFromStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML = nil); virtual; abstract;
+    procedure SaveToStringStream(StringStream: TJclStringStream; const Level: string = ''; AParent: TJclSimpleXML = nil); virtual;
       abstract;
-    procedure GetBinaryValue(const Stream: TStream);
-    property Data: {$IFDEF CLR} TObject {$ELSE} Pointer {$ENDIF} read FData write FData;
+    procedure LoadFromString(const Value: string);
+    function SaveToString: string;
+    procedure GetBinaryValue(Stream: TStream);
+    property Data: Pointer read FData write FData;
     function GetChildIndex(const AChild: TJclSimpleXMLElem): Integer;
+    function GetNamedIndex(const AChild: TJclSimpleXMLElem): Integer;
 
     property SimpleXML: TJclSimpleXML read GetSimpleXML;
     property Container: TJclSimpleXMLElems read FContainer write FContainer;
@@ -328,69 +351,83 @@ type
     property BoolValue: Boolean read GetBoolValue write SetBoolValue;
     property FloatValue: Extended read GetFloatValue write SetFloatValue;
     property Value: string read FValue write FValue;
+    property AnsiValue: AnsiString read GetAnsiValue write SetAnsiValue;
   end;
-  {$M-}
+  {$IFNDEF TYPEINFO_ON}
+  {$TYPEINFO OFF}
+  {$ENDIF ~TYPEINFO_ON}
   TJclSimpleXMLElemClass = class of TJclSimpleXMLElem;
 
   TJclSimpleXMLElemComment = class(TJclSimpleXMLElem)
   public
-    procedure LoadFromStream(const Stream: TStream; AParent: TJclSimpleXML = nil); override;
-    procedure SaveToStream(const Stream: TStream; const Level: string = ''; AParent: TJclSimpleXML = nil); override;
+    procedure LoadFromStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML = nil); override;
+    procedure SaveToStringStream(StringStream: TJclStringStream; const Level: string = ''; AParent: TJclSimpleXML = nil); override;
   end;
 
   TJclSimpleXMLElemClassic = class(TJclSimpleXMLElem)
   public
-    procedure LoadFromStream(const Stream: TStream; AParent: TJclSimpleXML = nil); override;
-    procedure SaveToStream(const Stream: TStream; const Level: string = ''; AParent: TJclSimpleXML = nil); override;
+    procedure LoadFromStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML = nil); override;
+    procedure SaveToStringStream(StringStream: TJclStringStream; const Level: string = ''; AParent: TJclSimpleXML = nil); override;
   end;
 
   TJclSimpleXMLElemCData = class(TJclSimpleXMLElem)
   public
-    procedure LoadFromStream(const Stream: TStream; AParent: TJclSimpleXML = nil); override;
-    procedure SaveToStream(const Stream: TStream; const Level: string = ''; AParent: TJclSimpleXML = nil); override;
+    procedure LoadFromStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML = nil); override;
+    procedure SaveToStringStream(StringStream: TJclStringStream; const Level: string = ''; AParent: TJclSimpleXML = nil); override;
   end;
 
   TJclSimpleXMLElemText = class(TJclSimpleXMLElem)
   public
-    procedure LoadFromStream(const Stream: TStream; AParent: TJclSimpleXML = nil); override;
-    procedure SaveToStream(const Stream: TStream; const Level: string = ''; AParent: TJclSimpleXML = nil); override;
+    procedure LoadFromStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML = nil); override;
+    procedure SaveToStringStream(StringStream: TJclStringStream; const Level: string = ''; AParent: TJclSimpleXML = nil); override;
   end;
 
-  TJclSimpleXMLElemHeader = class(TJclSimpleXMLElem)
-  private
-    FStandalone: Boolean;
-    FEncoding: string;
-    FVersion: string;
+  TJclSimpleXMLElemProcessingInstruction = class(TJclSimpleXMLElem)
   public
-    procedure Assign(Value: TJclSimpleXMLElem); override;
-    
-    procedure LoadFromStream(const Stream: TStream; AParent: TJclSimpleXML = nil); override;
-    procedure SaveToStream(const Stream: TStream; const Level: string = ''; AParent: TJclSimpleXML = nil); override;
-    property Version: string read FVersion write FVersion;
-    property StandAlone: Boolean read FStandalone write FStandalone;
-    property Encoding: string read FEncoding write FEncoding;
-    constructor Create(const AOwner: TJclSimpleXMLElem); override;
+    procedure LoadFromStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML = nil); override;
+    procedure SaveToStringStream(StringStream: TJclStringStream; const Level: string = ''; AParent: TJclSimpleXML = nil); override;
+  end;
+
+  TJclSimpleXMLElemHeader = class(TJclSimpleXMLElemProcessingInstruction)
+  private
+    function GetEncoding: string;
+    function GetStandalone: Boolean;
+    function GetVersion: string;
+    procedure SetEncoding(const Value: string);
+    procedure SetStandalone(const Value: Boolean);
+    procedure SetVersion(const Value: string);
+  public
+    procedure LoadFromStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML = nil); override;
+    procedure SaveToStringStream(StringStream: TJclStringStream; const Level: string = ''; AParent: TJclSimpleXML = nil); override;
+    property Version: string read GetVersion write SetVersion;
+    property StandAlone: Boolean read GetStandalone write SetStandalone;
+    property Encoding: string read GetEncoding write SetEncoding;
+  end;
+
+  // for backward compatibility
+  TJclSimpleXMLElemSheet = class(TJclSimpleXMLElemProcessingInstruction)
+  end;
+
+  // for backward compatibility
+  TJclSimpleXMLElemMSOApplication = class(TJclSimpleXMLElemProcessingInstruction)
   end;
 
   TJclSimpleXMLElemDocType = class(TJclSimpleXMLElem)
   public
-    procedure LoadFromStream(const Stream: TStream; AParent: TJclSimpleXML = nil); override;
-    procedure SaveToStream(const Stream: TStream; const Level: string = ''; AParent: TJclSimpleXML = nil); override;
-  end;
-
-  TJclSimpleXMLElemSheet = class(TJclSimpleXMLElem)
-  public
-    procedure LoadFromStream(const Stream: TStream; AParent: TJclSimpleXML = nil); override;
-    procedure SaveToStream(const Stream: TStream; const Level: string = ''; AParent: TJclSimpleXML = nil); override;
+    procedure LoadFromStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML = nil); override;
+    procedure SaveToStringStream(StringStream: TJclStringStream; const Level: string = ''; AParent: TJclSimpleXML = nil); override;
   end;
 
   TJclSimpleXMLOptions = set of (sxoAutoCreate, sxoAutoIndent, sxoAutoEncodeValue,
-    sxoAutoEncodeEntity, sxoDoNotSaveProlog, sxoTrimPrecedingTextWhitespace);
+    sxoAutoEncodeEntity, sxoDoNotSaveProlog, sxoTrimPrecedingTextWhitespace,
+    sxoTrimFollowingTextWhitespace);
   TJclSimpleXMLEncodeEvent = procedure(Sender: TObject; var Value: string) of object;
   TJclSimpleXMLEncodeStreamEvent = procedure(Sender: TObject; InStream, OutStream: TStream) of object;
 
   TJclSimpleXML = class(TObject)
   protected
+    FEncoding: TJclStringEncoding;
+    FCodePage: Word;
     FFileName: TFileName;
     FOptions: TJclSimpleXMLOptions;
     FRoot: TJclSimpleXMLElemClassic;
@@ -402,13 +439,15 @@ type
     FSaveCount: Integer;
     FSaveCurrent: Integer;
     FIndentString: string;
+    FBaseIndentString: string;
     FOnEncodeValue: TJclSimpleXMLEncodeEvent;
     FOnDecodeValue: TJclSimpleXMLEncodeEvent;
     FOnDecodeStream: TJclSimpleXMLEncodeStreamEvent;
     FOnEncodeStream: TJclSimpleXMLEncodeStreamEvent;
     procedure SetIndentString(const Value: string);
+    procedure SetBaseIndentString(const Value: string);
     procedure SetRoot(const Value: TJclSimpleXMLElemClassic);
-    procedure SetFileName(Value: TFileName);
+    procedure SetFileName(const Value: TFileName);
     procedure DoLoadProgress(const APosition, ATotal: Integer);
     procedure DoSaveProgress;
     procedure DoTagParsed(const AName: string);
@@ -419,17 +458,20 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure LoadFromString(const Value: string);
-    procedure LoadFromFile(const FileName: TFileName);
-    procedure LoadFromStream(Stream: TStream);
-    procedure LoadFromResourceName(Instance: THandle; const ResName: string);
-    procedure SaveToFile(FileName: TFileName);
-    procedure SaveToStream(Stream: TStream);
+    procedure LoadFromFile(const FileName: TFileName; Encoding: TJclStringEncoding = seAuto; CodePage: Word = CP_ACP);
+    procedure LoadFromStream(Stream: TStream; Encoding: TJclStringEncoding = seAuto; CodePage: Word = CP_ACP);
+    procedure LoadFromStringStream(StringStream: TJclStringStream);
+    procedure LoadFromResourceName(Instance: THandle; const ResName: string; Encoding: TJclStringEncoding = seAuto; CodePage: Word = CP_ACP);
+    procedure SaveToFile(const FileName: TFileName; Encoding: TJclStringEncoding = seAuto; CodePage: Word = CP_ACP);
+    procedure SaveToStream(Stream: TStream; Encoding: TJclStringEncoding = seAuto; CodePage: Word = CP_ACP);
+    procedure SaveToStringStream(StringStream: TJclStringStream);
     function SaveToString: string;
     property Prolog: TJclSimpleXMLElemsProlog read FProlog write FProlog;
     property Root: TJclSimpleXMLElemClassic read FRoot write SetRoot;
     property XMLData: string read SaveToString write LoadFromString;
     property FileName: TFileName read FFileName write SetFileName;
     property IndentString: string read FIndentString write SetIndentString;
+    property BaseIndentString: string read FBaseIndentString write SetBaseIndentString;
     property Options: TJclSimpleXMLOptions read FOptions write FOptions;
     property OnSaveProgress: TJclOnSimpleProgress read FOnSaveProg write FOnSaveProg;
     property OnLoadProgress: TJclOnSimpleProgress read FOnLoadProg write FOnLoadProg;
@@ -440,9 +482,6 @@ type
     property OnEncodeStream: TJclSimpleXMLEncodeStreamEvent read FOnEncodeStream write FOnEncodeStream;
     property OnDecodeStream: TJclSimpleXMLEncodeStreamEvent read FOnDecodeStream write FOnDecodeStream;
   end;
-
-{$IFNDEF CLR}
-{$IFDEF COMPILER6_UP}
 
   TXMLVariant = class(TInvokeableVariantType)
   public
@@ -461,22 +500,10 @@ type
       const Value: TVarData): Boolean; override;
   end;
 
-  TXMLVarData = packed record
-    vType: TVarType;
-    Reserved1: Word;
-    Reserved2: Word;
-    Reserved3: Word;
-    XML: TJclSimpleXMLElem;
-    Reserved4: Longint;
-  end;
-
 procedure XMLCreateInto(var ADest: Variant; const AXML: TJclSimpleXMLElem);
 function XMLCreate(const AXML: TJclSimpleXMLElem): Variant; overload;
 function XMLCreate: Variant; overload;
 function VarXML: TVarType;
-
-{$ENDIF COMPILER6_UP}
-{$ENDIF !CLR}
 
 // Encodes a string into an internal format:
 // any character <= #127 is preserved
@@ -501,37 +528,29 @@ function EntityDecode(const S: string): string;
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jcl.svn.sourceforge.net/svnroot/jcl/tags/JCL-1.101-Build2725/jcl/source/common/JclSimpleXml.pas $';
-    Revision: '$Revision: 1874 $';
-    Date: '$Date: 2007-01-06 16:11:15 +0100 (sam., 06 janv. 2007) $';
-    LogPath: 'JCL\source\common'
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/source/common/JclSimpleXml.pas $';
+    Revision: '$Revision: 3306 $';
+    Date: '$Date: 2010-08-12 13:53:27 +0200 (jeu., 12 ao√ªt 2010) $';
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
   );
 {$ENDIF UNITVERSIONING}
 
 implementation
 
 uses
+  JclCharsets,
   JclStrings,
   JclResources;
 
 const
   cBufferSize = 8192;
-  DefaultTrueBoolStr = 'True'; // DO NOT LOCALIZE
-  DefaultFalseBoolStr = 'False'; // DO NOT LOCALIZE
 
 var
   GlobalSorts: TList = nil;
 
-  {$IFNDEF CLR}
-  {$IFDEF COMPILER6_UP}
   GlobalXMLVariant: TXMLVariant = nil;
-  {$ENDIF COMPILER6_UP}
-  {$ENDIF !CLR}
-
-  {$IFDEF COMPILER5}
-  TrueBoolStrs: array of string;
-  FalseBoolStrs: array of string;
-  {$ENDIF COMPILER5}
 
   PreparedNibbleCharMapping: Boolean = False;
   NibbleCharMapping: array [Low(Char)..High(Char)] of Byte;
@@ -543,54 +562,71 @@ begin
   Result := GlobalSorts;
 end;
 
-{$IFNDEF CLR}
-{$IFDEF COMPILER6_UP}
-
 function XMLVariant: TXMLVariant;
 begin
   if not Assigned(GlobalXMLVariant) then
     GlobalXMLVariant := TXMLVariant.Create;
   Result := GlobalXMLVariant;
 end;
-{$ENDIF COMPILER6_UP}
-{$ENDIF !CLR}
+
+procedure AddEntity(var Res: string; var ResIndex, ResLen: Integer; const Entity: string);
+var
+  EntityIndex, EntityLen: Integer;
+begin
+  EntityLen := Length(Entity);
+  if (ResIndex + EntityLen) > ResLen then
+  begin
+    if ResLen <= EntityLen then
+      ResLen := ResLen * EntityLen
+    else
+      ResLen := ResLen * 2;
+    SetLength(Res, ResLen);
+  end;
+  for EntityIndex := 1 to EntityLen do
+  begin
+    Res[ResIndex] := Entity[EntityIndex];
+    Inc(ResIndex);
+  end;
+end;
 
 function EntityEncode(const S: string): string;
 var
-  I, J, K, L: Integer;
-  tmp: string;
+  C: Char;
+  SIndex, SLen, RIndex, RLen: Integer;
+  Tmp: string;
 begin
-  SetLength(Result, Length(S) * 6); // worst case
-  J := 1;
-  I := 1;
-  L := Length(S);
-  while I <= L do
+  SLen := Length(S);
+  RLen := SLen;
+  RIndex := 1;
+  SetLength(Tmp, RLen);
+  for SIndex := 1 to SLen do
   begin
-    case S[I] of
+    C := S[SIndex];
+    case C of
       '"':
-        tmp := '&quot;';
+        AddEntity(Tmp, RIndex, RLen, '&quot;');
       '&':
-        tmp := '&amp;';
+        AddEntity(Tmp, RIndex, RLen, '&amp;');
       #39:
-        tmp := '&apos;';
+        AddEntity(Tmp, RIndex, RLen, '&apos;');
       '<':
-        tmp := '&lt;';
+        AddEntity(Tmp, RIndex, RLen, '&lt;');
       '>':
-        tmp := '&gt;';
+        AddEntity(Tmp, RIndex, RLen, '&gt;');
     else
-      tmp := S[I];
+      if RIndex > RLen then
+      begin
+        RLen := RLen * 2;
+        SetLength(Tmp, RLen);
+      end;
+      Tmp[RIndex] := C;
+      Inc(RIndex);
     end;
-    for K := 1 to Length(tmp) do
-    begin
-      Result[J] := tmp[K];
-      Inc(J);
-    end;
-    Inc(I);
   end;
-  if J > 1 then
-    SetLength(Result, J - 1)
-  else
-    SetLength(Result, 0);
+  if RIndex > 1 then
+    SetLength(Tmp, RIndex - 1);
+
+  Result := Tmp;
 end;
 
 function EntityDecode(const S: string): string;
@@ -606,35 +642,35 @@ begin
   begin
     if Result[I] = '&' then
     begin
-      if AnsiSameText(AnsiString(Copy(Result, I, 5)), AnsiString('&amp;')) then
+      if StrSame(Copy(Result, I, 5), '&amp;') then
       begin
         Result[J] := '&';
         Inc(J);
         Inc(I, 4);
       end
       else
-      if AnsiSameText(AnsiString(Copy(Result, I, 4)), AnsiString('&lt;')) then
+      if StrSame(Copy(Result, I, 4), '&lt;') then
       begin
         Result[J] := '<';
         Inc(J);
         Inc(I, 3);
       end
       else
-      if AnsiSameText(AnsiString(Copy(Result, I, 4)), AnsiString('&gt;')) then
+      if StrSame(Copy(Result, I, 4), '&gt;') then
       begin
         Result[J] := '>';
         Inc(J);
         Inc(I, 3);
       end
       else
-      if AnsiSameText(AnsiString(Copy(Result, I, 6)), AnsiString('&apos;')) then
+      if StrSame(Copy(Result, I, 6), '&apos;') then
       begin
         Result[J] := #39;
         Inc(J);
         Inc(I, 5);
       end
       else
-      if AnsiSameText(AnsiString(Copy(Result, I, 6)), AnsiString('&quot;')) then
+      if StrSame(Copy(Result, I, 6), '&quot;') then
       begin
         Result[J] := '"';
         Inc(J);
@@ -659,186 +695,64 @@ begin
     SetLength(Result, 0);
 end;
 
-function ReadCharsFromStream(Stream: TStream; var Buf: array of Char; BufSize: Integer): Integer;
-{$IFDEF CLR}
-var
-  Bytes: TBytes;
-{$ENDIF CLR}
-begin
-  {$IFDEF CLR}
-  SetLength(Bytes, BufSize);
-  Result := Stream.Read(Bytes, 0, BufSize);
-  System.Array.Copy(AnsiEncoding.GetChars(Bytes), 0, Buf, 0, BufSize);
-  {$ELSE}
-  Result := Stream.Read(Buf, BufSize);
-  {$ENDIF CLR}
-end;
-
-function WriteStringToStream(Stream: TStream; const Buf: string; BufSize: Integer): Integer;
-begin
-  {$IFDEF CLR}
-  Result := Stream.Write(BytesOf(Buf), BufSize);
-  {$ELSE}
-  Result := Stream.Write(Buf[1], BufSize);
-  {$ENDIF CLR}
-end;
-
-{$IFDEF COMPILER5}
-
-procedure VerifyBoolStrArray;
-begin
-  if Length(TrueBoolStrs) = 0 then
-  begin
-    SetLength(TrueBoolStrs, 1);
-    TrueBoolStrs[0] := DefaultTrueBoolStr;
-  end;
-  if Length(FalseBoolStrs) = 0 then
-  begin
-    SetLength(FalseBoolStrs, 1);
-    FalseBoolStrs[0] := DefaultFalseBoolStr;
-  end;
-end;
-
-function TryStrToBool(const S: string; out Value: Boolean): Boolean;
-var
-  lResult: Extended;
-
-  function CompareWith(const AStrings: array of string): Boolean;
-  var
-    I: Integer;
-  begin
-    Result := False;
-    for I := Low(AStrings) to High(AStrings) do
-      if AnsiSameText(S, AStrings[I]) then
-      begin
-        Result := True;
-        Break;
-      end;
-  end;
-
-begin
-  Result := TryStrToFloat(S, lResult);
-  if Result then
-    Value := lResult <> 0
-  else
-  begin
-    VerifyBoolStrArray;
-    Result := CompareWith(TrueBoolStrs);
-    if Result then
-      Value := True
-    else
-    begin
-      Result := CompareWith(FalseBoolStrs);
-      if Result then
-        Value := False;
-    end;
-  end;
-end;
-
-function StrToBoolDef(const S: string; const Default: Boolean): Boolean;
-begin
-  if not TryStrToBool(S, Result) then
-    Result := Default;
-end;
-
-(*  make Delphi 5 compiler happy // andreas
-function StrToBool(const S: string): Boolean;
-begin
-  if not TryStrToBool(S, Result) then
-    ConvertErrorFmt(@SInvalidBoolean, [S]);
-end;
-*)
-
-function BoolToStr(B: Boolean; UseBoolStrs: Boolean = False): string;
-const
-  cSimpleBoolStrs: array [Boolean] of string = ('0', '-1');
-begin
-  if UseBoolStrs then
-  begin
-    VerifyBoolStrArray;
-    if B then
-      Result := TrueBoolStrs[0]
-    else
-      Result := FalseBoolStrs[0];
-  end
-  else
-    Result := cSimpleBoolStrs[B];
-end;
-
-{$ENDIF COMPILER5}
-
-{$IFDEF CLR}
-function TryStrToFloat(const S: string; out Value: Extended): Boolean;
-var
-  Temp: Double;
-begin
-  Result := SysUtils.TryStrToFloat(S, Temp);
-  if Result then
-    Value := Temp
-  else
-    Value := 0;
-end;
-{$ENDIF CLR}
-
 function SimpleXMLEncode(const S: string): string;
-const
-  NoConversion = [#0..#127] - ['"', '&', #39, '<', '>'];
 var
-  I, J, K: Integer;
-  tmp: string;
+  C: Char;
+  SIndex, SLen, RIndex, RLen: Integer;
+  Tmp: string;
 begin
-  SetLength(Result, Length(S) * 6); // worst case
-  J := 1;
-  for I := 1 to Length(S) do
+  SLen := Length(S);
+  RLen := SLen;
+  RIndex := 1;
+  SetLength(Tmp, RLen);
+  for SIndex := 1 to SLen do
   begin
-    if AnsiChar(S[I]) in NoConversion then
-      Result[J] := S[I]
+    C := S[SIndex];
+    case C of
+      '"':
+        AddEntity(Tmp, RIndex, RLen, '&quot;');
+      '&':
+        AddEntity(Tmp, RIndex, RLen, '&amp;');
+      #39:
+        AddEntity(Tmp, RIndex, RLen, '&apos;');
+      '<':
+        AddEntity(Tmp, RIndex, RLen, '&lt;');
+      '>':
+        AddEntity(Tmp, RIndex, RLen, '&gt;');
+      Char(128)..Char(255):
+        AddEntity(Tmp, RIndex, RLen, Format('&#x%.2x;', [Ord(C)]));
+      {$IFDEF SUPPORTS_UNICODE}
+      Char(256)..High(Char):
+        AddEntity(Tmp, RIndex, RLen, Format('&#x%.4x;', [Ord(C)]));
+      {$ENDIF SUPPORTS_UNICODE}
     else
-    begin
-      case S[I] of
-        '"':
-          tmp := '&quot;';
-        '&':
-          tmp := '&amp;';
-        #39:
-          tmp := '&apos;';
-        '<':
-          tmp := '&lt;';
-        '>':
-          tmp := '&gt;';
-      else
-        tmp := Format('&#x%.2x;', [Ord(S[I])]);
-      end;
-      for K := 1 to Length(tmp) do
+      if RIndex > RLen then
       begin
-        Result[J] := tmp[K];
-        Inc(J);
+        RLen := RLen * 2;
+        SetLength(Tmp, RLen);
       end;
-      Dec(J);
+      Tmp[RIndex] := C;
+      Inc(RIndex);
     end;
-    Inc(J);
   end;
-  if J > 0 then
-    SetLength(Result, J - 1)
-  else
-    SetLength(Result, 0);
+  if RIndex > 1 then
+    SetLength(Tmp, RIndex - 1);
+
+  Result := Tmp;
 end;
 
 procedure SimpleXMLDecode(var S: string; TrimBlanks: Boolean);
-var
-  StringLength, ReadIndex, WriteIndex: Cardinal;
-
   procedure DecodeEntity(var S: string; StringLength: Cardinal;
     var ReadIndex, WriteIndex: Cardinal);
   const
-    cHexPrefix: array [Boolean] of string[1] = ('', '$');
+    cHexPrefix: array [Boolean] of string = ('', '$');
   var
     I: Cardinal;
     Value: Integer;
     IsHex: Boolean;
   begin
     Inc(ReadIndex, 2);
-    IsHex := (ReadIndex <= StringLength) and (AnsiChar(S[ReadIndex]) in ['x', 'X']);
+    IsHex := (ReadIndex <= StringLength) and ((S[ReadIndex] = 'x') or (S[ReadIndex] = 'X'));
     Inc(ReadIndex, Ord(IsHex));
     I := ReadIndex;
     while ReadIndex <= StringLength do
@@ -861,11 +775,11 @@ var
   begin
     while ReadIndex < StringLength do
     begin
-      if S[ReadIndex] = AnsiCarriageReturn then
-        S[ReadIndex] := AnsiLineFeed
+      if S[ReadIndex] = NativeCarriageReturn then
+        S[ReadIndex] := NativeLineFeed
       else
-      if S[ReadIndex + 1] = AnsiCarriageReturn then
-        S[ReadIndex + 1] := AnsiLineFeed;
+      if S[ReadIndex + 1] = NativeCarriageReturn then
+        S[ReadIndex + 1] := NativeLineFeed;
       if (S[ReadIndex] < #33) and (S[ReadIndex] = S[ReadIndex + 1]) then
         Inc(ReadIndex)
       else
@@ -873,6 +787,8 @@ var
     end;
   end;
 
+var
+  StringLength, ReadIndex, WriteIndex: Cardinal;
 begin
   // NB! This procedure replaces the text inplace to speed up the conversion. This
   // works because when decoding, the string can only become shorter. This is
@@ -889,41 +805,41 @@ begin
       SkipBlanks(S, StringLength, ReadIndex);
     if S[ReadIndex] = '&' then
     begin
-      if S[ReadIndex + 1] = '#' then
+      if (ReadIndex < StringLength) and (S[ReadIndex + 1] = '#') then
       begin
         DecodeEntity(S, StringLength, ReadIndex, WriteIndex);
         Inc(WriteIndex);
       end
       else
-      if AnsiSameText(AnsiString(Copy(S, ReadIndex, 5)), AnsiString('&amp;')) then
+      if StrSame(Copy(S, ReadIndex, 5), '&amp;') then
       begin
         S[WriteIndex] := '&';
         Inc(WriteIndex);
         Inc(ReadIndex, 4);
       end
       else
-      if AnsiSameText(AnsiString(Copy(S, ReadIndex, 4)), AnsiString('&lt;')) then
+      if StrSame(Copy(S, ReadIndex, 4), '&lt;') then
       begin
         S[WriteIndex] := '<';
         Inc(WriteIndex);
         Inc(ReadIndex, 3);
       end
       else
-      if AnsiSameText(AnsiString(Copy(S, ReadIndex, 4)), AnsiString('&gt;')) then
+      if StrSame(Copy(S, ReadIndex, 4), '&gt;') then
       begin
         S[WriteIndex] := '>';
         Inc(WriteIndex);
         Inc(ReadIndex, 3);
       end
       else
-      if AnsiSameText(AnsiString(Copy(S, ReadIndex, 6)), AnsiString('&apos;')) then
+      if StrSame(Copy(S, ReadIndex, 6), '&apos;') then
       begin
         S[WriteIndex] := #39;
         Inc(WriteIndex);
         Inc(ReadIndex, 5);
       end
       else
-      if AnsiSameText(AnsiString(Copy(S, ReadIndex, 6)), AnsiString('&quot;')) then
+      if StrSame(Copy(S, ReadIndex, 6), '&quot;') then
       begin
         S[WriteIndex] := '"';
         Inc(WriteIndex);
@@ -1030,20 +946,21 @@ begin
     FOnValue(Self, AName, AValue);
 end;
 
-procedure TJclSimpleXML.LoadFromFile(const FileName: TFileName);
+procedure TJclSimpleXML.LoadFromFile(const FileName: TFileName; Encoding: TJclStringEncoding; CodePage: Word);
 var
   Stream: TMemoryStream;
 begin
   Stream := TMemoryStream.Create;
   try
     Stream.LoadFromFile(FileName);
-    LoadFromStream(Stream);
+    LoadFromStream(Stream, Encoding, CodePage);
   finally
     Stream.Free;
   end;
 end;
 
-procedure TJclSimpleXML.LoadFromResourceName(Instance: THandle; const ResName: string);
+procedure TJclSimpleXML.LoadFromResourceName(Instance: THandle; const ResName: string;
+  Encoding: TJclStringEncoding; CodePage: Word);
 {$IFNDEF MSWINDOWS}
 const
   RT_RCDATA = PChar(10);
@@ -1053,15 +970,16 @@ var
 begin
   Stream := TResourceStream.Create(Instance, ResName, RT_RCDATA);
   try
-    LoadFromStream(Stream);
+    LoadFromStream(Stream, Encoding, CodePage);
   finally
     Stream.Free;
   end;
 end;
 
-procedure TJclSimpleXML.LoadFromStream(Stream: TStream);
+procedure TJclSimpleXML.LoadFromStream(Stream: TStream; Encoding: TJclStringEncoding; CodePage: Word);
 var
   AOutStream: TStream;
+  AStringStream: TJclStringStream;
   DoFree: Boolean;
 begin
   FRoot.Clear;
@@ -1074,28 +992,69 @@ begin
       AOutStream := TMemoryStream.Create;
       DoFree := True;
       FOnDecodeStream(Self, Stream, AOutStream);
-      AOutStream.Seek(0, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
+      AOutStream.Seek(0, soBeginning);
     end
     else
       AOutStream := Stream;
-    if Assigned(FOnLoadProg) then
-    begin
-      FOnLoadProg(Self, AOutStream.Position, AOutStream.Size);
-    // Read doctype and so on
-      FProlog.LoadFromStream(AOutStream, Self);
-    // Read elements
-      FRoot.LoadFromStream(AOutStream, Self);
-      FOnLoadProg(Self, AOutStream.Position, AOutStream.Size);
-    end
+
+    case Encoding of
+      seAnsi:
+        begin
+          AStringStream := TJclAnsiStream.Create(AOutStream, False);
+          TJclAnsiStream(AStringStream).CodePage := CodePage;
+        end;
+      seUTF8:
+        AStringStream := TJclUTF8Stream.Create(AOutStream, False);
+      seUTF16:
+        AStringStream := TJclUTF16Stream.Create(AOutStream, False);
     else
-    begin
-      FProlog.LoadFromStream(AOutStream, Self);
-      FRoot.LoadFromStream(AOutStream, Self);
+      AStringStream := TJclAutoStream.Create(AOutStream, False);
+      if CodePage <> CP_ACP then
+        TJclAutoStream(AStringStream).CodePage := CodePage;
+    end;
+    try
+      AStringStream.SkipBOM;
+
+      LoadFromStringStream(AStringStream);
+
+      // save codepage and encoding for future saves
+      if AStringStream is TJclAutoStream then
+      begin
+        FCodePage := TJclAutoStream(AStringStream).CodePage;
+        FEncoding := TJclAutoStream(AStringStream).Encoding;
+      end
+      else
+      if AStringStream is TJclAnsiStream then
+      begin
+        FCodePage := TJclAnsiStream(AStringStream).CodePage;
+        FEncoding := Encoding;
+      end
+      else
+      begin
+        FCodePage := CodePage;
+        FEncoding := Encoding;
+      end;
+    finally
+      AStringStream.Free;
     end;
   finally
     if DoFree then
       AOutStream.Free;
   end;
+end;
+
+procedure TJclSimpleXML.LoadFromStringStream(StringStream: TJclStringStream);
+begin
+  if Assigned(FOnLoadProg) then
+    FOnLoadProg(Self, StringStream.Stream.Position, StringStream.Stream.Size);
+
+  // Read doctype and so on
+  FProlog.LoadFromStringStream(StringStream, Self);
+  // Read elements
+  FRoot.LoadFromStringStream(StringStream, Self);
+
+  if Assigned(FOnLoadProg) then
+    FOnLoadProg(Self, StringStream.Stream.Position, StringStream.Stream.Size);
 end;
 
 procedure TJclSimpleXML.LoadFromString(const Value: string);
@@ -1110,7 +1069,7 @@ begin
   end;
 end;
 
-procedure TJclSimpleXML.SaveToFile(FileName: TFileName);
+procedure TJclSimpleXML.SaveToFile(const FileName: TFileName; Encoding: TJclStringEncoding; CodePage: Word);
 var
   Stream: TFileStream;
 begin
@@ -1122,17 +1081,19 @@ begin
   else
     Stream := TFileStream.Create(FileName, fmCreate);
   try
-    SaveToStream(Stream);
+    SaveToStream(Stream, Encoding, CodePage);
   finally
     Stream.Free;
   end;
 end;
 
-procedure TJclSimpleXML.SaveToStream(Stream: TStream);
+procedure TJclSimpleXML.SaveToStream(Stream: TStream; Encoding: TJclStringEncoding; CodePage: Word);
 var
-  lCount: Integer;
   AOutStream: TStream;
+  AStringStream: TJclStringStream;
   DoFree: Boolean;
+  XmlHeader: TJclSimpleXMLElemHeader;
+  I: Integer;
 begin
   if Assigned(FOnEncodeStream) then
   begin
@@ -1145,32 +1106,80 @@ begin
     DoFree := False;
   end;
   try
-    if Assigned(FOnSaveProg) then
+    if Encoding = seAuto then
     begin
-      lCount := Root.ChildsCount + Prolog.Count;
-      FSaveCount := lCount;
-      FSaveCurrent := 0;
-      FOnSaveProg(Self, 0, lCount);
-      if not (sxoDoNotSaveProlog in FOptions) then
-        Prolog.SaveToStream(AOutStream, Self);
-      Root.SaveToStream(AOutStream, '', Self);
-      FOnSaveProg(Self, lCount, lCount);
-    end
+      XmlHeader := nil;
+      for I := 0 to Prolog.Count - 1 do
+        if Prolog.Item[I] is TJclSimpleXMLElemHeader then
+      begin
+        XmlHeader := TJclSimpleXMLElemHeader(Prolog.Item[I]);
+        Break;
+      end;
+      if Assigned(XmlHeader) then
+      begin
+        CodePage := CodePageFromCharsetName(XmlHeader.Encoding);
+        case CodePage of
+          CP_UTF8:
+            Encoding := seUTF8;
+          CP_UTF16LE:
+            Encoding := seUTF16;
+        else
+          Encoding := seAnsi;
+        end;
+      end
+      else
+      begin
+        // restore from previous load
+        Encoding := FEncoding;
+        CodePage := FCodePage;
+      end;
+    end;
+
+    case Encoding of
+      seUTF8:
+        AStringStream := TJclUTF8Stream.Create(AOutStream, False);
+      seUTF16:
+        AStringStream := TJclUTF16Stream.Create(AOutStream, False);
     else
-    begin
-      if not (sxoDoNotSaveProlog in FOptions) then
-        Prolog.SaveToStream(AOutStream, Self);
-      Root.SaveToStream(AOutStream, '', Self);
+      AStringStream := TJclAnsiStream.Create(AOutStream);
+      TJclAnsiStream(AStringStream).CodePage := CodePage;
+    end;
+    try
+      AStringStream.WriteBOM;
+      SaveToStringStream(AStringStream);
+      AStringStream.Flush;
+    finally
+      AStringStream.Free;
     end;
     if Assigned(FOnEncodeStream) then
     begin
-      AOutStream.Seek(0, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
+      AOutStream.Seek(0, soBeginning);
       FOnEncodeStream(Self, AOutStream, Stream);
     end;
   finally
     if DoFree then
       AOutStream.Free;
   end;
+end;
+
+procedure TJclSimpleXML.SaveToStringStream(StringStream: TJclStringStream);
+var
+  lCount: Integer;
+begin
+  lCount := Root.ChildsCount + Prolog.Count;
+  FSaveCount := lCount;
+  FSaveCurrent := 0;
+
+  if Assigned(FOnSaveProg) then
+    FOnSaveProg(Self, 0, lCount);
+
+  if not (sxoDoNotSaveProlog in FOptions) then
+    Prolog.SaveToStringStream(StringStream, Self);
+
+  Root.SaveToStringStream(StringStream, BaseIndentString, Self);
+
+  if Assigned(FOnSaveProg) then
+    FOnSaveProg(Self, lCount, lCount);
 end;
 
 function TJclSimpleXML.SaveToString: string;
@@ -1186,7 +1195,16 @@ begin
   end;
 end;
 
-procedure TJclSimpleXML.SetFileName(Value: TFileName);
+procedure TJclSimpleXML.SetBaseIndentString(const Value: string);
+begin
+  // test if the new value is only made of spaces or tabs
+  if not StrContainsChars(Value, CharIsWhiteSpace, True) then
+    Exit;
+
+  FBaseIndentString := Value;
+end;
+
+procedure TJclSimpleXML.SetFileName(const Value: TFileName);
 begin
   FFileName := Value;
   LoadFromFile(Value);
@@ -1213,7 +1231,7 @@ begin
   begin
     // Create from the class type, so that the virtual constructor is called
     // creating an element of the correct class type.
-    Elem := TJclSimpleXMLElemClass(Elems.Items[I].ClassType).Create(Elems.Items[I].Parent);
+    Elem := TJclSimpleXMLElemClass(Elems.Items[I].ClassType).Create(Self);
     Elem.Assign(Elems.Items[I]);
     Items.Add(Elem);
   end;
@@ -1265,7 +1283,12 @@ begin
     Result := Name;
 end;
 
-procedure TJclSimpleXMLElem.GetBinaryValue(const Stream: TStream);
+function TJclSimpleXMLElem.GetAnsiValue: AnsiString;
+begin
+  Result := AnsiString(Value);
+end;
+
+procedure TJclSimpleXMLElem.GetBinaryValue(Stream: TStream);
 var
   I, J, ValueLength, RequiredStreamSize: Integer;
   Buf: array [0..cBufferSize - 1] of Byte;
@@ -1307,6 +1330,8 @@ var
     end;
   end;
 
+var
+  CurrentStreamPosition: Integer;
 begin
   PrepareNibbleCharMapping;
   I := 1;
@@ -1314,23 +1339,27 @@ begin
   ValueLength := Length(Value);
   RequiredStreamSize := Stream.Position + ValueLength div 2;
   if Stream.Size < RequiredStreamSize then
+  begin
+    CurrentStreamPosition := Stream.Position;
     Stream.Size := RequiredStreamSize;
+    Stream.Seek(CurrentStreamPosition, soBeginning);
+  end;
   while I < ValueLength do
   begin
+    //faster replacement for St := '$' + Value[I] + Value[I + 1]; Buf[J] := StrToIntDef(St, 0);
+    N1 := NibbleCharMapping[Value[I]];
+    N2 := NibbleCharMapping[Value[I + 1]];
+    Inc(I, 2);
+    if (N1 > 15) or (N2 > 15) then
+      Buf[J] := 0
+    else
+      Buf[J] := (N1 shl 4) or N2;
+    Inc(J);
     if J = cBufferSize - 1 then //Buffered write to speed up the process a little
     begin
       Stream.Write(Buf, J);
       J := 0;
     end;
-    //faster replacement for St := '$' + Value[I] + Value[I + 1]; Buf[J] := StrToIntDef(St, 0);
-    N1 := NibbleCharMapping[Value[I]];
-    N2 := NibbleCharMapping[Value[I + 1]];
-    if (N1 > 15) or (N2 > 15) then
-      Buf[J] := 0
-    else
-      Buf[J] := N1 shl 4 + N2;
-    Inc(J);
-    Inc(I, 2);
   end;
   Stream.Write(Buf, J);
 end;
@@ -1361,6 +1390,7 @@ end;
 
 function TJclSimpleXMLElem.GetFloatValue: Extended;
 begin
+  Result := 0.0;
   if not TryStrToFloat(Value, Result) then
     Result := 0.0;
 end;
@@ -1375,6 +1405,11 @@ begin
   if FItems = nil then
     FItems := TJclSimpleXMLElems.Create(Self);
   Result := FItems;
+end;
+
+function TJclSimpleXMLElem.GetNamedIndex(const AChild: TJclSimpleXMLElem): Integer;
+begin
+  Result := Items.NamedElems[AChild.Name].IndexOf(AChild);
 end;
 
 function TJclSimpleXMLElem.GetProps: TJclSimpleXMLProps;
@@ -1392,29 +1427,47 @@ begin
     Result := FSimpleXML;
 end;
 
-procedure TJclSimpleXMLElem.LoadFromString(const Value: string; AParent : TJclSimpleXML);
+procedure TJclSimpleXMLElem.LoadFromString(const Value: string);
 var
-  Stream: TStringStream;
+  Stream: TJclStringStream;
+  StrStream: TStringStream;
 begin
-  Stream := TStringStream.Create(Value);
+  StrStream := TStringStream.Create(Value);
   try
-    LoadFromStream(Stream, AParent);
+    Stream := TJclAutoStream.Create(StrStream);
+    try
+      LoadFromStringStream(Stream);
+    finally
+      Stream.Free;
+    end;
   finally
-    Stream.Free;
+    StrStream.Free;
   end;
 end;
 
-function TJclSimpleXMLElem.SaveToString(AParent : TJclSimpleXML): string;
+function TJclSimpleXMLElem.SaveToString: string;
 var
-  Stream: TStringStream;
+  Stream: TJclStringStream;
+  StrStream: TStringStream;
 begin
-  Stream := TStringStream.Create('');
+  StrStream := TStringStream.Create('');
   try
-    SaveToStream(Stream, '', AParent);
-    Result := Stream.DataString;
+    Stream := TJclAutoStream.Create(StrStream);
+    try
+      SaveToStringStream(Stream);
+      Stream.Flush;
+    finally
+      Stream.Free;
+    end;
+    Result := StrStream.DataString;
   finally
-    Stream.Free;
+    StrStream.Free;
   end;
+end;
+
+procedure TJclSimpleXMLElem.SetAnsiValue(const Value: AnsiString);
+begin
+  Self.Value := string(Value);
 end;
 
 procedure TJclSimpleXMLElem.SetBoolValue(const Value: Boolean);
@@ -1442,6 +1495,139 @@ begin
   end;
 end;
 
+//=== { TJclSimpleXMLNamedElems } ============================================
+
+constructor TJclSimpleXMLNamedElems.Create(const AOwner: TJClSimpleXMLElems; const AName: string);
+begin
+  inherited Create;
+  FElems := AOwner;
+  FName := AName;
+  FItems := TList.Create;
+end;
+
+destructor TJclSimpleXMLNamedElems.Destroy;
+begin
+  FItems.Free;
+  inherited Destroy;
+end;
+
+function TJclSimpleXMLNamedElems.Add(const Value: Int64): TJclSimpleXmlElemClassic;
+begin
+  Result := Elems.Add(Name, Value);
+end;
+
+function TJclSimpleXMLNamedElems.Add(Value: TStream): TJclSimpleXmlElemClassic;
+begin
+  Result := Elems.Add(Name, Value);
+end;
+
+function TJclSimpleXMLNamedElems.Add(const Value: Boolean): TJclSimpleXmlElemClassic;
+begin
+  Result := Elems.Add(Name, Value);
+end;
+
+function TJclSimpleXMLNamedElems.Add: TJclSimpleXmlElemClassic;
+begin
+  Result := Elems.Add(Name);
+end;
+
+function TJclSimpleXMLNamedElems.Add(const Value: string): TJclSimpleXmlElemClassic;
+begin
+  Result := Elems.Add(Name, Value);
+end;
+
+function TJclSimpleXMLNamedElems.AddCData(const Value: string): TJclSimpleXMLElemCData;
+begin
+  Result := Elems.AddCData(Name, Value);
+end;
+
+function TJclSimpleXMLNamedElems.AddComment(const Value: string): TJclSimpleXMLElemComment;
+begin
+  Result := Elems.AddComment(Name, Value);
+end;
+
+function TJclSimpleXMLNamedElems.AddFirst: TJclSimpleXmlElemClassic;
+begin
+  Result := Elems.AddFirst(Name);
+end;
+
+function TJclSimpleXMLNamedElems.AddText(const Value: string): TJclSimpleXMLElemText;
+begin
+  Result := Elems.AddText(Name, Value);
+end;
+
+procedure TJclSimpleXMLNamedElems.Clear;
+var
+  Index: Integer;
+begin
+  for Index := FItems.Count - 1 downto 0 do
+    Elems.Remove(TJclSimpleXMLElem(FItems.Items[Index]));
+end;
+
+procedure TJclSimpleXMLNamedElems.Delete(const Index: Integer);
+begin
+  if (Index >= 0) and (Index < FItems.Count) then
+    Elems.Remove(TJclSimpleXMLElem(FItems.Items[Index]));
+end;
+
+function TJclSimpleXMLNamedElems.GetCount: Integer;
+begin
+  Result := FItems.Count;
+end;
+
+function TJclSimpleXMLNamedElems.GetItem(const Index: Integer): TJclSimpleXMLElem;
+begin
+  if (Index >= 0) then
+  begin
+    While (Index >= Count) do
+      if Assigned(Elems.Parent) and Assigned(Elems.Parent.SimpleXML) and
+         (sxoAutoCreate in Elems.Parent.SimpleXML.Options) then
+        Add
+      else
+        break;
+    if Index < Count then
+      Result := TJclSimpleXMLElem(FItems.Items[Index])
+    else
+      Result := nil;
+  end
+  else
+    Result := nil;
+end;
+
+function TJclSimpleXMLNamedElems.IndexOf(const Value: TJclSimpleXMLElem): Integer;
+begin
+  Result := FItems.IndexOf(Value);
+end;
+
+function TJclSimpleXMLNamedElems.IndexOf(const Value: string): Integer;
+var
+  Index: Integer;
+  NewItem: TJclSimpleXMLElem;
+begin
+  Result := -1;
+  for Index := 0 to FItems.Count - 1 do
+    if TJclSimpleXMLElem(FItems.Items[Index]).Value = Value then
+  begin
+    Result := Index;
+    Break;
+  end;
+  if (Result = -1) and (sxoAutoCreate in Elems.Parent.SimpleXML.Options) then
+  begin
+    NewItem := Elems.Add(Name, Value);
+    Result := FItems.IndexOf(NewItem);
+  end;
+end;
+
+procedure TJclSimpleXMLNamedElems.Move(const CurIndex, NewIndex: Integer);
+var
+  ElemsCurIndex, ElemsNewIndex: Integer;
+begin
+  ElemsCurIndex := Elems.IndexOf(TJclSimpleXMLElem(FItems.Items[CurIndex]));
+  ElemsNewIndex := Elems.IndexOf(TJclSimpleXMLElem(FItems.Items[NewIndex]));
+  Elems.Move(ElemsCurIndex, ElemsNewIndex);
+  FItems.Move(CurIndex, NewIndex);
+end;
+
 //=== { TJclSimpleXMLElems } =================================================
 
 function TJclSimpleXMLElems.Add(const Name: string): TJclSimpleXMLElemClassic;
@@ -1454,14 +1640,17 @@ end;
 function TJclSimpleXMLElems.Add(const Name, Value: string): TJclSimpleXMLElemClassic;
 begin
   Result := TJclSimpleXMLElemClassic.Create(Parent);
-  Result.Name := Name;
+  Result.FName := Name;
   Result.Value := Value;
   AddChild(Result);
 end;
 
 function TJclSimpleXMLElems.Add(const Name: string; const Value: Int64): TJclSimpleXMLElemClassic;
 begin
-  Result := Add(Name, IntToStr(Value));
+  Result := TJclSimpleXMLElemClassic.Create(Parent);
+  Result.FName := Name;
+  Result.Value := IntToStr(Value);
+  AddChild(Result);
 end;
 
 function TJclSimpleXMLElems.Add(Value: TJclSimpleXMLElem): TJclSimpleXMLElem;
@@ -1474,11 +1663,13 @@ end;
 function TJclSimpleXMLElems.Add(const Name: string;
   const Value: Boolean): TJclSimpleXMLElemClassic;
 begin
-  Result := Add(Name, BoolToStr(Value));
+  Result := TJclSimpleXMLElemClassic.Create(Parent);
+  Result.FName := Name;
+  Result.Value := BoolToStr(Value);
+  AddChild(Result);
 end;
 
-function TJclSimpleXMLElems.Add(const Name: string;
-  const Value: TStream): TJclSimpleXMLElemClassic;
+function TJclSimpleXMLElems.Add(const Name: string; Value: TStream): TJclSimpleXMLElemClassic;
 var
   Stream: TStringStream;
   Buf: array [0..cBufferSize - 1] of Byte;
@@ -1486,18 +1677,27 @@ var
   I, Count: Integer;
 begin
   Stream := TStringStream.Create('');
-  repeat
-    Count := Value.Read(Buf, Length(Buf));
-    St := '';
-    for I := 0 to Count - 1 do
-      St := St + IntToHex(Buf[I], 2);
-    Stream.WriteString(St);
-  until Count = 0;
-  Result := Add(Name, Stream.DataString);
-  Stream.Free;
+  try
+    Buf[0] := 0;
+    repeat
+      Count := Value.Read(Buf, Length(Buf));
+      St := '';
+      for I := 0 to Count - 1 do
+        St := St + IntToHex(Buf[I], 2);
+      Stream.WriteString(St);
+    until Count = 0;
+    Result := TJclSimpleXMLElemClassic.Create(Parent);
+    Result.FName := Name;
+    Result.Value := Stream.DataString;
+    AddChild(Result);
+  finally
+    Stream.Free;
+  end;
 end;
 
 procedure TJclSimpleXMLElems.AddChild(const Value: TJclSimpleXMLElem);
+var
+  NamedIndex: Integer;
 begin
   CreateElems;
 
@@ -1510,10 +1710,19 @@ begin
 
   FElems.AddObject(Value.Name, Value);
 
+  if FNamedElems <> nil then
+  begin
+    NamedIndex := FNamedElems.IndexOf(Value.Name);
+    if NamedIndex >= 0 then
+      TJclSimpleXMLNamedElems(FNamedElems.Objects[NamedIndex]).FItems.Add(Value);
+  end;
+
   Notify(Value, opInsert);
 end;
 
 procedure TJclSimpleXMLElems.AddChildFirst(const Value: TJclSimpleXMLElem);
+var
+  NamedIndex: Integer;
 begin
   CreateElems;
 
@@ -1525,6 +1734,13 @@ begin
   end;
 
   FElems.InsertObject(0, Value.Name, Value);
+
+  if FNamedElems <> nil then
+  begin
+    NamedIndex := FNamedElems.IndexOf(Value.Name);
+    if NamedIndex >= 0 then
+      TJclSimpleXMLNamedElems(FNamedElems.Objects[NamedIndex]).FItems.Insert(0, Value);
+  end;
 
   Notify(Value, opInsert);
 end;
@@ -1568,8 +1784,7 @@ begin
   AddChild(Result);
 end;
 
-procedure TJclSimpleXMLElems.BinaryValue(const Name: string;
-  const Stream: TStream);
+procedure TJclSimpleXMLElems.BinaryValue(const Name: string; Stream: TStream);
 var
   Elem: TJclSimpleXMLElem;
 begin
@@ -1607,6 +1822,15 @@ begin
     end;
     FElems.Clear;
   end;
+  if FNamedElems <> nil then
+  begin
+    for I := 0 to FNamedElems.Count - 1 do
+    begin
+      FNamedElems.Objects[I].Free;
+      FNamedElems.Objects[I] := nil;
+    end;
+    FNamedElems.Clear;
+  end;
 end;
 
 constructor TJclSimpleXMLElems.Create(const AOwner: TJclSimpleXMLElem);
@@ -1615,19 +1839,30 @@ begin
   FParent := AOwner;
 end;
 
-procedure TJclSimpleXMLElems.Delete(const Index: Integer);
-begin
-  if (FElems <> nil) and (Index >= 0) and (Index < FElems.Count) then
-  begin
-    TObject(FElems.Objects[Index]).Free;
-    FElems.Delete(Index);
-  end;
-end;
-
 procedure TJclSimpleXMLElems.CreateElems;
 begin
   if FElems = nil then
     FElems := THashedStringList.Create;
+end;
+
+procedure TJclSimpleXMLElems.Delete(const Index: Integer);
+var
+  Elem: TJclSimpleXMLElem;
+  NamedIndex: Integer;
+begin
+  if (FElems <> nil) and (Index >= 0) and (Index < FElems.Count) then
+  begin
+    Elem := TJclSimpleXMLElem(FElems.Objects[Index]);
+    if FNamedElems <> nil then
+    begin
+      NamedIndex := FNamedElems.IndexOf(Elem.Name);
+      if NamedIndex >= 0 then
+        TJclSimpleXMLNamedElems(FNamedElems.Objects[NamedIndex]).FItems.Remove(Elem);
+    end;
+    FElems.Delete(Index);
+    FreeAndNil(Elem);
+    
+  end;
 end;
 
 procedure TJclSimpleXMLElems.Delete(const Name: string);
@@ -1641,17 +1876,44 @@ begin
   FParent := nil;
   Clear;
   FreeAndNil(FElems);
+  FreeAndNil(FNamedElems);
   inherited Destroy;
 end;
 
-procedure TJclSimpleXMLElems.DoItemRename(var Value: TJclSimpleXMLElem;
-  const Name: string);
+procedure TJclSimpleXMLElems.DoItemRename(Value: TJclSimpleXMLElem; const Name: string);
 var
   I: Integer;
+  NamedIndex: Integer;
 begin
+  if FNamedElems <> nil then
+  begin
+    NamedIndex := FNamedElems.IndexOf(Value.Name);
+    if NamedIndex >= 0 then
+      TJclSimpleXMLNamedElems(FNamedElems.Objects[NamedIndex]).FItems.Remove(Value);
+  end;
+
   I := FElems.IndexOfObject(Value);
   if I <> -1 then
-    FElems[I] := Name;
+    FElems.Strings[I] := Name;
+
+  if FNamedElems <> nil then
+  begin
+    NamedIndex := FNamedElems.IndexOf(Name);
+    if NamedIndex >= 0 then
+      TJclSimpleXMLNamedElems(FNamedElems.Objects[NamedIndex]).FItems.Add(Value);
+  end;
+end;
+
+function TJclSimpleXMLElems.FloatValue(const Name: string;
+  const Default: Extended): Extended;
+var
+  Elem: TJclSimpleXMLElem;
+begin
+  Elem := GetItemNamedDefault(Name, FloatToStr(Default));
+  if Elem = nil then
+    Result := Default
+  else
+    Result := Elem.FloatValue;
 end;
 
 function TJclSimpleXMLElems.GetCount: Integer;
@@ -1689,12 +1951,32 @@ begin
     Result := Add(Name, Default);
 end;
 
+function TJclSimpleXMLElems.GetNamedElems(const Name: string): TJclSimpleXMLNamedElems;
+var
+  NamedIndex: Integer;
+begin
+  if FNamedElems = nil then
+    FNamedElems := THashedStringList.Create;
+  NamedIndex := FNamedElems.IndexOf(Name);
+  if NamedIndex = -1 then
+  begin
+    Result := TJclSimpleXMLNamedElems.Create(Self, Name);
+    FNamedElems.AddObject(Name, Result);
+    if FElems <> nil then
+      for NamedIndex := 0 to FElems.Count - 1 do                 
+        if FElems.Strings[NamedIndex] = Name then
+          Result.FItems.Add(FElems.Objects[NamedIndex]);
+  end
+  else
+    Result := TJclSimpleXMLNamedElems(FNamedElems.Objects[NamedIndex]);
+end;
+
 function TJclSimpleXMLElems.GetItemNamed(const Name: string): TJclSimpleXMLElem;
 begin
   Result := GetItemNamedDefault(Name, '');
 end;
 
-function TJclSimpleXMLElems.IntValue(const Name: string; Default: Int64): Int64;
+function TJclSimpleXMLElems.IntValue(const Name: string; const Default: Int64): Int64;
 var
   Elem: TJclSimpleXMLElem;
 begin
@@ -1705,190 +1987,163 @@ begin
     Result := Elem.IntValue;
 end;
 
-function TJclSimpleXMLElems.LoadFromStream(const Stream: TStream; AParent: TJclSimpleXML): string;
+procedure TJclSimpleXMLElems.LoadFromStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML);
 type
-  TReadStatus = (rsWaitingTag, rsReadingTagKind, rsProcessingEndTag); 
+  TReadStatus = (rsWaitingTag, rsReadingTagKind);
 var
-  I, lStreamPos, Count: Integer;
   lPos: TReadStatus;
-  lBuf: array [0..cBufferSize - 1] of Char;
   St: string;
-  Po: string;
   lElem: TJclSimpleXMLElem;
   Ch: Char;
-  lTrimWhiteSpace, lContainsWhiteSpace: Boolean;
-  lStartOfContentPos, lTempStreamPos: Integer;
+  lContainsText: Boolean;
 begin
-  lStreamPos := Stream.Position;
-  Result := '';
-  Po := '';
   St := '';
   lPos := rsWaitingTag;
-
-  // Preserve old preceeding whitespace trimming behaviour
-  lTrimWhiteSpace := Assigned(AParent) and (sxoTrimPrecedingTextWhitespace in AParent.Options);
+  lContainsText := False;
 
   // We read from a stream, thus replacing the existing items
   Clear;
 
-  repeat
-    Count := ReadCharsFromStream(Stream, lBuf, Length(lBuf));
-    if AParent <> nil then
-      AParent.DoLoadProgress(Stream.Position, Stream.Size);
-    lContainsWhiteSpace := False;
-    lStartOfContentPos := lStreamPos;
-    for I := 0 to Count - 1 do
-    begin
-      //Increment Stream pos for after comment
-      Inc(lStreamPos);
-      Ch := lBuf[I];
+  if AParent <> nil then
+    AParent.DoLoadProgress(StringStream.Stream.Position, StringStream.Stream.Size);
 
-      case lPos of
-        rsWaitingTag: //We are waiting for a tag and thus avoiding spaces
+  while StringStream.PeekChar(Ch) do
+  begin
+    case lPos of
+      rsWaitingTag: //We are waiting for a tag and thus avoiding spaces
+        begin
+          if Ch = '<' then
           begin
-            case Ch of
-              ' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed:
-                begin
-                  lContainsWhiteSpace := True;
-                end;
-              '<':
-                begin
-                  lPos := rsReadingTagKind;
-                  St := Ch;
-                end;
-            else
-              begin
-                  //This is a text
-                lElem := TJclSimpleXMLElemText.Create(Parent);
-                if lTrimWhiteSpace then
-                  Stream.Seek(lStreamPos - 1, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP})
-                else
-                  Stream.Seek(lStartOfContentPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
-                lElem.LoadFromStream(Stream, AParent);
-                lStreamPos := Stream.Position;
-                CreateElems;
-                FElems.AddObject(lElem.Name, lElem);
-                Break;
-              end;
-            end;
-          end;
+            lPos := rsReadingTagKind;
+            St := Ch;
+          end
+          else
+          if not CharIsWhiteSpace(Ch) then
+            lContainsText := True;
+        end;
 
-        rsReadingTagKind: //We are trying to determine the kind of the tag
-          begin
-            lElem := nil;
-            case Ch of
-              '/':
-                if St = '<' then
-                begin
-                  lPos := rsProcessingEndTag;
-                  St := '';
-                end
-                else
-                begin
-                  lElem := TJclSimpleXMLElemClassic.Create(Parent);
-                  St := St + Ch;
-                end;
-
-              ' ', '>', ':': //This should be a classic tag
-                begin
-                  lElem := TJclSimpleXMLElemClassic.Create(Parent);
-                  St := St + Ch;
-                end;
-            else
-              begin
-                if (St <> '<![CDATA') or not (AnsiChar(Ch) in [' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed]) then
-                  St := St + Ch;
-                if St = '<![CDATA[' then
-                  lElem := TJclSimpleXMLElemCData.Create(Parent)
-                else
-                if St = '<!--' then
-                  lElem := TJclSimpleXMLElemComment.Create(Parent);
-                  //<?
-              end;
-            end;
-
-            if lElem <> nil then
-            begin
-              CreateElems;
-              Stream.Seek(lStreamPos - (Length(St)), {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
-              lElem.LoadFromStream(Stream, AParent);
-              lStreamPos := Stream.Position;
-              FElems.AddObject(lElem.Name, lElem);
-              Notify(lElem, opInsert);
-              St := '';
-              lPos := rsWaitingTag;
-              Break;
-            end;
-          end;
-
-        rsProcessingEndTag: //This is an end tag
+      rsReadingTagKind: //We are trying to determine the kind of the tag
+        begin
+          lElem := nil;
           case Ch of
-            '>':
-              begin
-                if Po <> '' then
-                  Result := Po + ':' + St
-                else
-                  Result := St;
-                Count := 0;
-
+            '/':
+              if St = '<' then
+              begin // "</"
                 // We have reached an end tag. If whitespace was found while
                 // waiting for the end tag, and the user told us to keep it
                 // then we have to create a text element.
-                // But it must only be created if there are not other elements
+                // But it must only be created if there are no other elements
                 // in the list. If we did not check this, we would create a
                 // text element for whitespace found between two adjacent end
-                // tags.  
-                if lContainsWhiteSpace and not lTrimWhiteSpace  and
-                   (not Assigned(FElems) or (FElems.Count=0))then
+                // tags.
+                if lContainsText then
                 begin
-                  lTempStreamPos := Stream.Position;
                   lElem := TJclSimpleXMLElemText.Create(Parent);
-                  Stream.Seek(lStartOfContentPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
-                  lElem.LoadFromStream(Stream, AParent);
+                  lElem.LoadFromStringStream(StringStream, AParent);
                   CreateElems;
                   FElems.AddObject(lElem.Name, lElem);
-                  Stream.Seek(lTempStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
+                  Notify(lElem,opInsert);
                 end;
-
                 Break;
-              end;
-            ':':
+              end
+              else
               begin
-                Po := St;
+                lElem := TJclSimpleXMLElemClassic.Create(Parent);
+                St := St + Ch; // "<name/"
+                lPos := rsWaitingTag;
+              end;
+
+            NativeSpace, '>', ':': //This should be a classic tag
+              begin    // "<XXX " or "<XXX:" or "<XXX>
+                lElem := TJclSimpleXMLElemClassic.Create(Parent);
                 St := '';
+                lPos := rsWaitingTag;
               end;
           else
-            St := St + Ch;
+            if lContainsText then
+            begin
+              // inner text
+              lElem := TJclSimpleXMLElemText.Create(Parent);
+              lPos := rsReadingTagKind;
+              lContainsText := False;
+            end
+            else
+            begin
+              if (St <> '<![CDATA') or not CharIsWhiteSpace(Ch) then
+                St := St + Ch;
+              if St = '<![CDATA[' then
+              begin
+                lElem := TJclSimpleXMLElemCData.Create(Parent);
+                lPos := rsWaitingTag;
+                St := '';
+              end
+              else
+              if St = '<!--' then
+              begin
+                lElem := TJclSimpleXMLElemComment.Create(Parent);
+                lPos := rsWaitingTag;
+                St := '';
+              end
+              else
+              if St = '<?' then
+              begin
+                lElem := TJclSimpleXMLElemProcessingInstruction.Create(Parent);
+                lPos := rsWaitingTag;
+                St := '';
+              end;
+            end;
           end;
-      end;
-    end;
-  until Count = 0;
 
-  Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
+          if lElem <> nil then
+          begin
+            CreateElems;
+            lElem.LoadFromStringStream(StringStream, AParent);
+            FElems.AddObject(lElem.Name, lElem);
+            Notify(lElem, opInsert);
+          end;
+        end;
+    end;
+  end;
 end;
 
 procedure TJclSimpleXMLElems.Notify(Value: TJclSimpleXMLElem;
   Operation: TOperation);
+var
+  NamedIndex: Integer;
 begin
   case Operation of
     opRemove:
       if Value.Container = Self then  // Only remove if we have it
+      begin
+        if FNamedElems <> nil then
+        begin
+          NamedIndex := FNamedElems.IndexOf(Value.Name);
+          if NamedIndex >= 0 then
+            TJclSimpleXMLNamedElems(FNamedElems.Objects[NamedIndex]).FItems.Remove(Value);
+        end;
         FElems.Delete(FElems.IndexOfObject(Value));
+      end;
     opInsert:
       Value.Container := Self;
   end;
 end;
 
-procedure TJclSimpleXMLElems.SaveToStream(const Stream: TStream;
+function TJclSimpleXMLElems.Remove(Value: TJclSimpleXMLElem): Integer;
+begin
+  Result := FElems.IndexOfObject(Value);
+  Notify(Value, opRemove);
+end;
+
+procedure TJclSimpleXMLElems.SaveToStringStream(StringStream: TJclStringStream;
   const Level: string; AParent: TJclSimpleXML);
 var
   I: Integer;
 begin
   for I := 0 to Count - 1 do
-    Item[I].SaveToStream(Stream, Level, AParent);
+    Item[I].SaveToStringStream(StringStream, Level, AParent);
 end;
 
-function TJclSimpleXMLElems.Value(const Name: string; Default: string): string;
+function TJclSimpleXMLElems.Value(const Name, Default: string): string;
 var
   Elem: TJclSimpleXMLElem;
 begin
@@ -1914,15 +2169,17 @@ begin
     Result := FElems.IndexOfObject(Value);
 end;
 
-function TJclSimpleXMLElems.IndexOf(const Value: string): Integer;
+function TJclSimpleXMLElems.IndexOf(const Name: string): Integer;
 begin
   if FElems = nil then
     Result := -1
   else
-    Result := FElems.IndexOf(Value);
+    Result := FElems.IndexOf(Name);
 end;
 
 procedure TJclSimpleXMLElems.InsertChild(const Value: TJclSimpleXMLElem; Index: Integer);
+var
+  NamedIndex: Integer;
 begin
   CreateElems;
 
@@ -1934,6 +2191,13 @@ begin
   end;
 
   FElems.InsertObject(Index, Value.Name, Value);
+
+  if FNamedElems <> nil then
+  begin
+    NamedIndex := FNamedElems.IndexOf(Value.Name);
+    if NamedIndex >= 0 then
+      TJclSimpleXMLNamedElems(FNamedElems.Objects[NamedIndex]).FItems.Add(Value);
+  end;
 
   Notify(Value, opInsert);
 end;
@@ -2009,6 +2273,14 @@ function TJclSimpleXMLProps.Add(const Name: string; const Value: Boolean): TJclS
 begin
   Result := Add(Name, BoolToStr(Value));
 end;
+
+{$IFDEF SUPPORTS_UNICODE}
+function TJclSimpleXMLProps.Add(const Name: string;
+  const Value: AnsiString): TJclSimpleXMLProp;
+begin
+  Result := Add(Name, string(Value));
+end;
+{$ENDIF SUPPORTS_UNICODE}
 
 function TJclSimpleXMLProps.Insert(const Index: Integer; const Name, Value: string): TJclSimpleXMLProp;
 var
@@ -2093,8 +2365,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJclSimpleXMLProps.DoItemRename(var Value: TJclSimpleXMLProp;
-  const Name: string);
+procedure TJclSimpleXMLProps.DoItemRename(Value: TJclSimpleXMLProp; const Name: string);
 var
   I: Integer;
 begin
@@ -2108,6 +2379,18 @@ end;
 procedure TJclSimpleXMLProps.Error(const S: string);
 begin
   raise EJclSimpleXMLError.Create(S);
+end;
+
+function TJclSimpleXMLProps.FloatValue(const Name: string;
+  const Default: Extended): Extended;
+var
+  Prop: TJclSimpleXMLProp;
+begin
+  Prop := GetItemNamedDefault(Name, FloatToStr(Default));
+  if Prop = nil then
+    Result := Default
+  else
+    Result := Prop.FloatValue;
 end;
 
 procedure TJclSimpleXMLProps.FmtError(const S: string;
@@ -2166,7 +2449,7 @@ begin
     Result := nil;
 end;
 
-function TJclSimpleXMLProps.IntValue(const Name: string; Default: Int64): Int64;
+function TJclSimpleXMLProps.IntValue(const Name: string; const Default: Int64): Int64;
 var
   Prop: TJclSimpleXMLProp;
 begin
@@ -2177,7 +2460,7 @@ begin
     Result := Prop.IntValue;
 end;
 
-procedure TJclSimpleXMLProps.LoadFromStream(const Stream: TStream);
+procedure TJclSimpleXMLProps.LoadFromStringStream(StringStream: TJclStringStream);
 //<element Prop="foo" Prop='bar' foo:bar="beuh"/>
 //Stop on / or ? or >
 type
@@ -2190,85 +2473,84 @@ type
     );
 var
   lPos: TPosType;
-  I, lStreamPos, Count: Integer;
-  lBuf: array [0..cBufferSize - 1] of Char;
   lName, lValue, lNameSpace: string;
   lPropStart: Char;
   Ch: Char;
 begin
-  lStreamPos := Stream.Position;
   lValue := '';
   lNameSpace := '';
   lName := '';
-  lPropStart := ' ';
+  lPropStart := NativeSpace;
   lPos := ptWaiting;
 
   // We read from a stream, thus replacing the existing properties
   Clear;
 
-  repeat
-    Count := ReadCharsFromStream(Stream, lBuf, Length(lBuf));
-    for I := 0 to Count - 1 do
-    begin
-      //Increment Stream pos for after comment
-      Inc(lStreamPos);
-      Ch := lBuf[I];
-
-      case lPos of
-        ptWaiting: //We are waiting for a property
+  while StringStream.PeekChar(Ch) do
+  begin
+    case lPos of
+      ptWaiting: //We are waiting for a property
+        begin
+          if CharIsWhiteSpace(Ch) then
+            StringStream.ReadChar(Ch)
+          else
+          if CharIsValidIdentifierLetter(Ch) or (Ch = '-') or (Ch = '.') then
           begin
-            case Ch of
-              ' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed:
-                begin
-                end;
-              'a'..'z', 'A'..'Z', '0'..'9', '-', '_':
-                begin
-                  lName := Ch;
-                  lNameSpace := '';
-                  lPos := ptReadingName;
-                end;
-              '/', '>', '?':
-                begin
-                  Dec(lStreamPos);
-                  Count := 0;
-                  Break;
-                end;
-            else
-              FmtError(RsEInvalidXMLElementUnexpectedCharacte, [Ch]);
-            end;
-          end;
-
-        ptReadingName: //We are reading a property name
-          case Ch of
-            'a'..'z', 'A'..'Z', '0'..'9', '-', '_':
-              lName := lName + Ch;
-            ':':
-              begin
-                lNameSpace := lName;
-                lName := '';
-              end;
-            '=':
-              lPos := ptStartingContent;
-            ' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed:
-              lPos := ptSpaceBeforeEqual;
+            StringStream.ReadChar(Ch);
+            lName := Ch;
+            lNameSpace := '';
+            lPos := ptReadingName;
+          end
           else
-            FmtError(RsEInvalidXMLElementUnexpectedCharacte, [Ch]);
-          end;
-
-        ptStartingContent: //We are going to start a property content
-          case Ch of
-            ' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed:
-              ; // ignore white space
-            '''', '"':
-              begin
-                lPropStart := Ch;
-                lValue := '';
-                lPos := ptReadingValue;
-              end;
+          if (Ch = '/') or (Ch = '>') or (Ch = '?') then
+            // end of properties
+            Break
           else
-            FmtError(RsEInvalidXMLElementUnexpectedCharacte_, [Ch]);
-          end;
-        ptReadingValue: //We are reading a property
+            FmtError(LoadResString(@RsEInvalidXMLElementUnexpectedCharacte), [Ch, StringStream.PeekPosition]);
+        end;
+
+      ptReadingName: //We are reading a property name
+        begin
+          StringStream.ReadChar(Ch);
+          if CharIsValidIdentifierLetter(Ch) or (Ch = '-') or (Ch = '.') then
+          begin
+            lName := lName + Ch;
+          end
+          else
+          if Ch = ':' then
+          begin
+            lNameSpace := lName;
+            lName := '';
+          end
+          else
+          if Ch = '=' then
+            lPos := ptStartingContent
+          else
+          if CharIsWhiteSpace(Ch) then
+            lPos := ptSpaceBeforeEqual
+          else
+            FmtError(LoadResString(@RsEInvalidXMLElementUnexpectedCharacte), [Ch, StringStream.PeekPosition]);
+        end;
+
+      ptStartingContent: //We are going to start a property content
+        begin
+          StringStream.ReadChar(Ch);
+          if CharIsWhiteSpace(Ch) then
+            // ignore white space
+          else
+          if (Ch = '''') or (Ch = '"') then
+          begin
+            lPropStart := Ch;
+            lValue := '';
+            lPos := ptReadingValue;
+          end
+          else
+            FmtError(LoadResString(@RsEInvalidXMLElementUnexpectedCharacte_), [Ch, StringStream.PeekPosition]);
+        end;
+
+      ptReadingValue: //We are reading a property
+        begin
+          StringStream.ReadChar(Ch);
           if Ch = lPropStart then
           begin
             if GetSimpleXML <> nil then
@@ -2279,37 +2561,34 @@ begin
           end
           else
             lValue := lValue + Ch;
-        ptSpaceBeforeEqual: // We are reading the white space between a property name and the = sign
-          case Ch of
-            ' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed:
-              ; // more white space, stay in this state and ignore
-            '=':
-              lPos := ptStartingContent;
-          else
-            FmtError(RsEInvalidXMLElementUnexpectedCharacte, [Ch]);
-          end;
-      else
-        Assert(False, RsEUnexpectedValueForLPos);
-      end;
-    end;
-  until Count = 0;
+        end;
 
-  Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
+      ptSpaceBeforeEqual: // We are reading the white space between a property name and the = sign
+        begin
+          StringStream.ReadChar(Ch);
+          if CharIsWhiteSpace(Ch) then
+            // more white space, stay in this state and ignore
+          else
+          if Ch = '=' then
+            lPos := ptStartingContent
+          else
+            FmtError(LoadResString(@RsEInvalidXMLElementUnexpectedCharacte), [Ch, StringStream.PeekPosition]);
+        end;
+    else
+      Assert(False, RsEUnexpectedValueForLPos);
+    end;
+  end;
 end;
 
-procedure TJclSimpleXMLProps.SaveToStream(const Stream: TStream);
+procedure TJclSimpleXMLProps.SaveToStringStream(StringStream: TJclStringStream);
 var
-  St: string;
   I: Integer;
 begin
-  St := '';
   for I := 0 to Count - 1 do
-    St := St + Item[I].SaveToString;
-  if St <> '' then
-    WriteStringToStream(Stream, St, Length(St));
+    Item[I].SaveToStringStream(StringStream);
 end;
 
-function TJclSimpleXMLProps.Value(const Name: string; Default: string): string;
+function TJclSimpleXMLProps.Value(const Name, Default: string): string;
 var
   Prop: TJclSimpleXMLProp;
 begin
@@ -2323,6 +2602,11 @@ end;
 
 //=== { TJclSimpleXMLProp } ==================================================
 
+function TJclSimpleXMLProp.GetAnsiValue: AnsiString;
+begin
+  Result := AnsiString(Value);
+end;
+
 function TJclSimpleXMLProp.GetBoolValue: Boolean;
 begin
   Result := StrToBoolDef(Value, False);
@@ -2330,6 +2614,7 @@ end;
 
 function TJclSimpleXMLProp.GetFloatValue: Extended;
 begin
+  Result := 0.0;
   if not TryStrToFloat(Value, Result) then
     Result := 0.0;
 end;
@@ -2355,25 +2640,25 @@ begin
     Result := nil;
 end;
 
-function TJclSimpleXMLProp.SaveToString: string;
+procedure TJclSimpleXMLProp.SaveToStringStream(StringStream: TJclStringStream);
 var
   AEncoder: TJclSimpleXML;
-  tmp:string;
+  Tmp:string;
 begin
   AEncoder := GetSimpleXML;
-  tmp := FValue;
+  Tmp := FValue;
+  if AEncoder <> nil then
+    AEncoder.DoEncodeValue(Tmp);
   if NameSpace <> '' then
-  begin
-    if AEncoder <> nil then
-      AEncoder.DoEncodeValue(tmp);
-    Result := Format(' %s:%s="%s"', [NameSpace, Name, tmp]);
-  end
+    Tmp := Format(' %s:%s="%s"', [NameSpace, Name, Tmp])
   else
-  begin
-    if AEncoder <> nil then
-      AEncoder.DoEncodeValue(tmp);
-    Result := Format(' %s="%s"', [Name, tmp]);
-  end;
+    Tmp := Format(' %s="%s"', [Name, tmp]);
+  StringStream.WriteString(Tmp, 1, Length(Tmp));
+end;
+
+procedure TJclSimpleXMLProp.SetAnsiValue(const Value: AnsiString);
+begin
+  Self.Value := string(Value);
 end;
 
 procedure TJclSimpleXMLProp.SetBoolValue(const Value: Boolean);
@@ -2403,108 +2688,141 @@ end;
 
 //=== { TJclSimpleXMLElemClassic } ===========================================
 
-procedure TJclSimpleXMLElemClassic.LoadFromStream(const Stream: TStream; AParent: TJclSimpleXML);
+procedure TJclSimpleXMLElemClassic.LoadFromStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML);
 //<element Prop="foo" Prop='bar'/>
 //<element Prop="foo" Prop='bar'>foor<b>beuh</b>bar</element>
 //<xml:element Prop="foo" Prop='bar'>foor<b>beuh</b>bar</element>
+type
+  TReadStatus = (rsWaitingOpeningTag, rsOpeningName, rsTypeOpeningTag, rsEndSingleTag,
+    rsWaitingClosingTag1, rsWaitingClosingTag2, rsClosingName);
 var
-  I, lStreamPos, Count, lPos: Integer;
-  lBuf: array [0..cBufferSize - 1] of Char;
+  lPos: TReadStatus;
   St, lName, lValue, lNameSpace: string;
   Ch: Char;
 begin
-  lStreamPos := Stream.Position;
   St := '';
   lValue := '';
   lNameSpace := '';
-  lPos := 1;
+  lPos := rsWaitingOpeningTag;
 
-  repeat
-    Count := ReadCharsFromStream(Stream, lBuf, Length(lBuf));
-    if AParent <> nil then
-      AParent.DoLoadProgress(Stream.Position, Stream.Size);
-    for I := 0 to Count - 1 do
-    begin
-      //Increment Stream pos for after comment
-      Inc(lStreamPos);
-      Ch := lBuf[I];
+  if AParent <> nil then
+    AParent.DoLoadProgress(StringStream.Stream.Position, StringStream.Stream.Size);
 
-      case lPos of
-        1:
-          if Ch = '<' then
-            lPos := 2
-          else
-            FmtError(RsEInvalidXMLElementExpectedBeginningO, [Ch]);
-        -1:
-          if Ch = '>' then
-          begin
-            Count := 0;
-            Break;
-          end
-          else
-            FmtError(RsEInvalidXMLElementExpectedEndOfTagBu, [Ch]);
-      else
+  while StringStream.ReadChar(Ch) do
+  begin
+    case lPos of
+      rsWaitingOpeningTag: // wait beginning of tag
+        if Ch = '<' then
+          lPos := rsOpeningName // read name
+        else
+        if not CharIsWhiteSpace(Ch) then
+          FmtError(LoadResString(@RsEInvalidXMLElementExpectedBeginningO), [Ch, StringStream.PeekPosition]);
+
+      rsOpeningName:
+        if CharIsValidIdentifierLetter(Ch) or (Ch = '-') or (Ch = '.') then
+          St := St + Ch
+        else
+        if (Ch = ':') and (lNameSpace = '') then
         begin
-          if AnsiChar(Ch) in [AnsiTab, AnsiLineFeed, AnsiCarriageReturn, ' ' {, '.'}] then
+          lNameSpace := St;
+          st := '';
+        end
+        else
+        if CharIsWhiteSpace(Ch) and (St = '') then
+          // whitespace after "<" (no name)
+          FmtError(LoadResString(@RsEInvalidXMLElementMalformedTagFoundn), [StringStream.PeekPosition])
+        else
+        if CharIsWhiteSpace(Ch) then
+        begin
+          lName := St;
+          St := '';
+          Properties.LoadFromStringStream(StringStream);
+          lPos := rsTypeOpeningTag;
+        end
+        else
+        if Ch = '/' then // single tag
+        begin
+          lName := St;
+          lPos := rsEndSingleTag
+        end
+        else
+        if Ch = '>' then // 2 tags
+        begin
+          lName := St;
+          St := '';
+          //Load elements
+          Items.LoadFromStringStream(StringStream, AParent);
+          lPos := rsWaitingClosingTag1;
+        end
+        else
+          // other invalid characters
+          FmtError(LoadResString(@RsEInvalidXMLElementMalformedTagFoundn), [StringStream.PeekPosition]);
+
+      rsTypeOpeningTag:
+        if CharIsWhiteSpace(Ch) then
+          // nothing, spaces after name or properties
+        else
+        if Ch = '/' then
+          lPos := rsEndSingleTag // single tag
+        else
+        if Ch = '>' then // 2 tags
+        begin
+          //Load elements
+          Items.LoadFromStringStream(StringStream, AParent);
+          lPos := rsWaitingClosingTag1;
+        end
+        else
+          FmtError(LoadResString(@RsEInvalidXMLElementExpectedEndOfTagBu), [Ch, StringStream.PeekPosition]);
+
+      rsEndSingleTag:
+        if Ch = '>' then
+          Break
+        else
+          FmtError(LoadResString(@RsEInvalidXMLElementExpectedEndOfTagBu), [Ch, StringStream.PeekPosition]);
+
+      rsWaitingClosingTag1:
+        if CharIsWhiteSpace(Ch) then
+          // nothing, spaces before closing tag
+        else
+        if Ch = '<' then
+          lPos := rsWaitingClosingTag2
+        else
+          FmtError(LoadResString(@RsEInvalidXMLElementExpectedEndOfTagBu), [Ch, StringStream.PeekPosition]);
+
+      rsWaitingClosingTag2:
+        if Ch = '/' then
+          lPos := rsClosingName
+        else
+          FmtError(LoadResString(@RsEInvalidXMLElementExpectedEndOfTagBu), [Ch, StringStream.PeekPosition]);
+
+      rsClosingName:
+        if CharIsWhiteSpace(Ch) or (Ch = '>') then
+        begin
+          if lNameSpace <> '' then
           begin
-            if lPos = 2 then
-              Error(RsEInvalidXMLElementMalformedTagFoundn);
-            Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
-            Properties.LoadFromStream(Stream);
-            lStreamPos := Stream.Position;
-            Break; //Re read buffer
+            if not StrSame(lNameSpace + ':' + lName, St) then
+              FmtError(LoadResString(@RsEInvalidXMLElementErroneousEndOfTagE), [lName, St, StringStream.PeekPosition]);
           end
           else
+            if not StrSame(lName, St) then
+              FmtError(LoadResString(@RsEInvalidXMLElementErroneousEndOfTagE), [lName, St, StringStream.PeekPosition]);
+          //Set value if only one sub element
+          //This might reduce speed, but this is for compatibility issues
+          if (Items.Count = 1) and (Items[0] is TJclSimpleXMLElemText) then
           begin
-            case Ch of
-              '>':
-                begin
-                  lName := St;
-                  //Load elements
-                  Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
-                  St := Items.LoadFromStream(Stream, AParent);
-                  if lNameSpace <> '' then
-                  begin
-                    if not AnsiSameText(AnsiString(lNameSpace + ':' + lName), AnsiString(St)) then
-                      FmtError(RsEInvalidXMLElementErroneousEndOfTagE, [lName, St]);
-                  end
-                  else
-                    if not AnsiSameText(AnsiString(lName), AnsiString(St)) then
-                      FmtError(RsEInvalidXMLElementErroneousEndOfTagE, [lName, St]);
-                  lStreamPos := Stream.Position;
-
-                  //Set value if only one sub element
-                  //This might reduce speed, but this is for compatibility issues
-                  if (Items.Count = 1) and (Items[0] is TJclSimpleXMLElemText) then
-                  begin
-                    lValue := Items[0].Value;
-                    Items.Clear;
-                  end;
-
-                  Count := 0;
-                  Break;
-                end;
-              '/':
-                begin
-                  lName := St;
-                  lPos := -1;
-                end;
-              ':':
-                begin
-                  lNameSpace := St;
-                  St := '';
-                end;
-            else
-              begin
-                St := St + Ch;
-                Inc(lPos);
-              end;
-            end;
+            lValue := Items[0].Value;
+            Items.Clear;
           end;
-        end;
-      end;
+          Break;
+        end
+        else
+        if CharIsValidIdentifierLetter(Ch) or (Ch = '-') or (Ch = '.') or (Ch = ':') then
+          St := St + Ch
+        else
+          // other invalid characters
+          FmtError(LoadResString(@RsEInvalidXMLElementMalformedTagFoundn), [StringStream.PeekPosition]);
     end;
-  until Count = 0;
+  end;
 
   Name := lName;
   if GetSimpleXML <> nil then
@@ -2517,11 +2835,9 @@ begin
     AParent.DoTagParsed(lName);
     AParent.DoValueParsed(lName, lValue);
   end;
-
-  Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
 end;
 
-procedure TJclSimpleXMLElemClassic.SaveToStream(const Stream: TStream; const Level: string; AParent: TJclSimpleXML);
+procedure TJclSimpleXMLElemClassic.SaveToStringStream(StringStream: TJclStringStream; const Level: string; AParent: TJclSimpleXML);
 var
   St, AName, tmp: string;
   LevelAdd: string;
@@ -2541,8 +2857,8 @@ begin
        GetSimpleXML.DoEncodeValue(AName);
     St := Level + '<' + AName;
 
-    WriteStringToStream(Stream, St, Length(St));
-    Properties.SaveToStream(Stream);
+    StringStream.WriteString(St, 1, Length(St));
+    Properties.SaveToStringStream(StringStream);
   end;
 
   if (Items.Count = 0) then
@@ -2558,7 +2874,7 @@ begin
           GetSimpleXML.DoEncodeValue(tmp);
         St := '>' + tmp + '</' + AName + '>' + sLineBreak;
       end;
-      WriteStringToStream(Stream, St, Length(St));
+      StringStream.WriteString(St, 1, Length(St));
     end;
   end
   else
@@ -2566,18 +2882,18 @@ begin
     if (Name <> '') then
     begin
       St := '>' + sLineBreak;
-      WriteStringToStream(Stream, St, Length(St));
+      StringStream.WriteString(St, 1, Length(St));
     end;
     if Assigned(SimpleXML) and
       (sxoAutoIndent in SimpleXML.Options) then
     begin
       LevelAdd := SimpleXML.IndentString;
     end;
-    Items.SaveToStream(Stream, Level + LevelAdd, AParent);
+    Items.SaveToStringStream(StringStream, Level + LevelAdd, AParent);
     if Name <> '' then
     begin
       St := Level + '</' + AName + '>' + sLineBreak;
-      WriteStringToStream(Stream, St, Length(St));
+      StringStream.WriteString(St, 1, Length(St));
     end;
   end;
   if AParent <> nil then
@@ -2586,362 +2902,422 @@ end;
 
 //=== { TJclSimpleXMLElemComment } ===========================================
 
-procedure TJclSimpleXMLElemComment.LoadFromStream(const Stream: TStream; AParent: TJclSimpleXML);
+procedure TJclSimpleXMLElemComment.LoadFromStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML);
 //<!-- declarations for <head> & <body> -->
 const
   CS_START_COMMENT = '<!--';
-  CS_STOP_COMMENT = '    -->';
+  CS_STOP_COMMENT  = '    -->';
 var
-  I, lStreamPos, Count, lPos: Integer;
-  lBuf: array [0..cBufferSize - 1] of Char;
+  lPos: Integer;
   St: string;
+  Ch: Char;
   lOk: Boolean;
 begin
-  lStreamPos := Stream.Position;
   St := '';
   lPos := 1;
   lOk := False;
 
-  repeat
-    Count := ReadCharsFromStream(Stream, lBuf, Length(lBuf));
-    if AParent <> nil then
-      AParent.DoLoadProgress(Stream.Position, Stream.Size);
-    for I := 0 to Count - 1 do
-    begin
-      //Increment Stream pos for after comment
-      Inc(lStreamPos);
+  if AParent <> nil then
+    AParent.DoLoadProgress(StringStream.Stream.Position, StringStream.Stream.Size);
 
-      case lPos of
-        1..4: //<!--
-          if lBuf[I] = CS_START_COMMENT[lPos] then
-            Inc(lPos)
-          else
-            FmtError(RsEInvalidCommentExpectedsButFounds, [CS_START_COMMENT[lPos], lBuf[I]]);
-        5:
-          if lBuf[I] = CS_STOP_COMMENT[lPos] then
-            Inc(lPos)
-          else
-            St := St + lBuf[I];
-        6: //-
-          if lBuf[I] = CS_STOP_COMMENT[lPos] then
-            Inc(lPos)
-          else
-          begin
-            St := St + '-' + lBuf[I];
-            Dec(lPos);
-          end;
-        7: //>
-          if lBuf[I] = CS_STOP_COMMENT[lPos] then
-          begin
-            Count := 0; //End repeat
-            lOk := True;
-            Break; //End if
-          end
-          else
-          begin
-            if lBuf[I + 1] <> '>' then
-              Error(RsEInvalidCommentNotAllowedInsideComme);
-            St := St + '--' + lBuf[I];
-            Dec(lPos, 2);
-          end;
-      end;
+  while StringStream.ReadChar(Ch) do
+  begin
+    case lPos of
+      1..4: //<!--
+        if Ch = CS_START_COMMENT[lPos] then
+          Inc(lPos)
+        else
+        if not CharIsWhiteSpace(Ch) then
+          FmtError(LoadResString(@RsEInvalidCommentExpectedsButFounds), [CS_START_COMMENT[lPos], Ch, StringStream.PeekPosition]);
+      5:
+        if Ch = CS_STOP_COMMENT[lPos] then
+          Inc(lPos)
+        else
+          St := St + Ch;
+      6: //-
+        if Ch = CS_STOP_COMMENT[lPos] then
+          Inc(lPos)
+        else
+        begin
+          St := St + '-' + Ch;
+          Dec(lPos);
+        end;
+      7: //>
+        if Ch = CS_STOP_COMMENT[lPos] then
+        begin
+          lOk := True;
+          Break; //End if
+        end
+        else // -- is not authorized in comments
+          FmtError(LoadResString(@RsEInvalidCommentNotAllowedInsideComme), [StringStream.PeekPosition]);
     end;
-  until Count = 0;
+  end;
 
   if not lOk then
-    Error(RsEInvalidCommentUnexpectedEndOfData);
+    FmtError(LoadResString(@RsEInvalidCommentUnexpectedEndOfData), [StringStream.PeekPosition]);
 
   Value := St;
   Name := '';
 
   if AParent <> nil then
     AParent.DoValueParsed('', St);
-
-  Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
 end;
 
-procedure TJclSimpleXMLElemComment.SaveToStream(const Stream: TStream; const Level: string; AParent: TJclSimpleXML);
+procedure TJclSimpleXMLElemComment.SaveToStringStream(StringStream: TJclStringStream; const Level: string; AParent: TJclSimpleXML);
 var
   St: string;
 begin
   St := Level + '<!--';
-  WriteStringToStream(Stream, St, Length(St));
+  StringStream.WriteString(St, 1, Length(St));
   if Value <> '' then
-    WriteStringToStream(Stream, Value, Length(Value));
+    StringStream.WriteString(Value, 1, Length(Value));
   St := '-->' + sLineBreak;
-  WriteStringToStream(Stream, St, Length(St));
+  StringStream.WriteString(St, 1, Length(St));
   if AParent <> nil then
     AParent.DoSaveProgress;
 end;
 
 //=== { TJclSimpleXMLElemCData } =============================================
 
-procedure TJclSimpleXMLElemCData.LoadFromStream(const Stream: TStream; AParent: TJclSimpleXML);
+procedure TJclSimpleXMLElemCData.LoadFromStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML);
 //<![CDATA[<greeting>Hello, world!</greeting>]]>
 const
   CS_START_CDATA = '<![CDATA[';
-  CS_STOP_CDATA =  '         ]]>';
+  CS_STOP_CDATA  = '         ]]>';
 var
-  I, lStreamPos, Count, lPos: Integer;
-  lBuf: array [0..cBufferSize - 1] of Char;
+  lPos: Integer;
   St: string;
+  Ch: Char;
   lOk: Boolean;
 begin
-  lStreamPos := Stream.Position;
   St := '';
   lPos := 1;
   lOk := False;
 
-  repeat
-    Count := ReadCharsFromStream(Stream, lBuf, Length(lBuf));
-    if AParent <> nil then
-      AParent.DoLoadProgress(Stream.Position, Stream.Size);
-    for I := 0 to Count - 1 do
-    begin
-      //Increment Stream pos for after comment
-      Inc(lStreamPos);
+  if AParent <> nil then
+    AParent.DoLoadProgress(StringStream.Stream.Position, StringStream.Stream.Size);
 
-      case lPos of
-        1..9: //<![CDATA[
-          if lBuf[I] = CS_START_CDATA[lPos] then
-            Inc(lPos)
-          else
-            FmtError(RsEInvalidCDATAExpectedsButFounds, [CS_START_CDATA[lPos], lBuf[I]]);
-        10:
-          if lBuf[I] = CS_STOP_CDATA[lPos] then
-            Inc(lPos)
-          else
-            St := St + lBuf[I];
-        11: //-
-          if lBuf[I] = CS_STOP_CDATA[lPos] then
-            Inc(lPos)
-          else
-          begin
-            St := St + ']' + lBuf[I];
-            Dec(lPos);
-          end;
-        12: //>
-          if lBuf[I] = CS_STOP_CDATA[lPos] then
-          begin
-            Count := 0; //End repeat
-            lOk := True;
-            Break; //End if
-          end
-          else
-          begin
-            St := St + ']]' + lBuf[I];
-            Dec(lPos, 2);
-          end;
-      end;
+  while StringStream.ReadChar(Ch) do
+  begin
+    case lPos of
+      1..9: //<![CDATA[
+        if Ch = CS_START_CDATA[lPos] then
+          Inc(lPos)
+        else
+        if not CharIsWhiteSpace(Ch) then
+          FmtError(LoadResString(@RsEInvalidCDATAExpectedsButFounds), [CS_START_CDATA[lPos], Ch, StringStream.PeekPosition]);
+      10: // ]
+        if Ch = CS_STOP_CDATA[lPos] then
+          Inc(lPos)
+        else
+          St := St + Ch;
+      11: // ]
+        if Ch = CS_STOP_CDATA[lPos] then
+          Inc(lPos)
+        else
+        begin
+          St := St + ']' + Ch;
+          Dec(lPos);
+        end;
+      12: //>
+        if Ch = CS_STOP_CDATA[lPos] then
+        begin
+          lOk := True;
+          Break; //End if
+        end
+        else
+        // ]]]
+        if Ch = CS_STOP_CDATA[lPos-1] then
+          St := St + ']'
+        else
+        begin
+          St := St + ']]' + Ch;
+          Dec(lPos, 2);
+        end;
     end;
-  until Count = 0;
+  end;
 
   if not lOk then
-    Error(RsEInvalidCDATAUnexpectedEndOfData);
+    FmtError(LoadResString(@RsEInvalidCDATAUnexpectedEndOfData), [StringStream.PeekPosition]);
 
   Value := St;
   Name := '';
 
   if AParent <> nil then
     AParent.DoValueParsed('', St);
-
-  Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
 end;
 
-procedure TJclSimpleXMLElemCData.SaveToStream(const Stream: TStream; const Level: string; AParent: TJclSimpleXML);
+procedure TJclSimpleXMLElemCData.SaveToStringStream(StringStream: TJclStringStream; const Level: string; AParent: TJclSimpleXML);
 var
   St: string;
 begin
   St := Level + '<![CDATA[';
-  WriteStringToStream(Stream, St, Length(St));
+  StringStream.WriteString(St, 1, Length(St));
   if Value <> '' then
-    WriteStringToStream(Stream, Value, Length(Value));
+    StringStream.WriteString(Value, 1, Length(Value));
   St := ']]>' + sLineBreak;
-  WriteStringToStream(Stream, St, Length(St));
+  StringStream.WriteString(St, 1, Length(St));
   if AParent <> nil then
     AParent.DoSaveProgress;
 end;
 
 //=== { TJclSimpleXMLElemText } ==============================================
 
-procedure TJclSimpleXMLElemText.LoadFromStream(const Stream: TStream; AParent: TJclSimpleXML);
+procedure TJclSimpleXMLElemText.LoadFromStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML);
 var
-  I, lStreamPos, Count: Integer;
-  lBuf: array [0..cBufferSize - 1] of Char;
+  Ch: Char;
   St: string;
-  StLength: Integer;
 begin
-  lStreamPos := Stream.Position;
   St := '';
-  StLength := 0;
 
-  repeat
-    Count := ReadCharsFromStream(Stream, lBuf, Length(lBuf));
-    if AParent <> nil then
-      AParent.DoLoadProgress(Stream.Position, Stream.Size);
-    SetLength(St, StLength + Count);
-    for I := 0 to Count - 1 do
-    begin
-      //Increment Stream pos for after comment
-      Inc(lStreamPos);
+  if AParent <> nil then
+    AParent.DoLoadProgress(StringStream.Stream.Position, StringStream.Stream.Size);
 
-      case lBuf[I] of
-        '<':
-          begin
-            //Quit text
-            Dec(lStreamPos);
-            Count := 0;
-            Break;
-          end;
-      else
-        begin
-          Inc(StLength);
-          St[StLength] := lBuf[I];
-        end;
+  while StringStream.PeekChar(Ch) do
+    case Ch of
+      '<':
+        //Quit text
+        Break;
+    else
+      begin
+        StringStream.ReadChar(Ch);
+        St := St + Ch;
       end;
-    end;
-  until Count = 0;
-  SetLength(St, StLength);
-  if GetSimpleXML <> nil then
+  end;
+
+  if Assigned(SimpleXML) then
+  begin
     GetSimpleXML.DoDecodeValue(St);
+
+    if sxoTrimPrecedingTextWhitespace in SimpleXML.Options then
+      St := TrimLeft(St);
+    if sxoTrimFollowingTextWhitespace in SimpleXML.Options then
+      St := TrimRight(St);
+  end;
+
   Value := St;
   Name := '';
 
   if AParent <> nil then
     AParent.DoValueParsed('', St);
-
-  Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
 end;
 
-procedure TJclSimpleXMLElemText.SaveToStream(const Stream: TStream; const Level: string; AParent: TJclSimpleXML);
+procedure TJclSimpleXMLElemText.SaveToStringStream(StringStream: TJclStringStream; const Level: string; AParent: TJclSimpleXML);
 var
   St, tmp: string;
 begin
+  // should never be used
   if Value <> '' then
   begin
     tmp := Value;
     if GetSimpleXML <> nil then
       GetSimpleXML.DoEncodeValue(tmp);
     St := Level + tmp + sLineBreak;
-    WriteStringToStream(Stream, St, Length(St));
+    StringStream.WriteString(St, 1, Length(St));
   end;
+  if AParent <> nil then
+    AParent.DoSaveProgress;
+end;
+
+//=== { TJclSimpleXMLElemProcessingInstruction } =============================
+
+procedure TJclSimpleXMLElemProcessingInstruction.LoadFromStringStream(
+  StringStream: TJclStringStream; AParent: TJclSimpleXML);
+type
+  TReadStatus = (rsWaitingOpeningTag, rsOpeningTag, rsOpeningName, rsEndTag1, rsEndTag2);
+var
+  lPos: TReadStatus;
+  lOk: Boolean;
+  St, lName, lNameSpace: string;
+  Ch: Char;
+begin
+  St := '';
+  lNameSpace := '';
+  lPos := rsWaitingOpeningTag;
+  lOk := False;
+
+  if AParent <> nil then
+    AParent.DoLoadProgress(StringStream.Stream.Position, StringStream.Stream.Size);
+
+  while StringStream.ReadChar(Ch) do
+  begin
+    case lPos of
+      rsWaitingOpeningTag: // wait beginning of tag
+        if Ch = '<' then
+          lPos := rsOpeningTag
+        else
+        if not CharIsWhiteSpace(Ch) then
+          FmtError(LoadResString(@RsEInvalidXMLElementExpectedBeginningO), [Ch, StringStream.PeekPosition]);
+
+      rsOpeningTag:
+        if Ch = '?' then
+          lPos := rsOpeningName // read name
+        else
+          FmtError(LoadResString(@RsEInvalidXMLElementMalformedTagFoundn), [StringStream.PeekPosition]);
+
+      rsOpeningName:
+        if CharIsValidIdentifierLetter(Ch) or (Ch = '-') or (Ch = '.') then
+          St := St + Ch
+        else
+        if (Ch = ':') and (lNameSpace = '') then
+        begin
+          lNameSpace := St;
+          St := '';
+        end
+        else
+        if CharIsWhiteSpace(Ch) and (St = '') then
+          // whitespace after "<" (no name)
+          FmtError(LoadResString(@RsEInvalidXMLElementMalformedTagFoundn), [StringStream.PeekPosition])
+        else
+        if CharIsWhiteSpace(Ch) then
+        begin
+          lName := St;
+          St := '';
+          Properties.LoadFromStringStream(StringStream);
+          lPos := rsEndTag1;
+        end
+        else
+        if Ch = '?' then
+        begin
+          lName := St;
+          lPos := rsEndTag2;
+        end
+        else
+          // other invalid characters
+          FmtError(LoadResString(@RsEInvalidXMLElementMalformedTagFoundn), [StringStream.PeekPosition]);
+
+      rsEndTag1:
+        if Ch = '?' then
+          lPos := rsEndTag2
+        else
+        if not CharIsWhiteSpace(Ch) then
+          FmtError(LoadResString(@RsEInvalidXMLElementExpectedEndOfTagBu), [Ch, StringStream.PeekPosition]);
+
+      rsEndTag2:
+        if Ch = '>' then
+        begin
+          lOk := True;
+          Break;
+        end
+        else
+          FmtError(LoadResString(@RsEInvalidXMLElementExpectedEndOfTagBu), [Ch, StringStream.PeekPosition]);
+    end;
+  end;
+
+  if not lOk then
+    FmtError(LoadResString(@RsEInvalidCommentUnexpectedEndOfData), [StringStream.PeekPosition]);
+
+  Name := lName;
+  NameSpace := lNameSpace;
+end;
+
+procedure TJclSimpleXMLElemProcessingInstruction.SaveToStringStream(
+  StringStream: TJclStringStream; const Level: string; AParent: TJclSimpleXML);
+var
+  St: string;
+begin
+  St := Level + '<?';
+  if NameSpace <> '' then
+    St := St + NameSpace + ':' + Name
+  else
+    St := St + Name;
+  StringStream.WriteString(St, 1, Length(St));
+  Properties.SaveToStringStream(StringStream);
+  St := '?>' + sLineBreak;
+  StringStream.WriteString(St, 1, Length(St));
   if AParent <> nil then
     AParent.DoSaveProgress;
 end;
 
 //=== { TJclSimpleXMLElemHeader } ============================================
 
-procedure TJclSimpleXMLElemHeader.Assign(Value: TJclSimpleXMLElem);
+function TJclSimpleXMLElemHeader.GetEncoding: string;
 begin
-  inherited Assign(Value);
-  if Value is TJclSimpleXMLElemHeader then
-  begin
-    FStandalone := TJclSimpleXMLElemHeader(Value).FStandalone;
-    FEncoding := TJclSimpleXMLElemHeader(Value).FEncoding;
-    FVersion := TJclSimpleXMLElemHeader(Value).FVersion;
-  end;
+  Result := Properties.Value('encoding', 'iso-8859-1');
 end;
 
-constructor TJclSimpleXMLElemHeader.Create(const AOwner: TJclSimpleXMLElem);
+function TJclSimpleXMLElemHeader.GetStandalone: Boolean;
 begin
-  inherited Create(AOwner);
-  FVersion := '1.0';
-  FEncoding := 'iso-8859-1';
-  FStandalone := False;
+  Result := Properties.Value('standalone') = 'yes';
 end;
 
-procedure TJclSimpleXMLElemHeader.LoadFromStream(const Stream: TStream; AParent: TJclSimpleXML);
+function TJclSimpleXMLElemHeader.GetVersion: string;
+begin
+  Result := Properties.Value('version', '1.0');
+end;
+
+procedure TJclSimpleXMLElemHeader.LoadFromStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML);
 //<?xml version="1.0" encoding="iso-xyzxx" standalone="yes"?>
-const
-  CS_START_HEADER = '<?xml';
-  CS_STOP_HEADER = '     ?>';
 var
-  I, lStreamPos, Count, lPos: Integer;
-  lBuf: array [0..cBufferSize - 1] of Char;
-  lOk: Boolean;
+  CodePage: Word;
+  EncodingProp: TJclSimpleXMLProp;
 begin
-  lStreamPos := Stream.Position;
-  lPos := 1;
-  lOk := False;
+  inherited LoadFromStringStream(StringStream, AParent);
+  
+  EncodingProp := Properties.ItemNamed['encoding'];
+  if Assigned(EncodingProp) and (EncodingProp.Value <> '') then
+    CodePage := CodePageFromCharsetName(EncodingProp.Value)
+  else
+    CodePage := CP_ACP;
 
-  repeat
-    Count := ReadCharsFromStream(Stream, lBuf, Length(lBuf));
-    if AParent <> nil then
-      AParent.DoLoadProgress(Stream.Position, Stream.Size);
-    for I := 0 to Count - 1 do
-    begin
-      //Increment Stream pos for after comment
-      Inc(lStreamPos);
-
-      case lPos of
-        1..4: //<?xml
-          if lBuf[I] = CS_START_HEADER[lPos] then
-            Inc(lPos)
-          else
-            FmtError(RsEInvalidHeaderExpectedsButFounds, [CS_START_HEADER[lPos], lBuf[I]]);
-        5: //L
-          if lBuf[I] = CS_START_HEADER[lPos] then
-          begin
-            Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
-            Properties.LoadFromStream(Stream);
-            lStreamPos := Stream.Position;
-            Inc(lPos);
-
-            FVersion := Properties.Value('version');
-            FEncoding := Properties.Value('encoding');
-            FStandalone := Properties.Value('standalone') = 'yes';
-
-            Properties.Clear;
-
-            Break; //Re read buffer
-          end
-          else
-            FmtError(RsEInvalidHeaderExpectedsButFounds, [CS_START_HEADER[lPos], lBuf[I]]);
-        6: //?
-          if lBuf[I] = CS_STOP_HEADER[lPos] then
-            Inc(lPos)
-          else
-            FmtError(RsEInvalidHeaderExpectedsButFounds, [CS_STOP_HEADER[lPos], lBuf[I]]);
-        7: //>
-          if lBuf[I] = CS_STOP_HEADER[lPos] then
-          begin
-            Count := 0; //End repeat
-            lOk := True;
-            Break; //End if
-          end
-          else
-            FmtError(RsEInvalidHeaderExpectedsButFounds, [CS_STOP_HEADER[lPos], lBuf[I]]);
-      end;
-    end;
-  until Count = 0;
-
-  if not lOk then
-    Error(RsEInvalidCommentUnexpectedEndOfData);
-
-  Name := '';
-
-  Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
+  // set current stringstream codepage
+  if StringStream is TJclAutoStream then
+    TJclAutoStream(StringStream).CodePage := CodePage
+  else
+  if StringStream is TJclAnsiStream then
+    TJclAnsiStream(StringStream).CodePage := CodePage
+  else
+  if not (StringStream is TJclUTF8Stream) and not (StringStream is TJclUTF16Stream) then
+    Error(LoadResString(@RsENoCharset));
 end;
 
-procedure TJclSimpleXMLElemHeader.SaveToStream(const Stream: TStream;
-  const Level: string; AParent: TJclSimpleXML);
-var
-  St: string;
+procedure TJclSimpleXMLElemHeader.SaveToStringStream(
+  StringStream: TJclStringStream; const Level: string; AParent: TJclSimpleXML);
 begin
-  St := Level + '<?xml version="' + FVersion + '"';
-  if Encoding <> '' then
-    St := St + ' encoding="' + Encoding + '"';
-  if StandAlone then
-    St := St + ' standalone="yes"';
-  St := St + '?>' + sLineBreak;
-  WriteStringToStream(Stream, St, Length(St));
-  if AParent <> nil then
-    AParent.DoSaveProgress;
+  SetVersion(GetVersion);
+  SetEncoding(GetEncoding);
+  SetStandalone(GetStandalone);
+  inherited SaveToStringStream(StringStream, Level, AParent);
+end;
+
+procedure TJclSimpleXMLElemHeader.SetEncoding(const Value: string);
+var
+  Prop: TJclSimpleXMLProp;
+begin
+  Prop := Properties.GetItemNamed('encoding');
+  if Assigned(Prop) then
+    Prop.Value := Value
+  else
+    Properties.Add('encoding', Value);
+end;
+
+procedure TJclSimpleXMLElemHeader.SetStandalone(const Value: Boolean);
+var
+  Prop: TJclSimpleXMLProp;
+const
+  BooleanValues: array [Boolean] of string = ('no', 'yes');
+begin
+  Prop := Properties.GetItemNamed('standalone');
+  if Assigned(Prop) then
+    Prop.Value := BooleanValues[Value]
+  else
+    Properties.Add('standalone', BooleanValues[Value]);
+end;
+
+procedure TJclSimpleXMLElemHeader.SetVersion(const Value: string);
+var
+  Prop: TJclSimpleXMLProp;
+begin
+  Prop := Properties.GetItemNamed('version');
+  if Assigned(Prop) then
+    Prop.Value := Value
+  else
+    Properties.Add('version', Value);
 end;
 
 //=== { TJclSimpleXMLElemDocType } ===========================================
 
-procedure TJclSimpleXMLElemDocType.LoadFromStream(const Stream: TStream; AParent: TJclSimpleXML);
+procedure TJclSimpleXMLElemDocType.LoadFromStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML);
 {
 <!DOCTYPE test [
 <!ELEMENT test (#PCDATA) >
@@ -2955,161 +3331,68 @@ procedure TJclSimpleXMLElemDocType.LoadFromStream(const Stream: TStream; AParent
 const
   CS_START_DOCTYPE = '<!DOCTYPE';
 var
-  I, lStreamPos, Count, lPos: Integer;
-  lBuf: array [0..cBufferSize - 1] of Char;
+  lPos: Integer;
   lOk: Boolean;
-  lChar: Char;
+  Ch, lChar: Char;
   St: string;
 begin
-  lStreamPos := Stream.Position;
   lPos := 1;
   lOk := False;
   lChar := '>';
   St := '';
 
-  repeat
-    Count := ReadCharsFromStream(Stream, lBuf, Length(lBuf));
-    if AParent <> nil then
-      AParent.DoLoadProgress(Stream.Position, Stream.Size);
-    for I := 0 to Count - 1 do
-    begin
-      //Increment Stream pos for after comment
-      Inc(lStreamPos);
+  if AParent <> nil then
+    AParent.DoLoadProgress(StringStream.Stream.Position, StringStream.Stream.Size);
 
-      case lPos of
-        1..9: //<!DOCTYPE
-          if lBuf[I] = CS_START_DOCTYPE[lPos] then
-            Inc(lPos)
-          else
-            FmtError(RsEInvalidHeaderExpectedsButFounds, [CS_START_DOCTYPE[lPos], lBuf[I]]);
-        10: //]> or >
-          if lChar = lBuf[I] then
+  while StringStream.ReadChar(Ch) do
+  begin
+    case lPos of
+      1..9: //<!DOCTYPE
+        if Ch = CS_START_DOCTYPE[lPos] then
+          Inc(lPos)
+        else
+        if not CharIsWhiteSpace(Ch) then
+          FmtError(LoadResString(@RsEInvalidHeaderExpectedsButFounds), [CS_START_DOCTYPE[lPos], Ch, StringStream.PeekPosition]);
+      10: //]> or >
+        if lChar = Ch then
+        begin
+          if lChar = '>' then
           begin
-            if lChar = '>' then
-            begin
-              lOk := True;
-              Count := 0;
-              Break; //This is the end
-            end
-            else
-            begin
-              St := St + lBuf[I];
-              lChar := '>';
-            end;
+            lOk := True;
+            Break; //This is the end
           end
           else
           begin
-            St := St + lBuf[I];
-            if lBuf[I] = '[' then
-              lChar := ']';
+            St := St + Ch;
+            lChar := '>';
           end;
-      end;
+        end
+        else
+        begin
+          St := St + Ch;
+          if Ch = '[' then
+            lChar := ']';
+        end;
     end;
-  until Count = 0;
+  end;
 
   if not lOk then
-    Error(RsEInvalidCommentUnexpectedEndOfData);
+    FmtError(LoadResString(@RsEInvalidCommentUnexpectedEndOfData), [StringStream.PeekPosition]);
 
   Name := '';
-  Value := Trim(St);
+  Value := StrTrimCharsLeft(St, CharIsWhiteSpace);
 
   if AParent <> nil then
     AParent.DoValueParsed('', St);
-
-  Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
 end;
 
-procedure TJclSimpleXMLElemDocType.SaveToStream(const Stream: TStream;
+procedure TJclSimpleXMLElemDocType.SaveToStringStream(StringStream: TJclStringStream;
   const Level: string; AParent: TJclSimpleXML);
 var
   St: string;
 begin
-  St := '<!DOCTYPE ' + Value + '>' + sLineBreak;
-  WriteStringToStream(Stream, St, Length(St));
-  if AParent <> nil then
-    AParent.DoSaveProgress;
-end;
-
-//=== { TJclSimpleXMLElemSheet } =============================================
-
-procedure TJclSimpleXMLElemSheet.LoadFromStream(const Stream: TStream;
-  AParent: TJclSimpleXML);
-//<?xml-stylesheet alternate="yes" type="text/xsl" href="sheet.xsl"?>
-const
-  CS_START_PI = '<?xml-stylesheet';
-  CS_STOP_PI = '                ?>';
-var
-  I, lStreamPos, Count, lPos: Integer;
-  lBuf: array [0..cBufferSize - 1] of Char;
-  lOk: Boolean;
-begin
-  lStreamPos := Stream.Position;
-  lPos := 1;
-  lOk := False;
-
-  repeat
-    Count := ReadCharsFromStream(Stream, lBuf, Length(lBuf));
-    if AParent <> nil then
-      AParent.DoLoadProgress(Stream.Position, Stream.Size);
-    for I := 0 to Count - 1 do
-    begin
-      //Increment Stream pos for after comment
-      Inc(lStreamPos);
-
-      case lPos of
-        1..15: //<?xml-stylesheet
-          if lBuf[I] = CS_START_PI[lPos] then
-            Inc(lPos)
-          else
-            FmtError(RsEInvalidStylesheetExpectedsButFounds, [CS_START_PI[lPos], lBuf[I]]);
-        16: //L
-          if lBuf[I] = CS_START_PI[lPos] then
-          begin
-            Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
-            Properties.LoadFromStream(Stream);
-            lStreamPos := Stream.Position;
-            Inc(lPos);
-            Break; //Re read buffer
-          end
-          else
-            FmtError(RsEInvalidStylesheetExpectedsButFounds, [CS_START_PI[lPos], lBuf[I]]);
-        17: //?
-          if lBuf[I] = CS_STOP_PI[lPos] then
-            Inc(lPos)
-          else
-            FmtError(RsEInvalidStylesheetExpectedsButFounds, [CS_STOP_PI[lPos], lBuf[I]]);
-        18: //>
-          if lBuf[I] = CS_STOP_PI[lPos] then
-          begin
-            Count := 0; //End repeat
-            lOk := True;
-            Break; //End if
-          end
-          else
-            FmtError(RsEInvalidStylesheetExpectedsButFounds, [CS_STOP_PI[lPos], lBuf[I]]);
-      end;
-    end;
-  until Count = 0;
-
-  if not lOk then
-    Error(RsEInvalidStylesheetUnexpectedEndOfDat);
-
-  Name := '';
-
-  Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
-end;
-
-procedure TJclSimpleXMLElemSheet.SaveToStream(const Stream: TStream;
-  const Level: string; AParent: TJclSimpleXML);
-var
-  I: Integer;
-  St: string;
-begin
-  St := Level + '<?xml-stylesheet';
-  for I := 0 to Properties.GetCount - 1 do
-    St := St + Properties.Item[I].SaveToString;
-  St := St + '?>' + sLineBreak;
-  WriteStringToStream(Stream, St, Length(St));
+  St := Level + '<!DOCTYPE ' + Value + '>' + sLineBreak;
+  StringStream.WriteString(St, 1, Length(St));
   if AParent <> nil then
     AParent.DoSaveProgress;
 end;
@@ -3151,8 +3434,7 @@ begin
   Result := TJclSimpleXMLElem(FElems.Objects[Index]);
 end;
 
-function TJclSimpleXMLElemsProlog.LoadFromStream(
-  const Stream: TStream; AParent: TJclSimpleXML): string;
+procedure TJclSimpleXMLElemsProlog.LoadFromStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML);
 {<?xml version="1.0" encoding="UTF-8" ?>
 <!-- Test -->
 <!DOCTYPE greeting [
@@ -3163,146 +3445,88 @@ function TJclSimpleXMLElemsProlog.LoadFromStream(
 <?xml version="1.0"?> <!DOCTYPE greeting SYSTEM "hello.dtd"> <greeting>Hello, world!</greeting>
 }
 var
-  I, lStreamPos, Count, lPos: Integer;
-  lBuf: array [0..cBufferSize - 1] of Char;
+  lPos: Integer;
   St: string;
   lEnd: Boolean;
   lElem: TJclSimpleXMLElem;
+  Ch: Char;
 begin
-  lStreamPos := Stream.Position;
-  Result := '';
   St := '';
   lPos := 0;
 
-  repeat
-    Count := ReadCharsFromStream(Stream, lBuf, Length(lBuf));
-    if AParent <> nil then
-      AParent.DoLoadProgress(Stream.Position, Stream.Size);
-    for I := 0 to Count - 1 do
-    begin
-      //Increment Stream pos for after comment
-      Inc(lStreamPos);
+  if AParent <> nil then
+    AParent.DoLoadProgress(StringStream.Stream.Position, StringStream.Stream.Size);
 
-      case lPos of
-        0: //We are waiting for a tag and thus avoiding spaces and any BOM
+  while StringStream.PeekChar(Ch) do
+  begin
+    case lPos of
+      0: //We are waiting for a tag and thus avoiding spaces and any BOM
+        begin
+          if CharIsWhiteSpace(Ch) then
+            // still waiting
+          else
+          if Ch = '<' then
           begin
-            case lBuf[I] of
-              ' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed, #$00, #$FE, #$FF, #$EF, #$BB, #$BF:
-                begin
-                end;
-              '<':
-                begin
-                  lPos := 1;
-                  St := lBuf[I];
-                end;
-            else
-              Error(RsEInvalidDocumentUnexpectedTextInFile);
-            end;
-          end;
-        1: //We are trying to determine the kind of the tag
+            lPos := 1;
+            St := Ch;
+          end
+          else
+            FmtError(LoadResString(@RsEInvalidDocumentUnexpectedTextInFile), [StringStream.PeekPosition]);
+        end;
+      1: //We are trying to determine the kind of the tag
+        begin
+          lElem := nil;
+          lEnd := False;
+
+          if (St <> '<![CDATA') or not CharIsWhiteSpace(Ch) then
+            St := St + Ch;
+          if St = '<![CDATA[' then
+            lEnd := True
+          else
+          if St = '<!--' then
+            lElem := TJclSimpleXMLElemComment.Create(nil)
+          else
+          if St = '<?xml-stylesheet' then
+            lElem := TJclSimpleXMLElemSheet.Create(nil)
+          else
+          if St = '<?xml ' then
+            lElem := TJclSimpleXMLElemHeader.Create(nil)
+          else
+          if St = '<!DOCTYPE' then
+            lElem := TJclSimpleXMLElemDocType.Create(nil)
+          else
+          if St = '<?mso-application' then
+            lElem := TJclSimpleXMLElemMSOApplication.Create(nil)
+          else
+          if (Length(St) > 3) and (St[2] = '?') and CharIsWhiteSpace(St[Length(St)]) then
+            lElem := TJclSimpleXMLElemProcessingInstruction.Create(nil)
+          else
+          if (Length(St) > 1) and (St[2] <> '!') and (St[2] <> '?') then
+            lEnd := True;
+
+          if lEnd then
+            Break
+          else
+          if lElem <> nil then
           begin
-            lElem := nil;
-            lEnd := False;
-
-            if (St <> '<![CDATA') or not (AnsiChar(lBuf[I]) in [' ', AnsiTab, AnsiCarriageReturn, AnsiLineFeed]) then
-              St := St + lBuf[I];
-            if St = '<![CDATA[' then
-              lEnd := True
-            else
-            if St = '<!--' then
-              lElem := TJclSimpleXMLElemComment.Create(nil)
-            else
-            if St = '<?xml-stylesheet' then
-              lElem := TJclSimpleXMLElemSheet.Create(nil)
-            else
-            if St = '<?xml ' then
-              lElem := TJclSimpleXMLElemHeader.Create(nil)
-            else
-            if St = '<!DOCTYPE' then
-              lElem := TJclSimpleXMLElemDocType.Create(nil)
-            else
-            if (Length(St) > 1) and not (AnsiChar(St[2]) in ['!', '?']) then
-              lEnd := True;
-
-            if lEnd then
-            begin
-              lStreamPos := lStreamPos - Length(St);
-              Count := 0;
-              Break;
-            end
-            else
-            if lElem <> nil then
-            begin
-              Stream.Seek(lStreamPos - (Length(St)), {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
-              lElem.LoadFromStream(Stream, AParent);
-              lStreamPos := Stream.Position;
-              FElems.AddObject(lElem.Name, lElem);
-              St := '';
-              lPos := 0;
-              Break;
-            end;
+            lElem.LoadFromStringStream(StringStream, AParent);
+            FElems.AddObject(lElem.Name, lElem);
+            St := '';
+            lPos := 0;
           end;
-      end;
+        end;
     end;
-  until Count = 0;
-
-  Stream.Seek(lStreamPos, {$IFDEF COMPILER6_UP}soBeginning{$ELSE ~COMPILER6_UP}soFromBeginning{$ENDIF ~COMPILER6_UP});
+  end;
 end;
 
-procedure TJclSimpleXMLElemsProlog.SaveToStream(const Stream: TStream; AParent: TJclSimpleXML);
+procedure TJclSimpleXMLElemsProlog.SaveToStringStream(StringStream: TJclStringStream; AParent: TJclSimpleXML);
 var
   I: Integer;
 begin
   FindHeader;
   for I := 0 to Count - 1 do
-    Item[I].SaveToStream(Stream, '', AParent);
+    Item[I].SaveToStringStream(StringStream, '', AParent);
 end;
-
-//=== { TJclSimpleHashTable } ================================================
-
-constructor TJclSimpleHashTable.Create;
-begin
-  inherited Create;
-  //XXX
-  {$IFDEF CLR}
-  FList := TJclHashRecord.Create;
-  {$ELSE}
-  New(FList);
-  {$ENDIF CLR}
-  FList.Count := 0;
-  FList.Kind := hkDirect;
-  FList.FirstElem := nil;
-end;
-
-destructor TJclSimpleHashTable.Destroy;
-begin
-  Clear;
-  {$IFNDEF CLR}
-  Dispose(FList);
-  {$ENDIF !CLR}
-  inherited Destroy;
-end;
-
-procedure TJclSimpleHashTable.AddObject(const AName: string;
-  AObject: TObject);
-begin
-  //XXX
-  {$IFDEF CLR}
-  FList.FirstElem := TJclHashElem.Create;
-  {$ELSE}
-  New(FList.FirstElem);
-  {$ENDIF CLR}
-  //FList.FirstElem.Value := AName;
-  //FList.FirstElem.Obj := nil;
-end;
-
-procedure TJclSimpleHashTable.Clear;
-begin
-  //XXX
-end;
-
-{$IFNDEF CLR}
-{$IFDEF COMPILER6_UP}
 
 function VarXML: TVarType;
 begin
@@ -3311,8 +3535,8 @@ end;
 
 procedure XMLCreateInto(var ADest: Variant; const AXML: TJclSimpleXMLElem);
 begin
-  TXMLVarData(ADest).vType := VarXML;
-  TXMLVarData(ADest).XML := AXML;
+  TVarData(ADest).vType := VarXML;
+  TVarData(ADest).vAny := AXML;
 end;
 
 function XMLCreate(const AXML: TJclSimpleXMLElem): Variant;
@@ -3329,14 +3553,73 @@ end;
 
 procedure TXMLVariant.CastTo(var Dest: TVarData; const Source: TVarData;
   const AVarType: TVarType);
+var
+  StorageStream: TStringStream;
+  ConversionString: TJclStringStream;
 begin
   if Source.vType = VarType then
   begin
     case AVarType of
       varOleStr:
-        VarDataFromOleStr(Dest, TXMLVarData(Source).XML.SaveToString);
+        begin
+          StorageStream := TStringStream.Create('');
+          try
+            ConversionString := TJclUTF16Stream.Create(StorageStream, False);
+            try
+              ConversionString.WriteBOM;
+              TJclSimpleXmlElem(Source.vAny).SaveToStringStream(ConversionString, '', nil);
+              ConversionString.Flush;
+            finally
+              ConversionString.Free;
+            end;
+            VarDataFromOleStr(Dest, StorageStream.DataString);
+          finally
+            StorageStream.Free;
+          end;
+        end;
       varString:
-        VarDataFromStr(Dest, TXMLVarData(Source).XML.SaveToString);
+        begin
+          StorageStream := TStringStream.Create('');
+          try
+            {$IFDEF SUPPORTS_UNICODE}
+            ConversionString := TJclUTF16Stream.Create(StorageStream, False);
+            {$ELSE ~SUPPORTS_UNICODE}
+            ConversionString := TJclAnsiStream.Create(StorageStream, False);
+            {$ENDIF ~SUPPORTS_UNICODE}
+            try
+              ConversionString.WriteBOM;
+              TJclSimpleXmlElem(Source.vAny).SaveToStringStream(ConversionString, '', nil);
+              ConversionString.Flush;
+            finally
+              ConversionString.Free;
+            end;
+            VarDataFromStr(Dest, StorageStream.DataString);
+          finally
+            StorageStream.Free;
+          end;
+        end;
+      {$IFDEF SUPPORTS_UNICODE_STRING}
+      varUString:
+        begin
+          StorageStream := TStringStream.Create('');
+          try
+            ConversionString := TJclUTF16Stream.Create(StorageStream, False);
+            try
+              ConversionString.WriteBOM;
+              TJclSimpleXmlElem(Source.vAny).SaveToStringStream(ConversionString, '', nil);
+              ConversionString.Flush;
+            finally
+              ConversionString.Free;
+            end;
+            VarDataClear(Dest);
+            Dest.VUString := nil;
+            Dest.VType := varUString;
+            UnicodeString(Dest.VUString) := UnicodeString(StorageStream.DataString);
+          finally
+            StorageStream.Free;
+          end;
+        end;
+      {$ENDIF SUPPORTS_UNICODE_STRING}
     else
       RaiseCastError;
     end;
@@ -3348,7 +3631,7 @@ end;
 procedure TXMLVariant.Clear(var V: TVarData);
 begin
   V.vType := varEmpty;
-  TXMLVarData(V).XML := nil;
+  V.vAny := nil;
 end;
 
 procedure TXMLVariant.Copy(var Dest: TVarData; const Source: TVarData;
@@ -3357,79 +3640,79 @@ begin
   if Indirect and VarDataIsByRef(Source) then
     VarDataCopyNoInd(Dest, Source)
   else
-    with TXMLVarData(Dest) do
-    begin
-      vType := VarType;
-      XML := TXMLVarData(Source).XML;
-    end;
+  begin
+    Dest.vType := Source.vType;
+    Dest.vAny := Source.vAny;
+  end;
 end;
 
 function TXMLVariant.DoFunction(var Dest: TVarData; const V: TVarData;
   const Name: string; const Arguments: TVarDataArray): Boolean;
 var
-  LXML: TJclSimpleXMLElem;
+  VXML, LXML: TJclSimpleXMLElem;
   I, J, K: Integer;
 begin
   Result := False;
   if (Length(Arguments) = 1) and (Arguments[0].vType in [vtInteger, vtExtended]) then
-    with TXMLVarData(V) do
-    begin
-      K := Arguments[0].vInteger;
-      J := 0;
+  begin
+    VXML := TJclSimpleXmlElem(V.VAny);
+    K := Arguments[0].vInteger;
+    J := 0;
 
-      if K > 0 then
-        for I := 0 to XML.Items.Count - 1 do
-          if UpperCase(XML.Items[I].Name) = Name then
-          begin
-            Inc(J);
-            if J = K then
-              Break;
-          end;
-
-      if (J = K) and (J < XML.Items.Count) then
-      begin
-        LXML := XML.Items[J];
-        if LXML <> nil then
+    if K > 0 then
+      for I := 0 to VXML.Items.Count - 1 do
+        if UpperCase(VXML.Items[I].Name) = Name then
         begin
-          Dest.vType := VarXML;
-          TXMLVarData(Dest).XML := LXML;
-          Result := True;
-        end
-      end;
+          Inc(J);
+          if J = K then
+            Break;
+        end;
+
+    if (J = K) and (J < VXML.Items.Count) then
+    begin
+      LXML := VXML.Items[J];
+      if LXML <> nil then
+      begin
+        Dest.vType := VarXML;
+        Dest.vAny := Pointer(LXML);
+        Result := True;
+      end
     end;
+  end
 end;
 
 function TXMLVariant.GetProperty(var Dest: TVarData; const V: TVarData;
   const Name: string): Boolean;
 var
-  LXML: TJclSimpleXMLElem;
+  VXML, LXML: TJclSimpleXMLElem;
   lProp: TJclSimpleXMLProp;
 begin
   Result := False;
-  with TXMLVarData(V) do
+  VXML := TJclSimpleXMLElem(V.VAny);
+  LXML := VXML.Items.ItemNamed[Name];
+  if LXML <> nil then
   begin
-    LXML := XML.Items.ItemNamed[Name];
-    if LXML <> nil then
+    Dest.vType := VarXML;
+    Dest.vAny := Pointer(LXML);
+    Result := True;
+  end
+  else
+  begin
+    lProp := VXML.Properties.ItemNamed[Name];
+    if lProp <> nil then
     begin
-      Dest.vType := VarXML;
-      TXMLVarData(Dest).XML := LXML;
+      VarDataFromOleStr(Dest, lProp.Value);
       Result := True;
-    end
-    else
-    begin
-      lProp := XML.Properties.ItemNamed[Name];
-      if lProp <> nil then
-      begin
-        VarDataFromOleStr(Dest, lProp.Value);
-        Result := True;
-      end;
     end;
   end;
 end;
 
 function TXMLVariant.IsClear(const V: TVarData): Boolean;
+var
+  VXML: TJclSimpleXMLElem;
 begin
-  Result := (TXMLVarData(V).XML = nil) or (TXMLVarData(V).XML.Items.Count = 0);
+  VXML := TJclSimpleXMLElem(V.VAny);
+  Result := (VXML = nil) or (VXML.Items.Count = 0);
 end;
 
 function TXMLVariant.SetProperty(const V: TVarData; const Name: string;
@@ -3445,32 +3728,27 @@ function TXMLVariant.SetProperty(const V: TVarData; const Name: string;
   end;
 
 var
-  LXML: TJclSimpleXMLElem;
+  VXML, LXML: TJclSimpleXMLElem;
   lProp: TJclSimpleXMLProp;
 begin
   Result := False;
-  with TXMLVarData(V) do
+  VXML := TJclSimpleXmlElem(V.VAny);
+  LXML := VXML.Items.ItemNamed[Name];
+  if LXML = nil then
   begin
-    LXML := XML.Items.ItemNamed[Name];
-    if LXML = nil then
+    lProp := VXML.Properties.ItemNamed[Name];
+    if lProp <> nil then
     begin
-      lProp := XML.Properties.ItemNamed[Name];
-      if lProp <> nil then
-      begin
-        lProp.Value := GetStrValue;
-        Result := True;
-      end;
-    end
-    else
-    begin
-      LXML.Value := GetStrValue;
+      lProp.Value := GetStrValue;
       Result := True;
     end;
+  end
+  else
+  begin
+    LXML.Value := GetStrValue;
+    Result := True;
   end;
 end;
-
-{$ENDIF COMPILER6_UP}
-{$ENDIF !CLR}
 
 procedure TJclSimpleXMLElemsProlog.Error(const S: string);
 begin
@@ -3484,13 +3762,10 @@ begin
 end;
 
 procedure TJclSimpleXML.SetIndentString(const Value: string);
-var
-  I: Integer;
 begin
   // test if the new value is only made of spaces or tabs
-  for I := 1 to Length(Value) do
-    if not (AnsiChar(Value[I]) in [AnsiTab, ' ']) then
-      Exit;
+  if not StrContainsChars(Value, CharIsWhiteSpace, True) then
+    Exit;
   FIndentString := Value;
 end;
 
@@ -3580,7 +3855,7 @@ begin
   FElems.AddObject('', Result);
 end;
 
-function TJclSimpleXMLElemsProlog.AddStyleSheet(AType, AHRef: string): TJclSimpleXMLElemSheet;
+function TJclSimpleXMLElemsProlog.AddStyleSheet(const AType, AHRef: string): TJclSimpleXMLElemSheet;
 begin
   // make sure there is an xml header
   FindHeader;
@@ -3589,6 +3864,16 @@ begin
   Result.Properties.Add('type',AType);
   Result.Properties.Add('href',AHRef);
   FElems.AddObject('xml-stylesheet', Result);
+end;
+
+function TJclSimpleXMLElemsProlog.AddMSOApplication(const AProgId : string): TJclSimpleXMLElemMSOApplication;
+begin
+  // make sure there is an xml header
+  FindHeader;
+  Result := TJclSimpleXMLElemMSOApplication.Create(nil);
+  Result.Name := 'mso-application';
+  Result.Properties.Add('progid',AProgId);
+  FElems.AddObject('mso-application', Result);
 end;
 
 function TJclSimpleXMLElemsProlog.AddComment(const AValue: string): TJclSimpleXMLElemComment;
@@ -3615,11 +3900,7 @@ initialization
   {$ENDIF UNITVERSIONING}
 
 finalization
-  {$IFNDEF CLR}
-  {$IFDEF COMPILER6_UP}
   FreeAndNil(GlobalXMLVariant);
-  {$ENDIF COMPILER6_UP}
-  {$ENDIF !CLR}
   FreeAndNil(GlobalSorts);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);

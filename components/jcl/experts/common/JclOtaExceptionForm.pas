@@ -18,11 +18,11 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Unit owner: Florent Ouchet                                                                       }
-{ Last modified: $Date: 2006-05-30 00:02:45 +0200 (mar., 30 mai 2006) $                                                      }
+{ Last modified: $Date:: 2009-10-16 19:11:39 +0200 (ven., 16 oct. 2009)                          $ }
+{ Revision:      $Rev:: 3044                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
 {                                                                                                  }
 {**************************************************************************************************}
-
 unit JclOtaExceptionForm;
 
 interface
@@ -33,6 +33,9 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclOtaUtils;
 
 type
@@ -49,6 +52,18 @@ type
     procedure ShowException(AExceptionObj: TObject);
     function Execute: Boolean;
   end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/experts/common/JclOtaExceptionForm.pas $';
+    Revision: '$Revision: 3044 $';
+    Date: '$Date: 2009-10-16 19:11:39 +0200 (ven., 16 oct. 2009) $';
+    LogPath: 'JCL\experts\common';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -82,52 +97,59 @@ end;
 
 procedure TJclExpertExceptionForm.FormCreate(Sender: TObject);
 begin
-  Caption := RsReportFormCaption;
-  MemoDetails.Lines.Text := RsExceptionDetails;
-  LabelURL.Caption := RsReportCaption;
-  ButtonClose.Caption := RsReportClose;
+  Caption := LoadResString(@RsReportFormCaption);
+  MemoDetails.Lines.Text := LoadResString(@RsExceptionDetails);
+  LabelURL.Caption := LoadResString(@RsReportCaption);
+  ButtonClose.Caption := LoadResString(@RsReportClose);
 end;
 
 procedure TJclExpertExceptionForm.LabelURLClick(Sender: TObject);
 begin
-  ShellExecute(Handle, 'open', PChar(RsReportURL), '', '', SW_SHOW);    // do not localize
+  ShellExecute(Handle, 'open', PChar(LoadResString(@RsReportURL)), '', '', SW_SHOW);    // do not localize
 end;
 
 procedure TJclExpertExceptionForm.ShowException(AExceptionObj: TObject);
 var
   AStackInfoList: TJclStackInfoList;
+  AJclExpertException: EJclExpertException;
 begin
   MemoCallStack.Lines.Clear;
 
   try
     if Assigned(AExceptionObj) then
-      MemoCallStack.Lines.Add(RsDetailsExceptionName + AExceptionObj.ClassName);
+      MemoCallStack.Lines.Add(Format(LoadResString(@RsDetailsExceptionName), [AExceptionObj.ClassName]));
 
     if AExceptionObj is Exception then
     begin
-      MemoCallStack.Lines.Add(RsDetailsExceptionMessage + Exception(AExceptionObj).Message);
-{$IFDEF MSWINDOWS}
+      MemoCallStack.Lines.Add(Format(LoadResString(@RsDetailsExceptionMessage), [Exception(AExceptionObj).Message]));
       if (AExceptionObj is EJclExpertException) then
-        with EJclExpertException(AExceptionObj) do
-          if Assigned(StackInfo) then
       begin
-        StackInfo.AddToStrings(MemoCallStack.Lines, True, True, True, True);
-        Exit;
+        AJclExpertException := EJclExpertException(AExceptionObj);
+        if Assigned(AJclExpertException.StackInfo) then
+        begin
+          AJclExpertException.StackInfo.AddToStrings(MemoCallStack.Lines, True, True, True, True);
+          Exit;
+        end;
       end;
-{$ENDIF MSWINDOWS}
     end;
 
-{$IFDEF MSWINDOWS}
-    AStackInfoList := JclCreateStackList(False, 0, nil);
+    AStackInfoList := JclCreateStackList(True, 0, nil, False);
     try
       AStackInfoList.AddToStrings(MemoCallStack.Lines, True, True, True, True);
     finally
       AStackInfoList.Free;
     end;
-{$ENDIF MSWINDOWS}
   except
-    MemoCallStack.Lines.Add(RsErrorWhileFormatting);
+    MemoCallStack.Lines.Add(LoadResString(@RsErrorWhileFormatting));
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

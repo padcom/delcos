@@ -38,8 +38,12 @@
 {  2000.                                                                                           }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date: 2006-05-30 00:02:45 +0200 (mar., 30 mai 2006) $
+{                                                                                                  }
+{ Last modified: $Date:: 2010-02-11 13:14:06 +0100 (jeu., 11 févr. 2010)                        $ }
+{ Revision:      $Rev:: 3188                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit Hardlinks;
 
@@ -47,6 +51,9 @@ unit Hardlinks;
 {$MINENUMSIZE 4}
 
 interface
+
+{$I jcl.inc}
+
 
 (*
   All possible combinations of the above DEFINEs have been tested and work fine.
@@ -61,6 +68,9 @@ interface
    6 | X  X  X
 *)
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows;
 
 
@@ -80,10 +90,23 @@ var
   hNtDll: THandle = 0; // For runtime dynamic linking
   bRtdlFunctionsLoaded: Boolean = False; // To show wether the RTDL functions had been loaded
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/source/windows/Hardlinks.pas $';
+    Revision: '$Revision: 3188 $';
+    Date: '$Date: 2010-02-11 13:14:06 +0100 (jeu., 11 févr. 2010) $';
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 const
-  szNtDll           = 'NTDLL.DLL'; // Import native APIs from this DLL
+  szNtDll           = 'NTDLL.DLL';    // Import native APIs from this DLL
+  szKernel32        = 'KERNEL32.DLL';
   szCreateHardLinkA = 'CreateHardLinkA';
   szCreateHardLinkW = 'CreateHardLinkW';
 
@@ -107,11 +130,6 @@ const
 // =================================================================
 type
   NTSTATUS = Longint;
-  PPWideChar = ^PWideChar;
-
-type
-  LARGE_INTEGER = TLargeInteger;
-  PLARGE_INTEGER = ^LARGE_INTEGER;
 
 type
   UNICODE_STRING = record
@@ -121,13 +139,13 @@ type
   end;
   PUNICODE_STRING = ^UNICODE_STRING;
 
-type
-  ANSI_STRING = record
-    Length: WORD;
-    MaximumLength: WORD;
-    Buffer: PAnsiChar;
-  end;
-  PANSI_STRING = ^ANSI_STRING;
+// type
+  // ANSI_STRING = record
+  //   Length: WORD;
+  //   MaximumLength: WORD;
+  //   Buffer: PAnsiChar;
+  // end;
+  // PANSI_STRING = ^ANSI_STRING;
 
 type
   OBJECT_ATTRIBUTES = record
@@ -138,7 +156,7 @@ type
     SecurityDescriptor: Pointer;       // Points to type SECURITY_DESCRIPTOR
     SecurityQualityOfService: Pointer; // Points to type SECURITY_QUALITY_OF_SERVICE
   end;
-  POBJECT_ATTRIBUTES = ^OBJECT_ATTRIBUTES;
+  // POBJECT_ATTRIBUTES = ^OBJECT_ATTRIBUTES;
 
 type
   IO_STATUS_BLOCK = record
@@ -149,7 +167,7 @@ type
        (Pointer: Pointer;
         Information: ULONG); // 'Information' does not belong to the union!
   end;
-  PIO_STATUS_BLOCK = ^IO_STATUS_BLOCK;
+  // PIO_STATUS_BLOCK = ^IO_STATUS_BLOCK;
 
 type
   _FILE_LINK_RENAME_INFORMATION = record // File Information Classes 10 and 11
@@ -160,8 +178,8 @@ type
   end;
   FILE_LINK_INFORMATION = _FILE_LINK_RENAME_INFORMATION;
   PFILE_LINK_INFORMATION = ^FILE_LINK_INFORMATION;
-  FILE_RENAME_INFORMATION = _FILE_LINK_RENAME_INFORMATION;
-  PFILE_RENAME_INFORMATION = ^FILE_RENAME_INFORMATION;
+  // FILE_RENAME_INFORMATION = _FILE_LINK_RENAME_INFORMATION;
+  // PFILE_RENAME_INFORMATION = ^FILE_RENAME_INFORMATION;
 
 // =================================================================
 // Constants
@@ -196,14 +214,14 @@ const
   HEAP_ZERO_MEMORY             = $00000008;
 
   // Related constant(s) for RtlDetermineDosPathNameType_U()
-  INVALID_PATH                 = 0;
+  // INVALID_PATH                 = 0;
   UNC_PATH                     = 1;
-  ABSOLUTE_DRIVE_PATH          = 2;
-  RELATIVE_DRIVE_PATH          = 3;
-  ABSOLUTE_PATH                = 4;
-  RELATIVE_PATH                = 5;
-  DEVICE_PATH                  = 6;
-  UNC_DOT_PATH                 = 7;
+  // ABSOLUTE_DRIVE_PATH          = 2;
+  // RELATIVE_DRIVE_PATH          = 3;
+  // ABSOLUTE_PATH                = 4;
+  // RELATIVE_PATH                = 5;
+  // DEVICE_PATH                  = 6;
+  // UNC_DOT_PATH                 = 7;
 
 // =================================================================
 // Function prototypes
@@ -212,7 +230,7 @@ const
 
 type
   TRtlCreateUnicodeStringFromAsciiz = function(var destination: UNICODE_STRING;
-    source: PChar): Boolean; stdcall;
+    source: PAnsiChar): Boolean; stdcall;
 
   TZwClose = function(Handle: THandle): NTSTATUS; stdcall;
 
@@ -232,6 +250,8 @@ type
   TZwOpenFile = function(var FileHandle: THandle; DesiredAccess: DWORD;
     const ObjectAttributes: OBJECT_ATTRIBUTES; var IoStatusBlock: IO_STATUS_BLOCK;
     ShareAccess: ULONG; OpenOptions: ULONG): NTSTATUS; stdcall;
+
+  TGetProcessHeap = function: Pointer; stdcall;
 
   TRtlAllocateHeap = function(HeapHandle: Pointer; Flags, Size: ULONG): Pointer; stdcall;
 
@@ -258,29 +278,13 @@ var
   ZwOpenSymbolicLinkObject: TZwOpenSymbolicLinkObject = nil;
   ZwQuerySymbolicLinkObject: TZwQuerySymbolicLinkObject = nil;
   ZwOpenFile: TZwOpenFile = nil;
+  GetProcessHeap: TGetProcessHeap = nil;
   RtlAllocateHeap: TRtlAllocateHeap = nil;
   RtlFreeHeap: TRtlFreeHeap = nil;
   RtlDosPathNameToNtPathName_U: TRtlDosPathNameToNtPathName_U = nil;
   RtlInitUnicodeString: TRtlInitUnicodeString = nil;
   RtlDetermineDosPathNameType_U: TRtlDetermineDosPathNameType_U = nil;
   RtlNtStatusToDosError: TRtlNtStatusToDosError = nil;
-
-
-function NtpGetProcessHeap: Pointer; assembler;
-asm
-  // The structure offsets are now hardcoded to be able to remove otherwise
-  // obsolete structure definitions.
-//MOV    EAX, FS:[0]._TEB.Peb
-  MOV    EAX, FS:[$30]    // FS points to TEB/TIB which has a pointer to the PEB
-//MOV    EAX, [EAX]._PEB.ProcessHeap
-  MOV    EAX, [EAX+$18] // Get the process heap's handle
-(*
-An alternative way to achieve exactly the same (at least in usermode) as above:
-  MOV    EAX, FS:$18
-  MOV    EAX, [EAX+$30]
-  MOV    EAX, [EAX+$18]
-*)
-end;
 
 (******************************************************************************
 
@@ -391,7 +395,7 @@ begin
   if not bRtdlFunctionsLoaded then
     Exit;
   // Get process' heap
-  hHeap := NtpGetProcessHeap;
+  hHeap := GetProcessHeap;
   {-------------------------------------------------------------
   Preliminary parameter checks which do Exit with error code set
   --------------------------------------------------------------}
@@ -409,6 +413,7 @@ begin
     Exit;
   end;
   // Convert the link target into a UNICODE_STRING
+  usNtName_LinkTarget.Length := 0;
   if not RtlDosPathNameToNtPathName_U(szLinkTarget, usNtName_LinkTarget, nil, nil) then
   begin
     SetLastError(ERROR_PATH_NOT_FOUND);
@@ -434,6 +439,7 @@ begin
         Preparation of the checking for mapped network drives
         -----------------------------------------------------}
         // Get the full unicode path name
+        wcsFilePart_LinkTarget := nil;
         if GetFullPathNameW(szLinkTarget, NeededSize, wcsNtName_LinkTarget, wcsFilePart_LinkTarget) <> 0 then
         begin
           // Allocate memory to check the drive object
@@ -457,6 +463,7 @@ begin
               Checking for (illegal!) mapped network drives
               ---------------------------------------------}
               // Open symbolic link object
+              hDrive := 0;
               if ZwOpenSymbolicLinkObject(hDrive, SYMBOLIC_LINK_QUERY, oaMisc) = STATUS_SUCCESS then
                 try
                   usSymLinkDrive.Buffer := RtlAllocateHeap(hHeap, HEAP_ZERO_MEMORY, MAX_PATH * SizeOf(WideChar));
@@ -465,6 +472,7 @@ begin
                       // Query the path the symbolic link points to ...
                       ZwQuerySymbolicLinkObject(hDrive, usSymLinkDrive, nil);
                       // Initialise the length members
+                      usLanMan.Length := 0;
                       RtlInitUnicodeString(usLanMan, wcsLanMan);
                       // The path must not be a mapped drive ... check this!
                       if not RtlPrefixUnicodeString(usLanMan, usSymLinkDrive, True) then
@@ -483,11 +491,14 @@ begin
                         {----------------------
                         Opening the target file
                         -----------------------}
+                        IOStats.Status := 0;
+                        hLinkTarget := 0;
                         Status := ZwOpenFile(hLinkTarget, dwDesiredAccessHL, oaMisc,
                           IOStats, dwShareAccessHL, dwOpenOptionsHL);
                         if Status = STATUS_SUCCESS then
                           try
                             // Wow ... target opened ... let's try to
+                            usNtName_LinkName.Length := 0;
                             if RtlDosPathNameToNtPathName_U(szLinkName, usNtName_LinkName, nil, nil) then
                               try
                                 // Initialise the length members
@@ -584,10 +595,12 @@ begin
   if not bRtdlFunctionsLoaded then
     Exit;
   // Get the process' heap
-  hHeap := NtpGetProcessHeap;
+  hHeap := GetProcessHeap;
   // Create and allocate a UNICODE_STRING from the zero-terminated parameters
+  usLinkName.Length := 0;
   if RtlCreateUnicodeStringFromAsciiz(usLinkName, szLinkName) then
   try
+    usLinkTarget.Length := 0;
     if RtlCreateUnicodeStringFromAsciiz(usLinkTarget, szLinkTarget) then
     try
       // Call the Unicode version
@@ -611,6 +624,7 @@ const
   szZwOpenSymbolicLinkObject         = 'ZwOpenSymbolicLinkObject';
   szZwQuerySymbolicLinkObject        = 'ZwQuerySymbolicLinkObject';
   szZwOpenFile                       = 'ZwOpenFile';
+  szGetProcessHeap                   = 'GetProcessHeap';
   szRtlAllocateHeap                  = 'RtlAllocateHeap';
   szRtlFreeHeap                      = 'RtlFreeHeap';
   szRtlDosPathNameToNtPathName_U     = 'RtlDosPathNameToNtPathName_U';
@@ -622,6 +636,10 @@ var
   hKernel32: THandle = 0;
 
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+
   // GetModuleHandle because this DLL is loaded into any Win32 subsystem process anyway
   // implicitly. And Delphi cannot create applications for other subsystems without
   // major changes in SysInit und System units.
@@ -647,6 +665,7 @@ initialization
     @ZwOpenSymbolicLinkObject := GetProcAddress(hNtDll, szZwOpenSymbolicLinkObject);
     @ZwQuerySymbolicLinkObject := GetProcAddress(hNtDll, szZwQuerySymbolicLinkObject);
     @ZwOpenFile := GetProcAddress(hNtDll, szZwOpenFile);
+    @GetProcessHeap := GetProcAddress(hKernel32, szGetProcessHeap);
     @RtlAllocateHeap := GetProcAddress(hNtDll, szRtlAllocateHeap);
     @RtlFreeHeap := GetProcAddress(hNtDll, szRtlFreeHeap);
     @RtlDosPathNameToNtPathName_U := GetProcAddress(hNtDll, szRtlDosPathNameToNtPathName_U);
@@ -662,6 +681,7 @@ initialization
       Assigned(@ZwOpenSymbolicLinkObject) and
       Assigned(@ZwQuerySymbolicLinkObject) and
       Assigned(@ZwOpenFile) and
+      Assigned(@GetProcessHeap) and
       Assigned(@RtlAllocateHeap) and
       Assigned(@RtlFreeHeap) and
       Assigned(@RtlDosPathNameToNtPathName_U) and
@@ -673,6 +693,10 @@ initialization
     @CreateHardLinkA := @MyCreateHardLinkA;
     @CreateHardLinkW := @MyCreateHardLinkW;
   end; // if not (Assigned(@CreateHardLinkA) and Assigned(@CreateHardLinkW)) then ...
+
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
 
 
 end.

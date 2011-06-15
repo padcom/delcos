@@ -5,7 +5,7 @@
       <Option Name="Personality">Delphi.Personality</Option>
       <Option Name="ProjectType"></Option>
       <Option Name="Version">1.0</Option>
-      <Option Name="GUID"></Option>
+      <Option Name="GUID">{44DB645B-C167-410D-9334-38AF9F0C7913}</Option>
     </Option>
   </PersonalityInfo>
   <Delphi.Personality>
@@ -121,9 +121,9 @@
       <Directories Name="UnitOutputDir">..\..\lib\d8</Directories>
       <Directories Name="PackageDLLOutputDir"></Directories>
       <Directories Name="PackageDCPOutputDir">..\..\lib\d8</Directories>
-      <Directories Name="SearchPath">..\..\lib\d8;..\..\source</Directories>
+      <Directories Name="SearchPath">..\..\lib\d8;..\..\source\include</Directories>
       <Directories Name="Packages">rtl</Directories>
-      <Directories Name="Conditionals"></Directories>
+      <Directories Name="Conditionals">WIN32;CONDITIONALEXPRESSIONS;RELEASE</Directories>
       <Directories Name="DebugSourceDirs"></Directories>
       <Directories Name="UsePackages">True</Directories>
     </Directories>
@@ -147,10 +147,10 @@
     <VersionInfo>
       <VersionInfo Name="IncludeVerInfo">True</VersionInfo>
       <VersionInfo Name="AutoIncBuild">False</VersionInfo>
-      <VersionInfo Name="MajorVer">1</VersionInfo>
-      <VersionInfo Name="MinorVer">101</VersionInfo>
+      <VersionInfo Name="MajorVer">2</VersionInfo>
+      <VersionInfo Name="MinorVer">2</VersionInfo>
       <VersionInfo Name="Release">1</VersionInfo>
-      <VersionInfo Name="Build">2725</VersionInfo>
+      <VersionInfo Name="Build">3970</VersionInfo>
       <VersionInfo Name="Debug">False</VersionInfo>
       <VersionInfo Name="PreRelease">False</VersionInfo>
       <VersionInfo Name="Special">False</VersionInfo>
@@ -162,13 +162,13 @@
     <VersionInfoKeys>
       <VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
       <VersionInfoKeys Name="FileDescription">JEDI Code Library RTL package</VersionInfoKeys>
-      <VersionInfoKeys Name="FileVersion">1.101.1.2725</VersionInfoKeys>
+      <VersionInfoKeys Name="FileVersion">2.2.1.3970</VersionInfoKeys>
       <VersionInfoKeys Name="InternalName">Jcl</VersionInfoKeys>
-      <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2007 Project JEDI</VersionInfoKeys>
+      <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2011 Project JEDI</VersionInfoKeys>
       <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
       <VersionInfoKeys Name="OriginalFilename">Jcl80.bpl</VersionInfoKeys>
       <VersionInfoKeys Name="ProductName">JEDI Code Library</VersionInfoKeys>
-      <VersionInfoKeys Name="ProductVersion">1.101 Build 2725</VersionInfoKeys>
+      <VersionInfoKeys Name="ProductVersion">2.2 Build 3970</VersionInfoKeys>
     </VersionInfoKeys>
   </Delphi.Personality>
 </BorlandProject>

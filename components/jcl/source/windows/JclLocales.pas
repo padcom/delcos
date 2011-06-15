@@ -28,11 +28,13 @@
 { information such the list of keyboard layouts, names used for dates and characters used for      }
 { formatting numbers and dates.                                                                    }
 {                                                                                                  }
-{ Unit owner: Petr Vones                                                                           }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date:: 2009-09-12 18:06:20 +0200 (sam., 12 sept. 2009)                         $ }
+{ Revision:      $Rev:: 3003                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date: 2006-07-25 07:56:46 +0200 (mar., 25 juil. 2006) $
 
 unit JclLocales;
 
@@ -211,7 +213,7 @@ type
   public
     constructor Create(AKind: TJclLocalesKind = lkInstalled);
     destructor Destroy; override;
-    procedure FillStrings(Strings: TStrings; InfoType: Integer);
+    procedure FillStrings(AStrings: TStrings; InfoType: Integer);
     property CodePages: TStrings read GetCodePages;
     property ItemFromLangID[LangID: LANGID]: TJclLocaleInfo read GetItemFromLangID;
     property ItemFromLangIDPrimary[LangIDPrimary: Word]: TJclLocaleInfo read GetItemFromLangIDPrimary;
@@ -308,20 +310,19 @@ procedure JclLocalesInfoList(const Strings: TStrings; InfoType: Integer = LOCALE
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jcl.svn.sourceforge.net/svnroot/jcl/tags/JCL-1.101-Build2725/jcl/source/windows/JclLocales.pas $';
-    Revision: '$Revision: 1695 $';
-    Date: '$Date: 2006-07-25 07:56:46 +0200 (mar., 25 juil. 2006) $';
-    LogPath: 'JCL\source\windows'
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/source/windows/JclLocales.pas $';
+    Revision: '$Revision: 3003 $';
+    Date: '$Date: 2009-09-12 18:06:20 +0200 (sam., 12 sept. 2009) $';
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
 implementation
 
 uses
-  {$IFDEF FPC}
-  WinSysUt,
-  {$ENDIF FPC}
-  SysConst, JclFileUtils, JclRegistry, JclStrings, JclSysInfo;
+  SysConst, JclFileUtils, JclRegistry, JclStrings, JclSysInfo, JclUnicode;
 
 const
   JclMaxKeyboardLayouts = 16;
@@ -413,7 +414,7 @@ begin
   Result := GetCalendarIntegerInfo(Calendar, CAL_ITWODIGITYEARMAX);
 end;
 
-function EnumCalendarInfoProcEx(lpCalendarInfoString: PChar; Calendar: CALID): BOOL; stdcall;
+function EnumCalendarInfoProcEx(lpCalendarInfoString: PWideChar; Calendar: CALID): BOOL; stdcall;
 begin
   ProcessedLocaleInfoList.AddObject(lpCalendarInfoString, Pointer(Calendar));
   Result := True;
@@ -439,7 +440,7 @@ begin
     ProcessedLocaleInfoList := FCalendars;
     try
       C := CAL_SCALNAME or LocaleUseAcp[FUseSystemACP];
-      if not JclWin32.RtdlEnumCalendarInfoExA(EnumCalendarInfoProcEx, FLocaleID, ENUM_ALL_CALENDARS, C) then
+      if not JclWin32.RtdlEnumCalendarInfoExW(EnumCalendarInfoProcEx, FLocaleID, ENUM_ALL_CALENDARS, C) then
         Windows.EnumCalendarInfo(@EnumCalendarInfoProcName, FLocaleID, ENUM_ALL_CALENDARS, C);
       FValidCalendars := True;
     finally
@@ -496,17 +497,16 @@ begin
     Result := ' ';
 end;
 
+function EnumDateFormatsProc(lpDateFormatString: LPWSTR): BOOL; stdcall;
+begin
+  ProcessedLocaleInfoList.Add(lpDateFormatString);
+  DWORD(Result) := 1;
+end;
+
 function TJclLocaleInfo.GetDateFormats(Format: TJclLocaleDateFormats): TStrings;
 const
   DateFormats: array [TJclLocaleDateFormats] of DWORD =
     (DATE_SHORTDATE, DATE_LONGDATE, DATE_YEARMONTH);
-
-  function EnumDateFormatsProc(lpDateFormatString: LPSTR): BOOL; stdcall;
-  begin
-    ProcessedLocaleInfoList.Add(lpDateFormatString);
-    DWORD(Result) := 1;
-  end;
-
 begin
   if not (Format in FValidDateFormatLists) then
   begin
@@ -516,7 +516,7 @@ begin
       FDateFormats[Format].Clear;
     ProcessedLocaleInfoList := FDateFormats[Format];
     try
-      Windows.EnumDateFormats(@EnumDateFormatsProc, FLocaleID, DateFormats[Format] or
+      Windows.EnumDateFormatsW(@EnumDateFormatsProc, FLocaleID, DateFormats[Format] or
         LocaleUseAcp[FUseSystemACP]);
       Include(FValidDateFormatLists, Format);
     finally
@@ -527,36 +527,8 @@ begin
 end;
 
 function TJclLocaleInfo.GetFontCharset: Byte;
-type
-  TCharsetEntry = record
-    CodePage: Word;
-    Charset: Byte;
-  end;
-const
-  CharsetTable: array [1..10] of TCharsetEntry =
-   (
-    (CodePage: 1252; Charset: ANSI_CHARSET),
-    (CodePage: 1250; Charset: EASTEUROPE_CHARSET),
-    (CodePage: 1251; Charset: RUSSIAN_CHARSET),
-    (CodePage: 1253; Charset: GREEK_CHARSET),
-    (CodePage: 1254; Charset: TURKISH_CHARSET),
-    (CodePage: 1255; Charset: HEBREW_CHARSET),
-    (CodePage: 1256; Charset: ARABIC_CHARSET),
-    (CodePage: 1257; Charset: BALTIC_CHARSET),
-    (CodePage:  874; Charset: THAI_CHARSET),
-    (CodePage:  932; Charset: SHIFTJIS_CHARSET)
-   );
-var
-  I, CpANSI: Integer;
 begin
-  Result := DEFAULT_CHARSET;
-  CpANSI := CodePageANSI;
-  for I := Low(CharsetTable) to High(CharsetTable) do
-    if CharsetTable[I].CodePage = CpANSI then
-    begin
-      Result := CharsetTable[I].Charset;
-      Break;
-    end;
+  Result := CharSetFromLocale(FLocaleID);
 end;
 
 function TJclLocaleInfo.GetIntegerInfo(InfoType: Integer): Integer;
@@ -610,7 +582,7 @@ begin
   if Res > 0 then
   begin
     SetString(Result, nil, Res);
-    Res := Windows.GetLocaleInfoA(FLocaleID, InfoType, PChar(Result), Res);
+    Res := Windows.GetLocaleInfo(FLocaleID, InfoType, PChar(Result), Res);
     StrResetLength(Result);
     // Note: GetLocaleInfo returns sometimes incorrect length of string on Win95 (usually plus 1),
     // that's why StrResetLength is called.
@@ -631,14 +603,13 @@ begin
     Result := '';
 end;
 
+function EnumTimeFormatsProc(lpTimeFormatString: LPWSTR): BOOL; stdcall;
+begin
+  ProcessedLocaleInfoList.Add(lpTimeFormatString);
+  DWORD(Result) := 1;
+end;
+
 function TJclLocaleInfo.GetTimeFormats: TStrings;
-
-  function EnumTimeFormatsProc(lpTimeFormatString: LPSTR): BOOL; stdcall;
-  begin
-    ProcessedLocaleInfoList.Add(lpTimeFormatString);
-    DWORD(Result) := 1;
-  end;
-
 begin
   if not FValidTimeFormatLists then
   begin
@@ -648,7 +619,7 @@ begin
       FTimeFormats.Clear;
     ProcessedLocaleInfoList := FTimeFormats;
     try
-      Windows.EnumTimeFormats(@EnumTimeFormatsProc, FLocaleID, LocaleUseAcp[FUseSystemACP]);
+      Windows.EnumTimeFormatsW(@EnumTimeFormatsProc, FLocaleID, LocaleUseAcp[FUseSystemACP]);
       FValidTimeFormatLists := True;
     finally
       ProcessedLocaleInfoList := nil;
@@ -699,47 +670,46 @@ begin
   inherited Destroy;
 end;
 
+function EnumLocalesProc(lpLocaleString: LPWSTR): BOOL; stdcall;
+var
+  LocaleID: LCID;
+begin
+  LocaleID := StrToIntDef('$' + Copy(lpLocaleString, 5, 4), 0);
+  if LocaleID > 0 then
+    ProcessedLocalesList.Add(TJclLocaleInfo.Create(LocaleID));
+  DWORD(Result) := 1;
+end;
+
+function EnumCodePagesProc(lpCodePageString: LPWSTR): BOOL; stdcall;
+begin
+  ProcessedLocalesList.CodePages.AddObject(lpCodePageString, Pointer(StrToIntDef(lpCodePageString, 0)));
+  DWORD(Result) := 1;
+end;
+
 procedure TJclLocalesList.CreateList;
 const
   Flags: array [TJclLocalesKind] of DWORD = (LCID_INSTALLED, LCID_SUPPORTED);
-
-  function EnumLocalesProc(lpLocaleString: LPSTR): BOOL; stdcall;
-  var
-    LocaleID: LCID;
-  begin
-    LocaleID := StrToIntDef('$' + Copy(lpLocaleString, 5, 4), 0);
-    if LocaleID > 0 then
-      ProcessedLocalesList.Add(TJclLocaleInfo.Create(LocaleID));
-    DWORD(Result) := 1;
-  end;
-
-  function EnumCodePagesProc(lpCodePageString: LPSTR): BOOL; stdcall;
-  begin
-    ProcessedLocalesList.CodePages.AddObject(lpCodePageString, Pointer(StrToIntDef(lpCodePageString, 0)));
-    DWORD(Result) := 1;
-  end;
-
 begin
   ProcessedLocalesList := Self;
   try
-    Win32Check(Windows.EnumSystemLocales(@EnumLocalesProc, Flags[FKind]));
-    Win32Check(Windows.EnumSystemCodePages(@EnumCodePagesProc, Flags[FKind]));
+    Win32Check(Windows.EnumSystemLocalesW(@EnumLocalesProc, Flags[FKind]));
+    Win32Check(Windows.EnumSystemCodePagesW(@EnumCodePagesProc, Flags[FKind]));
   finally
     ProcessedLocalesList := nil;
   end;
 end;
 
-procedure TJclLocalesList.FillStrings(Strings: TStrings; InfoType: Integer);
+procedure TJclLocalesList.FillStrings(AStrings: TStrings; InfoType: Integer);
 var
   I: Integer;
 begin
-  Strings.BeginUpdate;
+  AStrings.BeginUpdate;
   try
     for I := 0 to Count - 1 do
       with Items[I] do
-        Strings.AddObject(StringInfo[InfoType], Pointer(LocaleId));
+        AStrings.AddObject(StringInfo[InfoType], Pointer(LocaleId));
   finally
-    Strings.EndUpdate;
+    AStrings.EndUpdate;
   end;
 end;
 
@@ -1020,6 +990,7 @@ var
   Cnt, I: Integer;
   Layouts: array [1..JclMaxKeyboardLayouts] of HKL;
 begin
+  Layouts[1] := 0;
   Cnt := Windows.GetKeyboardLayoutList(JclMaxKeyboardLayouts, Layouts);
   // Note: GetKeyboardLayoutList doesn't work as expected, when pass 0 to nBuff it always returns 0
   // on Win95.

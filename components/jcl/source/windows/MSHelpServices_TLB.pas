@@ -1,3 +1,11 @@
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date:: 2010-02-22 11:08:20 +0100 (lun., 22 févr. 2010)                        $ }
+{ Revision:      $Rev:: 3196                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
+{                                                                                                  }
+{**************************************************************************************************}
+
 unit MSHelpServices_TLB;
 
 // ************************************************************************ //
@@ -47,15 +55,23 @@ unit MSHelpServices_TLB;
 { $WRITEABLECONST ON}
 { $VARPROPSETTER ON}
 
-{$I jedi.inc}
+{$I jcl.inc}
 
 {$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-{$WEAKPACKAGEUNIT ON}
+  {$IFDEF UNITVERSIONING}
+    {$WEAKPACKAGEUNIT OFF}
+  {$ELSE ~UNITVERSIONING}
+    {$WEAKPACKAGEUNIT ON}
+  {$ENDIF ~UNITVERSIONING} 
 {$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 interface
 
-uses ActiveX, Classes;
+uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  ActiveX, Classes;
   
 
 // *********************************************************************//
@@ -1574,6 +1590,18 @@ type
     class function CreateRemote(const MachineName: string): IHxRegisterProtocol;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/source/windows/MSHelpServices_TLB.pas $';
+    Revision: '$Revision: 3196 $';
+    Date: '$Date: 2010-02-22 11:08:20 +0100 (lun., 22 févr. 2010) $';
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 uses ComObj;
@@ -1617,5 +1645,13 @@ class function CoHxRegisterProtocol.CreateRemote(const MachineName: string): IHx
 begin
   Result := CreateRemoteComObject(MachineName, CLASS_HxRegisterProtocol) as IHxRegisterProtocol;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

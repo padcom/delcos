@@ -1,4 +1,5 @@
 [Directories]
 UnitOutputDir=..\..\lib\d6
-SearchPath=..\..\source;..\..\experts\common
+SearchPath=..\..\source\include;..\..\experts\common
+Conditionals=WIN32;CONDITIONALEXPRESSIONS;VER140;RELEASE
 

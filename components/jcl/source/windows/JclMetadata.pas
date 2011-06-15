@@ -24,11 +24,13 @@
 {                                                                                                  }
 { Microsoft .Net framework Clr information support routines and classes.                           }
 {                                                                                                  }
-{ Unit owner: Flier Lu                                                                             }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date:: 2010-01-25 13:19:13 +0100 (lun., 25 janv. 2010)                         $ }
+{ Revision:      $Rev:: 3139                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date: 2006-08-11 17:24:18 +0200 (ven., 11 août 2006) $
 
 unit JclMetadata;
 
@@ -43,11 +45,8 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  Classes, SysUtils,
-  {$IFDEF RTL130_UP}
-  Contnrs,
-  {$ENDIF RTL130_UP}
-  JclBase, JclClr, JclFileUtils, JclPeImage, JclSysUtils;
+  Classes, SysUtils, Contnrs,
+  JclBase, JclClr, JclFileUtils, JclSysUtils;
 
 type
   TJclClrElementType = (etEnd, etVoid, etBoolean, etChar,
@@ -67,9 +66,9 @@ type
     function GetName: WideString;
     function GetEncBaseId: TGUID;
     function GetEncId: TGUID;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     function DumpIL: string; override;
 
     function HasEncId: Boolean;
@@ -100,9 +99,8 @@ type
   private
     FNameOffset: DWORD;
     function GetName: WideString;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
     function DumpIL: string; override;
     property NameOffset: DWORD read FNameOffset;
     property Name: WideString read GetName;
@@ -140,9 +138,9 @@ type
     function GetPublicKey: TJclClrBlobRecord;
     function GetVersion: string;
     function GetFlags: TJclClrAssemblyFlags;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     function DumpIL: string; override;
 
     class function AssemblyFlags(const Flags: TJclClrAssemblyFlags): DWORD; overload;
@@ -180,9 +178,9 @@ type
     FMajorVersion: DWORD;
     FMinorVersion: DWORD;
     function GetVersion: string;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     property PlatformID: DWORD read FPlatformID;
     property MajorVersion: DWORD read FMajorVersion;
     property MinorVersion: DWORD read FMinorVersion;
@@ -201,9 +199,8 @@ type
   TJclClrTableAssemblyProcessorRow = class(TJclClrTableRow)
   private
     FProcessor: DWORD;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
     property Processor: DWORD read FProcessor;
   end;
 
@@ -233,9 +230,9 @@ type
     function GetPublicKeyOrToken: TJclClrBlobRecord;
     function GetVersion: string;
     function GetFlags: TJclClrAssemblyFlags;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     function DumpIL: string; override;
 
     property MajorVersion: Word read FMajorVersion;
@@ -269,9 +266,9 @@ type
   private
     FAssemblyRefIdx: DWORD;
     function GetAssemblyRef: TJclClrTableAssemblyRefRow;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     property AssemblyRefIdx: DWORD read FAssemblyRefIdx;
     property AssemblyRef: TJclClrTableAssemblyRefRow read GetAssemblyRef;
   end;
@@ -289,9 +286,9 @@ type
   private
     FAssemblyRefIdx: DWORD;
     function GetAssemblyRef: TJclClrTableAssemblyRefRow;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     property AssemblyRefIdx: DWORD read FAssemblyRefIdx;
     property AssemblyRef: TJclClrTableAssemblyRefRow read GetAssemblyRef;
   end;
@@ -310,9 +307,9 @@ type
     FClassSize: DWORD;
     FParentIdx: DWORD;
     FPackingSize: Word;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     property PackingSize: Word read FPackingSize;
     property ClassSize: DWORD read FClassSize;
     property ParentIdx: DWORD read FParentIdx;
@@ -335,9 +332,9 @@ type
     function GetElementType: TJclClrElementType;
     function GetParent: TJclClrTableRow;
     function GetValue: TJclClrBlobRecord;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     function DumpIL: string; override;
 
     property Kind: Byte read FKind;
@@ -366,9 +363,9 @@ type
     function GetValue: TJclClrBlobRecord;
     function GetParent: TJclClrTableRow;
     function GetMethod: TJclClrTableRow;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     function DumpIL: string; override;
 
     property ParentIdx: DWORD read FParentIdx;
@@ -394,12 +391,12 @@ type
     FPermissionSetOffset: DWORD;
     FParentIdx: DWORD;
     FAction: Word;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     property Action: Word read FAction;
     property ParentIdx: DWORD read FParentIdx;
-    property PermissionSetOffset: DWORD read FPermissionSetOffset;  
+    property PermissionSetOffset: DWORD read FPermissionSetOffset;
   end;
 
   TJclClrTableDeclSecurity = class(TJclClrTable)
@@ -415,9 +412,9 @@ type
   private
     FEventListIdx: DWORD;
     FParentIdx: DWORD;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     property ParentIdx: DWORD read FParentIdx;
     property EventListIdx: DWORD read FEventListIdx;
   end;
@@ -440,9 +437,9 @@ type
     FEventTypeIdx: DWORD;
     FEventFlags: Word;
     function GetName: WideString;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     property EventFlags: Word read FEventFlags;
     property NameOffset: DWORD read FNameOffset;
     property EventTypeIdx: DWORD read FEventTypeIdx;
@@ -467,9 +464,9 @@ type
     FTypeNameOffset: DWORD;
     function GetTypeName: WideString;
     function GetTypeNamespace: WideString;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     property Flags: DWORD read FFlags;
     property TypeDefIdx: DWORD read FTypeDefIdx;
     property TypeNameOffset: DWORD read FTypeNameOffset;
@@ -483,9 +480,9 @@ type
   private
     FEventIdx: DWORD;
     function GetEvent: TJclClrTableEventDefRow;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     property EventIdx: DWORD read FEventIdx;
     property Event: TJclClrTableEventDefRow read GetEvent;
   end;
@@ -531,9 +528,10 @@ type
     function GetFlag: TJclClrTableFieldDefFlags;
     function GetVisibility: TJclClrTableFieldDefVisibility;
   protected
-    constructor Create(const ATable: TJclClrTable); override;
     procedure SetParentToken(const ARow: TJclClrTableTypeDefRow);
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     function DumpIL: string; override;
 
     property RawFlags: Word read FFlags;
@@ -561,9 +559,9 @@ type
   private
     FFieldIdx: DWORD;
     function GetField: TJclClrTableFieldDefRow;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     property FieldIdx: DWORD read FFieldIdx;
     property Field: TJclClrTableFieldDefRow read GetField;
   end;
@@ -581,9 +579,9 @@ type
   private
     FOffset: DWORD;
     FFieldIdx: DWORD;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     property Offset: DWORD read FOffset;
     property FieldIdx: DWORD read FFieldIdx;
   end;
@@ -601,9 +599,9 @@ type
   private
     FParentIdx: DWORD;
     FNativeTypeOffset: DWORD;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     property ParentIdx: DWORD read FParentIdx;
     property NativeTypeOffset: DWORD read FNativeTypeOffset;
   end;
@@ -621,9 +619,9 @@ type
   private
     FRVA: DWORD;
     FFieldIdx: DWORD;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     property RVA: DWORD read FRVA;
     property FieldIdx: DWORD read FFieldIdx;
   end;
@@ -645,9 +643,9 @@ type
     function GetName: WideString;
     function GetHashValue: TJclClrBlobRecord;
     function GetContainsMetadata: Boolean;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     function DumpIL: string; override;
 
     property Flags: DWORD read FFlags;
@@ -675,9 +673,9 @@ type
     FImportScopeIdx: DWORD;
     FMappingFlags: Word;
     function GetImportName: WideString;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     property MappingFlags: Word read FMappingFlags;
     property MemberForwardedIdx: DWORD read FMemberForwardedIdx;
     property ImportNameOffset: DWORD read FImportNameOffset;
@@ -700,9 +698,9 @@ type
     FClassIdx: DWORD;
     function GetImplClass: TJclClrTableRow;
     function GetImplInterface: TJclClrTableRow;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     function DumpIL: string; override;
 
     property ClassIdx: DWORD read FClassIdx;
@@ -732,9 +730,9 @@ type
     function GetName: WideString;
     function GetVisibility: TJclClrTableManifestResourceVisibility;
     function GetImplementationRow: TJclClrTableRow;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     function DumpIL: string; override;
 
     property Offset: DWORD read FOffset;
@@ -765,9 +763,9 @@ type
     function GetSignature: TJclClrBlobRecord;
     function GetParentClass: TJclClrTableRow;
     function GetFullName: WideString;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     property ClassIdx: DWORD read FClassIdx;
     property NameOffset: DWORD read FNameOffset;
     property SignatureOffset: DWORD read FSignatureOffset;
@@ -801,9 +799,10 @@ type
     FFlags: TJclClrParamKinds;
     function GetName: WideString;
   protected
-    constructor Create(const ATable: TJclClrTable); override;
     procedure SetMethod(const AMethod: TJclClrTableMethodDefRow);
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     function DumpIL: string; override;
 
     class function ParamFlags(const AFlags: TJclClrParamKinds): Word; overload;
@@ -831,9 +830,9 @@ type
   private
     FParamIdx: DWORD;
     function GetParam: TJclClrTableParamDefRow;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     property ParamIdx: DWORD read FParamIdx;
     property Param: TJclClrTableParamDefRow read GetParam;
   end;
@@ -985,13 +984,13 @@ type
     function IsModifierType(const AElementType: TJclClrElementType): Boolean;
     function IsPrimitiveType(const AElementType: TJclClrElementType): Boolean;
 
-    function Inc(var DataPtr: PJclByteArray; Step: Integer = 1): PByte;
+    function Inc(var DataPtr: PJclByteArray; Step: TJclAddr = 1): PByte;
 
     function UncompressedDataSize(DataPtr: PJclByteArray): Integer;
-    function UncompressData(DataPtr: PJclByteArray; var Value: DWord): Integer;
-    function UncompressToken(DataPtr: PJclByteArray; var Token: TJclClrToken): Integer;
+    function UncompressData(DataPtr: PJclByteArray; out Value: DWord): Integer;
+    function UncompressToken(DataPtr: PJclByteArray; out Token: TJclClrToken): Integer;
     function UncompressCallingConv(DataPtr: PJclByteArray): Byte;
-    function UncompressSignedInt(DataPtr: PJclByteArray; var Value: Integer): Integer;
+    function UncompressSignedInt(DataPtr: PJclByteArray; out Value: Integer): Integer;
     function UncompressElementType(DataPtr: PJclByteArray): TJclClrElementType;
     function UncompressTypeSignature(DataPtr: PJclByteArray): string;
   public
@@ -1189,10 +1188,11 @@ type
     function GetManaged: Boolean;
     function GetMethodImplFlags: TJclClrMethodImplFlags;
   protected
-    constructor Create(const ATable: TJclClrTable); override;
     procedure Update; override;
     procedure SetParentToken(const ARow: TJclClrTableTypeDefRow);
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     function DumpIL: string; override;
 
     destructor Destroy; override;
@@ -1238,9 +1238,9 @@ type
   private
     FMethodIdx: DWORD;
     function GetMethod: TJclClrTableMethodDefRow;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     property MethodIdx: DWORD read FMethodIdx;
     property Method: TJclClrTableMethodDefRow read GetMethod;
   end;
@@ -1259,12 +1259,12 @@ type
     FClassIdx: DWORD;
     FMethodBodyIdx: DWORD;
     FMethodDeclarationIdx: DWORD;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     property ClassIdx: DWORD read FClassIdx;
     property MethodBodyIdx: DWORD read FMethodBodyIdx;
-    property MethodDeclarationIdx: DWORD read FMethodDeclarationIdx;    
+    property MethodDeclarationIdx: DWORD read FMethodDeclarationIdx;
   end;
 
   TJclClrTableMethodImpl = class(TJclClrTable)
@@ -1281,9 +1281,9 @@ type
     FSemantics: Word;
     FMethodIdx: DWORD;
     FAssociationIdx: DWORD;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     property Semantics: Word read FSemantics;
     property MethodIdx: DWORD read FMethodIdx;
     property AssociationIdx: DWORD read FAssociationIdx;
@@ -1304,9 +1304,8 @@ type
     FInstantiationOffset: DWORD;
     function GetInstantiation: TJclClrBlobRecord;
     function GetMethod: TJclClrTableRow;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
     property MethodIdx: DWORD read FMethodIdx;
     property InstantiationOffset: DWORD read FInstantiationOffset;
     property Method: TJclClrTableRow read GetMethod;
@@ -1326,9 +1325,8 @@ type
   private
     FEnclosingClassIdx: DWORD;
     FNestedClassIdx: DWORD;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
     property NestedClassIdx: DWORD read FNestedClassIdx;
     property EnclosingClassIdx: DWORD read FEnclosingClassIdx;
   end;
@@ -1352,9 +1350,9 @@ type
     FFlags: Word;
     function GetName: WideString;
     function GetFlags: TJclClrTablePropertyFlags;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
+
     function DumpIL: string; override;
 
     property RawFlags: Word read FFlags;
@@ -1378,9 +1376,8 @@ type
   private
     FPropertyIdx: DWORD;
     function GetProperty: TJclClrTablePropertyDefRow;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
     property PropertyIdx: DWORD read FPropertyIdx;
     property _Property: TJclClrTablePropertyDefRow read GetProperty;
   end;
@@ -1403,10 +1400,9 @@ type
     function GetProperty(const Idx: Integer): TJclClrTablePropertyDefRow;
     function GetPropertyCount: Integer;
   protected
-    constructor Create(const ATable: TJclClrTable); override;
-
     function Add(const ARow: TJclClrTablePropertyDefRow): Integer;
   public
+    constructor Create(const ATable: TJclClrTable); override;
     destructor Destroy; override;
 
     property ParentIdx: DWORD read FParentIdx;
@@ -1432,9 +1428,8 @@ type
   private
     FSignatureOffset: DWORD;
     function GetSignature: TJclClrBlobRecord;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
     property SignatureOffset: DWORD read FSignatureOffset;
     property Signature: TJclClrBlobRecord read GetSignature;
   end;
@@ -1487,9 +1482,9 @@ type
     function GetVisibility: TJclClrTypeVisibility;
     function GetExtends: TJclClrTableRow;
   protected
-    constructor Create(const ATable: TJclClrTable); override;
     procedure Update; override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
     destructor Destroy; override;
 
     function DumpIL: string; override;
@@ -1541,9 +1536,8 @@ type
     function GetResolutionScope: TJclClrTableRow;
     function GetResolutionScopeName: string;
     function GetFullName: WideString;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
     function DumpIL: string; override;
 
     property ResolutionScopeIdx: DWORD read FResolutionScopeIdx;
@@ -1570,9 +1564,8 @@ type
   private
     FSignatureOffset: DWORD;
     function GetSignature: TJclClrBlobRecord;
-  protected
-    constructor Create(const ATable: TJclClrTable); override;
   public
+    constructor Create(const ATable: TJclClrTable); override;
     property SignatureOffset: DWORD read FSignatureOffset;
     property Signature: TJclClrBlobRecord read GetSignature;
   end;
@@ -1591,8 +1584,9 @@ type
     FToken: DWORD;
     FFuncCode: DWORD;
   protected
-    constructor Create(const ATable: TJclClrTable); override;
     property FuncCode: DWORD read FFuncCode;
+  public
+    constructor Create(const ATable: TJclClrTable); override;
   end;
 
   TJclClrTableENCMap = class(TJclClrTable)
@@ -1608,8 +1602,9 @@ type
   private
     FFuncCode: DWORD;
   protected
-    constructor Create(const ATable: TJclClrTable); override;
     property FuncCode: DWORD read FFuncCode;
+  public
+    constructor Create(const ATable: TJclClrTable); override;
   end;
 
   TJclClrTableENCLog = class(TJclClrTable)
@@ -1626,10 +1621,12 @@ type
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jcl.svn.sourceforge.net/svnroot/jcl/tags/JCL-1.101-Build2725/jcl/source/windows/JclMetadata.pas $';
-    Revision: '$Revision: 1726 $';
-    Date: '$Date: 2006-08-11 17:24:18 +0200 (ven., 11 août 2006) $';
-    LogPath: 'JCL\source\common'
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/source/windows/JclMetadata.pas $';
+    Revision: '$Revision: 3139 $';
+    Date: '$Date: 2010-01-25 13:19:13 +0100 (lun., 25 janv. 2010) $';
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -1640,7 +1637,7 @@ uses
   JclCIL, JclResources, JclStrings;
 
 const
-  MAX_CLASS_NAME = 1024;
+  // MAX_CLASS_NAME = 1024;
   MAX_PATH_NAME  = 260;
 
   // Assembly attr bits, used by DefineAssembly.
@@ -1672,13 +1669,13 @@ const
   // MethodDef attr bits, Used by DefineMethod.
   // member access mask - Use this mask to retrieve accessibility information.
   mdMemberAccessMask      = $0007;
-  mdPrivateScope          = $0000;     // Member not referenceable.
-  mdPrivate               = $0001;     // Accessible only by the parent type.
-  mdFamANDAssem           = $0002;     // Accessible by sub-types only in this Assembly.
-  mdAssem                 = $0003;     // Accessibly by anyone in the Assembly.
-  mdFamily                = $0004;     // Accessible only by type and sub-types.
-  mdFamORAssem            = $0005;     // Accessibly by sub-types anywhere, plus anyone in assembly.
-  mdPublic                = $0006;     // Accessibly by anyone who has visibility to this scope.
+  // mdPrivateScope          = $0000;     // Member not referenceable.
+  // mdPrivate               = $0001;     // Accessible only by the parent type.
+  // mdFamANDAssem           = $0002;     // Accessible by sub-types only in this Assembly.
+  // mdAssem                 = $0003;     // Accessibly by anyone in the Assembly.
+  // mdFamily                = $0004;     // Accessible only by type and sub-types.
+  // mdFamORAssem            = $0005;     // Accessibly by sub-types anywhere, plus anyone in assembly.
+  // mdPublic                = $0006;     // Accessibly by anyone who has visibility to this scope.
   // end member access mask
 
   // method contract attributes.
@@ -1689,7 +1686,7 @@ const
 
   // vtable layout mask - Use this mask to retrieve vtable attributes.
   mdVtableLayoutMask      = $0100;
-  mdReuseSlot             = $0000;     // The default.
+  // mdReuseSlot             = $0000;     // The default.
   mdNewSlot               = $0100;     // Method always gets a new slot in the vtable.
   // end vtable layout mask
 
@@ -1703,7 +1700,7 @@ const
   mdUnmanagedExport       = $0008;     // Managed method exported via thunk to unmanaged code.
 
   // Reserved flags for runtime use only.
-  mdReservedMask          = $d000;
+  // mdReservedMask          = $d000;
   mdRTSpecialName         = $1000;     // Runtime should check name encoding.
   mdHasSecurity           = $4000;     // Method has security associate with it.
   mdRequireSecObject      = $8000;     // Method calls another method containing security code.
@@ -1711,15 +1708,15 @@ const
   // MethodImpl attr bits, used by DefineMethodImpl.
   // code impl mask
   miCodeTypeMask     = $0003;   // Flags about code type.
-  miIL               = $0000;   // Method impl is IL.
-  miNative           = $0001;   // Method impl is native.
-  miOPTIL            = $0002;   // Method impl is OPTIL
-  miRuntime          = $0003;   // Method impl is provided by the runtime.
+  // miIL               = $0000;   // Method impl is IL.
+  // miNative           = $0001;   // Method impl is native.
+  // miOPTIL            = $0002;   // Method impl is OPTIL
+  // miRuntime          = $0003;   // Method impl is provided by the runtime.
   // end code impl mask
 
   // managed mask
   miManagedMask      = $0004;   // Flags specifying whether the code is managed or unmanaged.
-  miUnmanaged        = $0004;   // Method impl is unmanaged, otherwise managed.
+  // miUnmanaged        = $0004;   // Method impl is unmanaged, otherwise managed.
   miManaged          = $0000;   // Method impl is managed.
   // end managed mask
 
@@ -1731,16 +1728,16 @@ const
 
   miSynchronized     = $0020;   // Method is single threaded through the body.
   miNoInlining       = $0008;   // Method may not be inlined.
-  miMaxMethodImplVal = $ffff;   // Range check value
+  // miMaxMethodImplVal = $ffff;   // Range check value
 
   // Calling convention flags.
   IMAGE_CEE_CS_CALLCONV_DEFAULT      = $0;
   IMAGE_CEE_CS_CALLCONV_VARARG       = $5;
   IMAGE_CEE_CS_CALLCONV_FIELD        = $6;
   IMAGE_CEE_CS_CALLCONV_LOCAL_SIG    = $7;
-  IMAGE_CEE_CS_CALLCONV_PROPERTY     = $8;
-  IMAGE_CEE_CS_CALLCONV_UNMGD        = $9;
-  IMAGE_CEE_CS_CALLCONV_MAX          = $10;  // first invalid calling convention
+  // IMAGE_CEE_CS_CALLCONV_PROPERTY     = $8;
+  // IMAGE_CEE_CS_CALLCONV_UNMGD        = $9;
+  // IMAGE_CEE_CS_CALLCONV_MAX          = $10;  // first invalid calling convention
   // The high bits of the calling convention convey additional info
   IMAGE_CEE_CS_CALLCONV_MASK         = $0f;  // Calling convention is bottom 4 bits
   IMAGE_CEE_CS_CALLCONV_HASTHIS      = $20;  // Top bit indicates a 'this' parameter
@@ -1749,14 +1746,14 @@ const
   // TypeDef/ExportedType attr bits, used by DefineTypeDef.
   // Use this mask to retrieve the type visibility information.
   tdVisibilityMask     = $00000007;
-  tdNotPublic          = $00000000;     // Class is not public scope.
-  tdPublic             = $00000001;     // Class is public scope.
-  tdNestedPublic       = $00000002;     // Class is nested with public visibility.
-  tdNestedPrivate      = $00000003;     // Class is nested with private visibility.
-  tdNestedFamily       = $00000004;     // Class is nested with family visibility.
-  tdNestedAssembly     = $00000005;     // Class is nested with assembly visibility.
-  tdNestedFamANDAssem  = $00000006;     // Class is nested with family and assembly visibility.
-  tdNestedFamORAssem   = $00000007;     // Class is nested with family or assembly visibility.
+  // tdNotPublic          = $00000000;     // Class is not public scope.
+  // tdPublic             = $00000001;     // Class is public scope.
+  // tdNestedPublic       = $00000002;     // Class is nested with public visibility.
+  // tdNestedPrivate      = $00000003;     // Class is nested with private visibility.
+  // tdNestedFamily       = $00000004;     // Class is nested with family visibility.
+  // tdNestedAssembly     = $00000005;     // Class is nested with assembly visibility.
+  // tdNestedFamANDAssem  = $00000006;     // Class is nested with family and assembly visibility.
+  // tdNestedFamORAssem   = $00000007;     // Class is nested with family or assembly visibility.
 
   // Use this mask to retrieve class layout information
   tdLayoutMask         = $00000018;
@@ -1767,7 +1764,7 @@ const
 
   // Use this mask to retrieve class semantics information.
   tdClassSemanticsMask = $00000020;
-  tdClass              = $00000000;     // Type is a class.
+  // tdClass              = $00000000;     // Type is a class.
   tdInterface          = $00000020;     // Type is an interface.
   // end semantics mask
 
@@ -1790,7 +1787,7 @@ const
   tdBeforeFieldInit    = $00100000;     // Initialize the class any time before first static field access.
 
   // Flags reserved for runtime use.
-  tdReservedMask       = $00040800;
+  // tdReservedMask       = $00040800;
   tdRTSpecialName      = $00000800;     // Runtime should check name encoding.
   tdHasSecurity        = $00040000;     // Class has security associate with it.
 
@@ -1798,11 +1795,11 @@ const
   // member access mask - Use this mask to retrieve accessibility information.
   fdFieldAccessMask = $0007;
   fdPrivateScope    = $0000;     // Member not referenceable.
-  fdPrivate         = $0001;     // Accessible only by the parent type.
-  fdFamANDAssem     = $0002;     // Accessible by sub-types only in this Assembly.
-  fdAssembly        = $0003;     // Accessibly by anyone in the Assembly.
-  fdFamily          = $0004;     // Accessible only by type and sub-types.
-  fdFamORAssem      = $0005;     // Accessibly by sub-types anywhere, plus anyone in assembly.
+  // fdPrivate         = $0001;     // Accessible only by the parent type.
+  // fdFamANDAssem     = $0002;     // Accessible by sub-types only in this Assembly.
+  // fdAssembly        = $0003;     // Accessibly by anyone in the Assembly.
+  // fdFamily          = $0004;     // Accessible only by type and sub-types.
+  // fdFamORAssem      = $0005;     // Accessibly by sub-types anywhere, plus anyone in assembly.
   fdPublic          = $0006;     // Accessibly by anyone who has visibility to this scope.
   // end member access mask
 
@@ -1818,7 +1815,7 @@ const
   fdPinvokeImpl     = $2000;     // Implementation is forwarded through pinvoke.
 
   // Reserved flags for runtime use only.
-  fdReservedMask    = $9500;
+  // fdReservedMask    = $9500;
   fdRTSpecialName   = $0400;     // Runtime(metadata internal APIs) should check name encoding.
   fdHasFieldMarshal = $1000;     // Field has marshalling information.
   fdHasDefault      = $8000;     // Field has default.
@@ -1830,11 +1827,11 @@ const
   pdOptional        = $0010;     // Param is optional
 
   // Reserved flags for Runtime use only.
-  pdReservedMask    = $f000;
+  // pdReservedMask    = $f000;
   pdHasDefault      = $1000;     // Param has default value.
   pdHasFieldMarshal = $2000;     // Param has FieldMarshal.
 
-  pdUnused          = $cfe0;
+  // pdUnused          = $cfe0;
 
   ClrParamKindMapping: array [TJclClrParamKind] of DWORD =
     (pdIn, pdOut, pdOptional, pdHasDefault, pdHasFieldMarshal);
@@ -1915,75 +1912,75 @@ const
   prSpecialName   = $0200;     // property is special.  Name describes how.
 
   // Reserved flags for Runtime use only.
-  prReservedMask  = $f400;
+  // prReservedMask  = $f400;
   prRTSpecialName = $0400;     // Runtime(metadata internal APIs) should check name encoding.
   prHasDefault    = $1000;     // Property has default
 
-  prUnused        = $e9ff;
+  // prUnused        = $e9ff;
 
   ClrTablePropertyFlagMapping: array [TJclClrTablePropertyFlag] of Word =
    (prSpecialName, prRTSpecialName, prHasDefault);
 
   // Event attr bits, used by DefineEvent.
-  evSpecialName   = $0200;     // event is special.  Name describes how.
+  // evSpecialName   = $0200;     // event is special.  Name describes how.
 
   // Reserved flags for Runtime use only.
-  evReservedMask  = $0400;
-  evRTSpecialName = $0400;     // Runtime(metadata internal APIs) should check name encoding.
+  // evReservedMask  = $0400;
+  // evRTSpecialName = $0400;     // Runtime(metadata internal APIs) should check name encoding.
 
-  ClrTableEventFlagMapping: array [TJclClrTableEventFlag] of Word =
-   (evSpecialName, evRTSpecialName);
+  // ClrTableEventFlagMapping: array [TJclClrTableEventFlag] of Word =
+  //  (evSpecialName, evRTSpecialName);
 
   // DeclSecurity attr bits, used by DefinePermissionSet
-  dclActionMask        = $000f;     // Mask allows growth of enum.
-  dclActionNil         = $0000;
-  dclRequest           = $0001;
-  dclDemand            = $0002;
-  dclAssert            = $0003;
-  dclDeny              = $0004;
-  dclPermitOnly        = $0005;
-  dclLinktimeCheck     = $0006;
-  dclInheritanceCheck  = $0007;
-  dclRequestMinimum    = $0008;
-  dclRequestOptional   = $0009;
-  dclRequestRefuse     = $000a;
-  dclPrejitGrant       = $000b;     // Persisted grant set at prejit time
-  dclPrejitDenied      = $000c;     // Persisted denied set at prejit time
-  dclNonCasDemand      = $000d;     //
-  dclNonCasLinkDemand  = $000e;
-  dclNonCasInheritance = $000f;
-  dclMaximumValue      = $000f;     // Maximum legal value
+  // dclActionMask        = $000f;     // Mask allows growth of enum.
+  // dclActionNil         = $0000;
+  // dclRequest           = $0001;
+  // dclDemand            = $0002;
+  // dclAssert            = $0003;
+  // dclDeny              = $0004;
+  // dclPermitOnly        = $0005;
+  // dclLinktimeCheck     = $0006;
+  // dclInheritanceCheck  = $0007;
+  // dclRequestMinimum    = $0008;
+  // dclRequestOptional   = $0009;
+  // dclRequestRefuse     = $000a;
+  // dclPrejitGrant       = $000b;     // Persisted grant set at prejit time
+  // dclPrejitDenied      = $000c;     // Persisted denied set at prejit time
+  // dclNonCasDemand      = $000d;     //
+  // dclNonCasLinkDemand  = $000e;
+  // dclNonCasInheritance = $000f;
+  // dclMaximumValue      = $000f;     // Maximum legal value
 
   // PinvokeMap attr bits, used by DefinePinvokeMap
-  pmNoMangle        = $0001;   // Pinvoke is to use the member name as specified.
+  // pmNoMangle        = $0001;   // Pinvoke is to use the member name as specified.
 
   // Use this mask to retrieve the CharSet information.
-  pmCharSetMask     = $0006;
-  pmCharSetNotSpec  = $0000;
-  pmCharSetAnsi     = $0002;
-  pmCharSetUnicode  = $0004;
-  pmCharSetAuto     = $0006;
+  // pmCharSetMask     = $0006;
+  // pmCharSetNotSpec  = $0000;
+  // pmCharSetAnsi     = $0002;
+  // pmCharSetUnicode  = $0004;
+  // pmCharSetAuto     = $0006;
 
 
-  pmBestFitUseAssem = $0000;
-  pmBestFitEnabled  = $0010;
-  pmBestFitDisabled = $0020;
-  pmBestFitMask     = $0030;
+  // pmBestFitUseAssem = $0000;
+  // pmBestFitEnabled  = $0010;
+  // pmBestFitDisabled = $0020;
+  // pmBestFitMask     = $0030;
 
-  pmThrowOnUnmappableCharUseAssem = $0000;
-  pmThrowOnUnmappableCharEnabled  = $1000;
-  pmThrowOnUnmappableCharDisabled = $2000;
-  pmThrowOnUnmappableCharMask     = $3000;
+  // pmThrowOnUnmappableCharUseAssem = $0000;
+  // pmThrowOnUnmappableCharEnabled  = $1000;
+  // pmThrowOnUnmappableCharDisabled = $2000;
+  // pmThrowOnUnmappableCharMask     = $3000;
 
-  pmSupportsLastError = $0040;   // Information about target function. Not relevant for fields.
+  // pmSupportsLastError = $0040;   // Information about target function. Not relevant for fields.
 
   // None of the calling convention flags is relevant for fields.
-  pmCallConvMask     = $0700;
-  pmCallConvWinapi   = $0100;   // Pinvoke will use native callconv appropriate to target windows platform.
-  pmCallConvCdecl    = $0200;
-  pmCallConvStdcall  = $0300;
-  pmCallConvThiscall = $0400;   // In M9, pinvoke will raise exception.
-  pmCallConvFastcall = $0500;
+  // pmCallConvMask     = $0700;
+  // pmCallConvWinapi   = $0100;   // Pinvoke will use native callconv appropriate to target windows platform.
+  // pmCallConvCdecl    = $0200;
+  // pmCallConvStdcall  = $0300;
+  // pmCallConvThiscall = $0400;   // In M9, pinvoke will raise exception.
+  // pmCallConvFastcall = $0500;
 
 function IsBitSet(const Value, Flag: DWORD): Boolean;
 begin
@@ -2019,7 +2016,7 @@ begin
     Result := 4;
 end;
 
-function TJclClrSignature.UncompressData(DataPtr: PJclByteArray; var Value: DWord): Integer;
+function TJclClrSignature.UncompressData(DataPtr: PJclByteArray; out Value: DWord): Integer;
 begin
   if (DataPtr[0] and $80) = 0 then // 0??? ????
   begin
@@ -2029,13 +2026,13 @@ begin
   else
   if (DataPtr[0] and $C0) = $80 then // 10?? ????
   begin
-    Value  := (DataPtr[0] and $3F) shl 8 + DataPtr[1];
+    Value  := ((DataPtr[0] and $3F) shl 8) or DataPtr[1];
     Result := 2;
   end
   else
   if (DataPtr[0] and $E0) = $C0 then // 110? ????
   begin
-    Value  := (DataPtr[0] and $1F) shl 24 + DataPtr[1] shl 16 + DataPtr[2] shl 8 + DataPtr[3];
+    Value  := ((DataPtr[0] and $1F) shl 24) or (DataPtr[1] shl 16) or (DataPtr[2] shl 8) or DataPtr[3];
     Result := 4;
   end
   else
@@ -2043,12 +2040,12 @@ begin
       [DataPtr[0], DataPtr[1], DataPtr[2], DataPtr[3]]);
 end;
 
-function TJclClrSignature.UncompressToken(DataPtr: PJclByteArray; var Token: TJclClrToken): Integer;
+function TJclClrSignature.UncompressToken(DataPtr: PJclByteArray; out Token: TJclClrToken): Integer;
 const
   TableMapping: array [0..3] of TJclClrTableKind = (ttTypeDef, ttTypeRef, ttTypeSpec, TJclClrTableKind(0));
 begin
   Result := UncompressData(DataPtr, Token);
-  Token  := Byte(TableMapping[Token and 3]) shl 24 + Token shr 2;
+  Token  := (Byte(TableMapping[Token and 3]) shl 24) or (Token shr 2);
 end;
 
 function TJclClrSignature.UncompressCallingConv(DataPtr: PJclByteArray): Byte;
@@ -2056,7 +2053,7 @@ begin
   Result := DataPtr[0];
 end;
 
-function TJclClrSignature.UncompressSignedInt(DataPtr: PJclByteArray; var Value: Integer): Integer;
+function TJclClrSignature.UncompressSignedInt(DataPtr: PJclByteArray; out Value: Integer): Integer;
 var
   Data: DWord;
 begin
@@ -2138,9 +2135,9 @@ begin
   end;
 end;
 
-function TJclClrSignature.Inc(var DataPtr: PJclByteArray; Step: Integer): PByte;
+function TJclClrSignature.Inc(var DataPtr: PJclByteArray; Step: TJclAddr): PByte;
 begin
-  Result := PByte(Integer(DataPtr) + Step);
+  Result := PByte(TJclAddr(DataPtr) + Step);
   DataPtr := PJclByteArray(Result);
 end;
 
@@ -2240,7 +2237,7 @@ end;
 
 function TJclClrTableModuleRow.DumpIL: string;
 begin
-  Result := '.module ' + Name + ' // MVID:' + JclGUIDToString(Mvid) + AnsiLineBreak;
+  Result := '.module ' + Name + ' // MVID:' + JclGUIDToString(Mvid) + NativeLineBreak;
 end;
 
 function TJclClrTableModule.GetRow(const Idx: Integer): TJclClrTableModuleRow;
@@ -2263,7 +2260,7 @@ end;
 
 function TJclClrTableModuleRefRow.DumpIL: string;
 begin
-  Result := '.module extern ' + Name + AnsiLineBreak;
+  Result := '.module extern ' + Name + NativeLineBreak;
 end;
 
 function TJclClrTableModuleRefRow.GetName: WideString;
@@ -2363,7 +2360,7 @@ begin
 
       if FPublicKeyOffset <> 0 then
         Add(PublicKey.Dump('  .publickey = '));
-        
+
       Add('  .hash algorithm 0x' + IntToHex(HashAlgId, 8));
 
       if FCultureOffset <> 0 then
@@ -2462,6 +2459,8 @@ var
     HexStr, AsciiStr: string;
   begin
     Pch := PChar(PublicKeyOrToken.Memory);
+    HexStr := '';
+    AsciiStr := '';
     for I := 0 to PublicKeyOrToken.Size do
     begin
       HexStr := HexStr + IntToHex(Integer(Pch[I]), 2) + ' ';
@@ -2633,7 +2632,7 @@ function TJclClrTableConstantRow.DumpIL: string;
 begin
   case ElementType of
     etBoolean:
-      Result := BooleanToStr(PBoolean(Value.Memory)^);
+      Result := BooleanToStr(Boolean(PBoolean(Value.Memory)^));
     etChar:
       Result := PWideChar(Value.Memory)^;
     etI1:
@@ -2647,7 +2646,7 @@ begin
     etI4:
       Result := IntToStr(PInteger(Value.Memory)^);
     etU4:
-      Result := IntToStr(PDWord(Value.Memory)^);
+      Result := IntToStr(PDWORD(Value.Memory)^);
     etI8:
       Result := IntToStr(PInt64(Value.Memory)^);
     etU8:
@@ -2924,6 +2923,7 @@ var
   var
     AFlag: TJclClrTableFieldDefFlag;
   begin
+    Result := '';
     for AFlag := Low(FlagName) to High(FlagName) do
       if AFlag in Flags then
         Result := Result + FlagName[AFlag] + ' ';
@@ -2987,6 +2987,7 @@ const
 var
   AFlag: TJclClrTableFieldDefFlag;
 begin
+  Result := [];
   for AFlag := Low(TJclClrTableFieldDefFlag) to High(TJclClrTableFieldDefFlag) do
     if FFlags and FieldFlagMapping[AFlag] <> 0 then
       Include(Result, AFlag);
@@ -3391,6 +3392,7 @@ end;
 
 function TJclClrTableParamDefRow.DumpIL: string;
 begin
+  Result := '';
   { TODO : What to do? }
 end;
 
@@ -3435,25 +3437,25 @@ const
   CorILMethod_FormatMask      = ((1 shl CorILMethod_FormatShift) - 1);
 
   CorILMethod_TinyFormat      = $0002;
-  CorILMethod_FatFormat       = $0003;
+  // CorILMethod_FatFormat       = $0003;
 
-  CorILMethod_TinyFormatEven  = $0002;
-  CorILMethod_TinyFormatOdd   = $0006;
+  // CorILMethod_TinyFormatEven  = $0002;
+  // CorILMethod_TinyFormatOdd   = $0006;
 
-  CorILMethod_InitLocals      = $0010;
+  // CorILMethod_InitLocals      = $0010;
   CorILMethod_MoreSects       = $0008;
 
-  CorILMethod_Sect_Reserved   = 0;
+  // CorILMethod_Sect_Reserved   = 0;
   CorILMethod_Sect_EHTable    = 1;
   CorILMethod_Sect_OptILTable = 2;
 
-  CorILMethod_Sect_KindMask   = $3F; // The mask for decoding the type code
+  // CorILMethod_Sect_KindMask   = $3F; // The mask for decoding the type code
   CorILMethod_Sect_FatFormat  = $40; // fat format
   CorILMethod_Sect_MoreSects  = $80; // there is another attribute after this one
 
   COR_ILEXCEPTION_CLAUSE_NONE       = $0000; // This is a typed handler
-  COR_ILEXCEPTION_CLAUSE_OFFSETLEN  = $0000; // Deprecated
-  COR_ILEXCEPTION_CLAUSE_DEPRECATED = $0000; // Deprecated
+  // COR_ILEXCEPTION_CLAUSE_OFFSETLEN  = $0000; // Deprecated
+  // COR_ILEXCEPTION_CLAUSE_DEPRECATED = $0000; // Deprecated
   COR_ILEXCEPTION_CLAUSE_FILTER     = $0001; // If this bit is on, then this EH entry is for a filter
   COR_ILEXCEPTION_CLAUSE_FINALLY    = $0002; // This clause is a finally clause
   COR_ILEXCEPTION_CLAUSE_FAULT      = $0004; // Fault clause (finally that is called on exception only)
@@ -3525,19 +3527,19 @@ begin
   if (ILMethod.Tiny.Flags_CodeSize and CorILMethod_FormatMask) = CorILMethod_TinyFormat then
   begin
     FSize              := (ILMethod.Tiny.Flags_CodeSize shr CorILMethod_FormatShift) and ((1 shl 6) - 1);
-    FCode              := Pointer(DWORD(ILMethod) + 1);
+    FCode              := Pointer(TJclAddr(ILMethod) + 1);
     FMaxStack          := 0;
     FLocalVarSignToken := 0;
   end
   else
   begin
     FSize              := ILMethod.Fat.CodeSize;
-    FCode              := Pointer(DWORD(ILMethod) + (ILMethod.Fat.Flags_Size shr 12) * SizeOf(DWORD));
+    FCode              := Pointer(TJclAddr(ILMethod) + (ILMethod.Fat.Flags_Size shr 12) * SizeOf(DWORD));
     FMaxStack          := ILMethod.Fat.MaxStack;
     FLocalVarSignToken := ILMethod.Fat.LocalVarSigTok;
 
     if IsBitSet(ILMethod.Fat.Flags_Size, CorILMethod_MoreSects) then
-      ParseMoreSections(Pointer((DWORD(FCode) + FSize + 1) and not 1));
+      ParseMoreSections(Pointer((TJclAddr(FCode) + FSize + 1) and not 1));
   end;
 end;
 
@@ -3586,10 +3588,10 @@ begin
     AddEHTable(PImageCorILMethodSectEH(SectHeader))
   else
   if IsBitSet(SectHeader.Small.Kind, CorILMethod_Sect_OptILTable) then
-    AddOptILTable(Pointer(DWORD(FCode) + FSize), SectSize);
+    AddOptILTable(Pointer(TJclAddr(FCode) + FSize), SectSize);
 
   if IsBitSet(SectHeader.Small.Kind, CorILMethod_Sect_MoreSects) then
-    ParseMoreSections(Pointer(DWORD(SectHeader) + SectSize));
+    ParseMoreSections(Pointer(TJclAddr(SectHeader) + SectSize));
 end;
 
 function TJclClrMethodBody.GetExceptionHandler(const Idx: Integer): TJclClrExceptionHandler;
@@ -3627,7 +3629,7 @@ begin
   FNameOffset   := Table.ReadIndex(hkString);
   FSignatureOffset := Table.ReadIndex(hkBlob);
   FParamListIdx := Table.ReadIndex([ttParamDef]);
-  
+
   FParentToken  := nil;
   FParams       := nil;
   FSignature    := nil;
@@ -3689,7 +3691,7 @@ procedure TJclClrTableMethodDefRow.Update;
 begin
   UpdateParams;
 end;
-              
+
 function TJclClrTableMethodDefRow.GetHasParam: Boolean;
 begin
   Result := Assigned(FParams);
@@ -3750,6 +3752,7 @@ var
   var
     AFlag: TJclClrMethodFlag;
   begin
+    Result := '';
     for AFlag := Low(TJclClrMethodFlag) to High(TJclClrMethodFlag) do
       if AFlag in MethodFlags then
         Result := Result + MethodFlagName[AFlag] + ' ';
@@ -3762,6 +3765,7 @@ var
   var
     AFlag: TJclClrMethodImplFlag;
   begin
+    Result := '';
     for AFlag := Low(TJclClrMethodImplFlag) to High(TJclClrMethodImplFlag) do
       if AFlag in MethodImplFlags then
         Result := Result + ' ' + MethodImplFlagName[AFlag];
@@ -3819,25 +3823,25 @@ begin
 
   if Assigned(MethodBody) then
   begin
-    Result := Result + AnsiLineBreak + '{' + AnsiLineBreak +
-      '.maxstack ' + IntToStr(MethodBody.MaxStack) + AnsiLineBreak;
+    Result := Result + NativeLineBreak + '{' + NativeLineBreak +
+      '.maxstack ' + IntToStr(MethodBody.MaxStack) + NativeLineBreak;
 
     if MethodBody.LocalVarSignToken <> 0 then
     begin
-      Result := Result + '.locals /* ' + IntToHex(MethodBody.LocalVarSignToken, 8) + ' */ init(' + AnsiLineBreak;
+      Result := Result + '.locals /* ' + IntToHex(MethodBody.LocalVarSignToken, 8) + ' */ init(' + NativeLineBreak;
       for I := 0 to MethodBody.LocalVarSign.LocalVarCount-1 do
       begin
         Result := Format(Result+'  %s V_%d', [LocalVarToString(MethodBody.LocalVarSign.LocalVars[I]), I]);
         if I = MethodBody.LocalVarSign.LocalVarCount-1 then
-          Result := Result + ')' + AnsiLineBreak
+          Result := Result + ')' + NativeLineBreak
         else
-          Result := Result + ',' + AnsiLineBreak;
+          Result := Result + ',' + NativeLineBreak;
       end;
     end;
 
     with TJclClrILGenerator.Create(MethodBody) do
       try
-        Result := Result + AnsiLineBreak + DumpIL(InstructionDumpILAllOption);
+        Result := Result + NativeLineBreak + DumpIL(InstructionDumpILAllOption);
       finally
         Free;
       end;
@@ -3866,6 +3870,7 @@ function TJclClrTableMethodDefRow.GetMethodFlags: TJclClrMethodFlags;
 var
   AFlag: TJclClrMethodFlag;
 begin
+  Result := [];
   for AFlag := Low(TJclClrMethodFlag) to High(TJclClrMethodFlag) do
     if (FFlags and ClrMethodFlagMapping[AFlag]) = ClrMethodFlagMapping[AFlag] then
       Include(Result, AFlag);
@@ -3890,6 +3895,7 @@ function TJclClrTableMethodDefRow.GetMethodImplFlags: TJclClrMethodImplFlags;
 var
   AFlag: TJclClrMethodImplFlag;
 begin
+  Result := [];
   for AFlag := Low(TJclClrMethodImplFlag) to High(TJclClrMethodImplFlag) do
     if (FFlags and ClrMethodImplFlagMapping[AFlag]) = ClrMethodImplFlagMapping[AFlag] then
       Include(Result, AFlag);
@@ -4049,6 +4055,7 @@ function TJclClrTablePropertyDefRow.GetFlags: TJclClrTablePropertyFlags;
 var
   AFlag: TJclClrTablePropertyFlag;
 begin
+  Result := [];
   for AFlag := Low(TJclClrTablePropertyFlag) to High(TJclClrTablePropertyFlag) do
     if ClrTablePropertyFlagMapping[AFlag] and FFlags <> 0 then
       Include(Result, AFlag);
@@ -4390,6 +4397,7 @@ var
   var
     Attr: TJclClrTypeAttribute;
   begin
+    Result := '';
     for Attr := Low(TJclClrTypeAttribute) to High(TJclClrTypeAttribute) do
       if Attr in Attributes then
         Result := Result + TypeAttributeName[Attr] + ' ';

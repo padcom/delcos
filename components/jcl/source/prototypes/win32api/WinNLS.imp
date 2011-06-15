@@ -1,46 +1,45 @@
 {$IFDEF MSWINDOWS}
 
-{$IFNDEF CLR}
+type
+  TGetCalendarInfoA = function (Locale: LCID; Calendar: CALID; CalType: CALTYPE;
+    lpCalData: LPSTR; cchData: Integer; lpValue: LPDWORD): Integer; stdcall;
 
 var
-  _GetCalendarInfoA: Pointer;
+  _GetCalendarInfoA: TGetCalendarInfoA = nil;
 
-function GetCalendarInfoA;
+function GetCalendarInfoA(Locale: LCID; Calendar: CALID; CalType: CALTYPE;
+  lpCalData: LPSTR; cchData: Integer; lpValue: LPDWORD): Integer;
 begin
-  GetProcedureAddress(_GetCalendarInfoA, kernel32, 'GetCalendarInfoA');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetCalendarInfoA]
-  end;
+  GetProcedureAddress(Pointer(@_GetCalendarInfoA), kernel32, 'GetCalendarInfoA');
+  Result := _GetCalendarInfoA(Locale, Calendar, CalType, lpCalData, cchData, lpValue);
 end;
+
+type
+  TGetCalendarInfoW = function (Locale: LCID; Calendar: CALID; CalType: CALTYPE;
+    lpCalData: LPWSTR; cchData: Integer; lpValue: LPDWORD): Integer; stdcall;
 
 var
-  _GetCalendarInfoW: Pointer;
+  _GetCalendarInfoW: TGetCalendarInfoW = nil;
 
-function GetCalendarInfoW;
+function GetCalendarInfoW(Locale: LCID; Calendar: CALID; CalType: CALTYPE;
+  lpCalData: LPWSTR; cchData: Integer; lpValue: LPDWORD): Integer;
 begin
-  GetProcedureAddress(_GetCalendarInfoW, kernel32, 'GetCalendarInfoW');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_GetCalendarInfoW]
-  end;
+  GetProcedureAddress(Pointer(@_GetCalendarInfoW), kernel32, 'GetCalendarInfoW');
+  Result := _GetCalendarInfoW(Locale, Calendar, CalType, lpCalData, cchData, lpValue);
 end;
+
+type
+  TEnumCalendarInfoExW = function (lpCalInfoEnumProcEx: CALINFO_ENUMPROCEXW;
+    Locale: LCID; Calendar: CALID; CalType: CALTYPE): BOOL; stdcall;
 
 var
-  _EnumCalendarInfoExA: Pointer;
+  _EnumCalendarInfoExW: TEnumCalendarInfoExW = nil;
 
-function EnumCalendarInfoExA;
+function EnumCalendarInfoExW(lpCalInfoEnumProcEx: CALINFO_ENUMPROCEXW;
+  Locale: LCID; Calendar: CALID; CalType: CALTYPE): BOOL;
 begin
-  GetProcedureAddress(_EnumCalendarInfoExA, kernel32, 'EnumCalendarInfoExA');
-  asm
-    mov esp, ebp
-    pop ebp
-    jmp [_EnumCalendarInfoExA]
-  end;
+  GetProcedureAddress(Pointer(@_EnumCalendarInfoExW), kernel32, 'EnumCalendarInfoExW');
+  Result := _EnumCalendarInfoExW(lpCalInfoEnumProcEx, Locale, Calendar, CalType);
 end;
-
-{$ENDIF ~CLR}
 
 {$ENDIF MSWINDOWS}

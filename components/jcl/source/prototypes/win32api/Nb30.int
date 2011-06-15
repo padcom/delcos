@@ -1,5 +1,3 @@
-{$IFNDEF CLR}
-
 (****************************************************************
  *                                                              *
  *              Data structure templates                        *
@@ -17,29 +15,32 @@ const
 //
 
 type
+  {$IFNDEF FPC}
   PNCB = ^NCB;
+  {$ENDIF ~FPC}
 
   TNcbPost = procedure (P: PNCB); stdcall;
 
+  {$IFNDEF FPC}
   _NCB = record
     ncb_command: UCHAR;  // command code
     ncb_retcode: UCHAR;  // return code
     ncb_lsn: UCHAR;      // local session number
     ncb_num: UCHAR;      // number of our network name
-    ncb_buffer: PChar;   // address of message buffer
+    ncb_buffer: PUCHAR;  // address of message buffer
     ncb_length: Word;    // size of message buffer
-    ncb_callname: array [0..NCBNAMSZ - 1] of Char; // blank-padded name of remote
-    ncb_name: array [0..NCBNAMSZ - 1] of Char;     // our blank-padded netname
+    ncb_callname: array [0..NCBNAMSZ - 1] of UCHAR; // blank-padded name of remote
+    ncb_name: array [0..NCBNAMSZ - 1] of UCHAR;     // our blank-padded netname
     ncb_rto: UCHAR;      // rcv timeout/retry count
     ncb_sto: UCHAR;      // send timeout/sys timeout
     ncb_post: TNcbPost;  // POST routine address
     ncb_lana_num: UCHAR; // lana (adapter) number
     ncb_cmd_cplt: UCHAR; // 0xff => commmand pending
     {$IFDEF _WIN64}
-    ncb_reserve: array [0..17] of Char; // reserved, used by BIOS
-    {$ELSE}
-    ncb_reserve: array [0..9] of Char;  // reserved, used by BIOS
-    {$ENDIF}
+    ncb_reserve: array [0..17] of UCHAR; // reserved, used by BIOS
+    {$ELSE ~_WIN64}
+    ncb_reserve: array [0..9] of UCHAR;  // reserved, used by BIOS
+    {$ENDIF ~_WIN64}
     ncb_event: THandle;   // HANDLE to Win32 event which
                          // will be set to the signalled
                          // state when an ASYNCH command
@@ -49,12 +50,14 @@ type
   NCB = _NCB;
   {$EXTERNALSYM NCB}
   TNcb = NCB;
+  {$ENDIF ~FPC}
 
 //
 //  Structure returned to the NCB command NCBASTAT is ADAPTER_STATUS followed
 //  by an array of NAME_BUFFER structures.
 //
-
+{$IFNDEF FPC}
+type
   _ADAPTER_STATUS = record
     adapter_address: array [0..5] of UCHAR;
     rev_major: UCHAR;
@@ -93,7 +96,7 @@ type
   PAdapterStatus = PADAPTER_STATUS;
 
   _NAME_BUFFER = record
-    name: array [0..NCBNAMSZ - 1] of Char;
+    name: array [0..NCBNAMSZ - 1] of UCHAR;
     name_num: UCHAR;
     name_flags: UCHAR;
   end;
@@ -104,6 +107,7 @@ type
   {$EXTERNALSYM PNAME_BUFFER}
   TNameBuffer = NAME_BUFFER;
   PNameBuffer = PNAME_BUFFER;
+{$ENDIF ~FPC}
 
 //  values for name_flags bits.
 
@@ -134,6 +138,7 @@ const
 //  status for all names.
 //
 
+{$IFNDEF FPC}
 type
   _SESSION_HEADER = record
     sess_name: UCHAR;
@@ -164,6 +169,7 @@ type
   {$EXTERNALSYM PSESSION_BUFFER}
   TSessionBuffer = SESSION_BUFFER;
   PSessionBuffer = PSESSION_BUFFER;
+{$ENDIF ~FPC}
 
 //  Values for state
 
@@ -188,6 +194,7 @@ const
 //  length =3, lana[0]=0, lana[1]=2 and lana[2]=3 will be returned.
 //
 
+{$IFNDEF FPC}
 type
   _LANA_ENUM = record
     length: UCHAR; // Number of valid entries in lana[]
@@ -200,12 +207,14 @@ type
   {$EXTERNALSYM PLANA_ENUM}
   TLanaEnum = LANA_ENUM;
   PLanaEnum = PLANA_ENUM;
+{$ENDIF ~FPC}
 
 //
 //  Structure returned to the NCB command NCBFINDNAME is FIND_NAME_HEADER followed
 //  by an array of FIND_NAME_BUFFER structures.
 //
 
+{$IFNDEF FPC}
 type
   _FIND_NAME_HEADER = record
     node_count: WORD;
@@ -253,6 +262,7 @@ type
   {$EXTERNALSYM PACTION_HEADER}
   TActionHeader = ACTION_HEADER;
   PActionHeader = PACTION_HEADER;
+{$ENDIF ~FPC}
 
 //  Values for transport_id
 
@@ -261,8 +271,6 @@ const
   {$EXTERNALSYM ALL_TRANSPORTS}
   MS_NBF         = 'MNBF';
   {$EXTERNALSYM MS_NBF}
-
-{$ENDIF ~CLR}
 
 (****************************************************************
  *                                                              *
@@ -423,8 +431,6 @@ const
  ****************************************************************)
 
 {$IFDEF MSWINDOWS}
-{$IFNDEF CLR}
 function Netbios(pncb: PNCB): UCHAR; stdcall;
 {$EXTERNALSYM Netbios}
-{$ENDIF ~CLR}
 {$ENDIF MSWINDOWS}

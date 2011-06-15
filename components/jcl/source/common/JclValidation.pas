@@ -18,8 +18,16 @@
 { Contributor(s):                                                                                  }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date: 2006-12-26 17:32:00 +0100 (mar., 26 déc. 2006) $
+{                                                                                                  }
+{ This unit contains ISBN validation routines                                                      }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date:: 2009-07-30 12:08:05 +0200 (jeu., 30 juil. 2009)                         $ }
+{ Revision:      $Rev:: 2892                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclValidation;
 
@@ -33,22 +41,28 @@ uses
 {$ENDIF UNITVERSIONING}
 
 // ISBN: International Standard Book Number
-function IsValidISBN(const ISBN: AnsiString): Boolean;
+function IsValidISBN(const ISBN: string): Boolean;
 
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jcl.svn.sourceforge.net/svnroot/jcl/tags/JCL-1.101-Build2725/jcl/source/common/JclValidation.pas $';
-    Revision: '$Revision: 1846 $';
-    Date: '$Date: 2006-12-26 17:32:00 +0100 (mar., 26 déc. 2006) $';
-    LogPath: 'JCL\source\common'
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/source/common/JclValidation.pas $';
+    Revision: '$Revision: 2892 $';
+    Date: '$Date: 2009-07-30 12:08:05 +0200 (jeu., 30 juil. 2009) $';
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
 implementation
 
+uses
+  JclBase,
+  JclSysUtils;
+  
 { TODO -cDoc : Donator: Ivo Bauer }
-function IsValidISBN(const ISBN: AnsiString): Boolean;
+function IsValidISBN(const ISBN: string): Boolean;
 //
 // References:
 // ===========
@@ -59,10 +73,39 @@ type
   TISBNPartSizes = array [TISBNPart] of Integer;
 const
   ISBNSize = 13;
-  ISBNDigits = ['0'..'9'];
-  ISBNSpecialDigits = ['x', 'X'];
-  ISBNSeparators = [#32, '-'];
-  ISBNCharacters = ISBNDigits + ISBNSpecialDigits + ISBNSeparators;
+
+function CharIsISBNSpecialDigit(const C: Char): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+begin
+  case C of
+    'x', 'X':
+      Result := True;
+  else
+    Result := False;
+  end;
+end;
+
+function CharIsISBNSeparator(const C: Char): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+begin
+  case C of
+    #32, '-':
+      Result := True;
+  else
+    Result := False;
+  end;
+end;
+
+function CharIsISBNCharacter(const C: Char): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+begin
+  case C of
+    '0'..'9',
+    'x', 'X',
+    #32, '-':
+      Result := True;
+  else
+    Result := False;
+  end;
+end;
+
 var
   CurPtr, EndPtr: Integer;
   Accumulator, Counter: Integer;
@@ -87,15 +130,13 @@ begin
   Accumulator := 0;
   Counter := 10;
   Part := ipGroupID;
-  {$IFNDEF CLR}
-  FillChar(PartSizes[Low(PartSizes)], SizeOf(PartSizes), 0);
-  {$ENDIF ~CLR}
+  ResetMemory(PartSizes[Low(PartSizes)], SizeOf(PartSizes));
 
   while CurPtr <= EndPtr do
   begin
-    if ISBN[CurPtr] in ISBNCharacters then
+    if CharIsISBNCharacter(ISBN[CurPtr]) then
     begin
-      if ISBN[CurPtr] in ISBNSeparators then
+      if CharIsISBNSeparator(ISBN[CurPtr]) then
       begin
         // Switch to the next ISBN part, but take care of two conditions:
         // 1. Do not let Part go beyond its upper bound (ipCheckDigit).
@@ -118,7 +159,7 @@ begin
         end
         else
           // Special check digit is allowed to occur only at the end of ISBN.
-          if ISBN[CurPtr] in ISBNSpecialDigits then
+          if CharIsISBNSpecialDigit(ISBN[CurPtr]) then
             Exit;
 
         // Increment the size of the current ISBN part.
@@ -126,7 +167,7 @@ begin
 
         // Increment the accumulator by current ISBN digit multiplied by a weight.
         // To get more detailed information, please refer to the web site [1].
-        if (CurPtr = EndPtr) and (ISBN[CurPtr] in ISBNSpecialDigits) then
+        if (CurPtr = EndPtr) and CharIsISBNSpecialDigit(ISBN[CurPtr]) then
           Inc(Accumulator, 10 * Counter)
         else
           Inc(Accumulator, (Ord(ISBN[CurPtr]) - Ord('0')) * Counter);

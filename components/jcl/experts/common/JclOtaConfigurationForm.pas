@@ -1,38 +1,44 @@
-{****************************************************************************}
-{                                                                            }
-{ Project JEDI Code Library (JCL)                                            }
-{                                                                            }
-{ The contents of this file are subject to the Mozilla Public License        }
-{ Version 1.1 (the "License");                                               }
-{ you may not use this file except in compliance with the License. You may   }
-{ obtain a copy of the License at http://www.mozilla.org/MPL/                }
-{                                                                            }
-{ Software distributed under the License is distributed on an "AS IS" basis, }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License   }
-{ for the specific language governing rights and limitations under the       }
-{ License.                                                                   }
-{                                                                            }
-{ The Original Code is JclOtaActionConfigureSheet.pas.                       }
-{                                                                            }
-{ The Initial Developer of the Original Code is Florent Ouchet               }
-{         <outchy att users dott sourceforge dott net>                       }
-{ Portions created by Florent Ouchet are Copyright (C) of Florent Ouchet.    }
-{                                                                            }
-{ Contributors:                                                              }
-{                                                                            }
-{****************************************************************************}
-{                                                                            }
-{ Last modified: $Date: 2006-05-18 18:04:47 +0200 (jeu., 18 mai 2006) $                                                    }
-{                                                                            }
-{****************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclOtaActionConfigureSheet.pas.                                             }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is Florent Ouchet                                     }
+{         <outchy att users dott sourceforge dott net>                                             }
+{ Portions created by Florent Ouchet are Copyright (C) of Florent Ouchet. All rights reserved.     }
+{                                                                                                  }
+{ Contributors:                                                                                    }
+{   Uwe Schuster (uschuster)                                                                       }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date:: 2009-09-14 18:00:50 +0200 (lun., 14 sept. 2009)                         $ }
+{ Revision:      $Rev:: 3012                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclOtaConfigurationForm;
+
+{$I jcl.inc}
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, ComCtrls,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclOtaUtils;
 
 type
@@ -62,6 +68,18 @@ type
     function Execute(PageName: string): Boolean;
     property Settings: TJclOTASettings read FSettings;
   end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/experts/common/JclOtaConfigurationForm.pas $';
+    Revision: '$Revision: 3012 $';
+    Date: '$Date: 2009-09-14 18:00:50 +0200 (lun., 14 sept. 2009) $';
+    LogPath: 'JCL\experts\common';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -166,10 +184,32 @@ end;
 function TJclOtaOptionsForm.Execute(PageName: string): Boolean;
 var
   ATreeNode: TTreeNode;
+  NodeName: string;
+  PosSeparator: Integer;
   AItemDataRec: TItemDataRec;
 begin
-  // TODO: use PageName
   ATreeNode := TreeViewCategories.Items.GetFirstNode;
+
+  repeat
+    PosSeparator := Pos('\', PageName);
+    if PosSeparator > 0 then
+    begin
+      NodeName := Copy(PageName, 1, PosSeparator - 1);
+      PageName := Copy(PageName, PosSeparator + 1, Length(PageName) - PosSeparator);
+      while Assigned(ATreeNode) and (CompareText(NodeName, ATreeNode.Text) <> 0) do
+        ATreeNode := ATreeNode.getNextSibling;
+      if Assigned(ATreeNode) then
+        ATreeNode := ATreeNode.getFirstChild;
+    end
+    else
+    begin
+      while Assigned(ATreeNode) and (CompareText(PageName, ATreeNode.Text) <> 0) do
+        ATreeNode := ATreeNode.getNextSibling;
+    end;
+  until PosSeparator = 0;
+
+  if not Assigned(ATreeNode) then
+    ATreeNode := TreeViewCategories.Items.GetFirstNode;
   if Assigned(ATreeNode) then
     TreeViewCategories.Selected := ATreeNode;
 
@@ -190,11 +230,11 @@ end;
 
 procedure TJclOtaOptionsForm.FormCreate(Sender: TObject);
 begin
-  Caption := RsConfigurationCaption;
-  ButtonOk.Caption := RsOk;
-  ButtonCancel.Caption := RsCancel;
-  LabelSelectPage.Caption := RsSelectPage;
-  LabelHomePage.Caption := RsHomePage;
+  Caption := LoadResString(@RsConfigurationCaption);
+  ButtonOk.Caption := LoadResString(@RsOk);
+  ButtonCancel.Caption := LoadResString(@RsCancel);
+  LabelSelectPage.Caption := LoadResString(@RsSelectPage);
+  LabelHomePage.Caption := LoadResString(@RsHomePage);
 
   SetBounds(Settings.LoadInteger(JclLeft, Left),
             Settings.LoadInteger(JclTop, Top),
@@ -214,7 +254,7 @@ end;
 
 procedure TJclOtaOptionsForm.LabelHomePageClick(Sender: TObject);
 begin
-  ShellExecute(Handle, 'open', 'http://jcl.sf.net/', '', '', SW_SHOW);
+  ShellExecute(Handle, 'open', PChar(LoadResString(@RsHomePageURL)), '', '', SW_SHOW);
 end;
 
 procedure TJclOtaOptionsForm.TreeViewCategoriesChange(Sender: TObject;
@@ -230,5 +270,13 @@ begin
   for Index := 0 to PanelOptions.ControlCount - 1 do
     PanelOptions.Controls[Index].Visible := PanelOptions.Controls[Index] = AControl;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

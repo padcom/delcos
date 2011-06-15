@@ -25,8 +25,12 @@
 { Unit owner: Uwe Schuster                                                                         }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date: 2007-02-04 19:37:27 +0100 (dim., 04 févr. 2007) $
+{                                                                                                  }
+{ Last modified: $Date:: 2010-02-11 13:14:06 +0100 (jeu., 11 févr. 2010)                        $ }
+{ Revision:      $Rev:: 3188                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclUnitVersioningProviders;
 
@@ -96,13 +100,22 @@ function InsertUnitVersioningSection(const ExecutableFileName: TFileName;
   AUnitList: TJclUnitVersioningList): Boolean;
 {$ENDIF MSWINDOWS}
 
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/source/common/JclUnitVersioningProviders.pas $';
+    Revision: '$Revision: 3188 $';
+    Date: '$Date: 2010-02-11 13:14:06 +0100 (jeu., 11 févr. 2010) $';
+    LogPath: 'JCL\source\common';
+    Extra: '';
+    Data: nil
+  );
+
 implementation
 
 const
   JclUnitVersioningDataResName = 'JCLUV';
 
 type
-  PJclUnitVersioningHeader = ^TJclUnitVersioningHeader;
   TJclUnitVersioningHeader = record
     UnitCount: Integer;
   end;
@@ -134,9 +147,13 @@ end;
 procedure TJclUnitVersioningList.Clear;
 var
   I: Integer;
+  Item: PUnitVersionInfo;
 begin
   for I := FItems.Count - 1 downto 0 do
-    Dispose(FItems[I]);
+  begin
+    Item := PUnitVersionInfo(FItems[I]);
+    Dispose(Item);
+  end;
   FItems.Clear;
 end;
 
@@ -173,6 +190,7 @@ begin
   begin
     if AStream.Size - AStream.Position >= SizeOf(StringLength) then
     begin
+      StringLength := 0;
       AStream.Read(StringLength, SizeOf(StringLength));
       if StringLength <= AStream.Size - AStream.Position then
       begin
@@ -255,6 +273,7 @@ begin
   if Assigned(AStream) then
   begin
     Clear;
+    Header.UnitCount := 0;
     AStream.Read(Header, SizeOf(Header));
     UnitsToRead := Header.UnitCount;
     LastReadOkay := True;
@@ -384,14 +403,6 @@ begin
   if Idx <> -1 then
     FModules.Delete(Idx);
 end;
-
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jcl.svn.sourceforge.net/svnroot/jcl/tags/JCL-1.101-Build2725/jcl/source/common/JclUnitVersioningProviders.pas $';
-    Revision: '$Revision: 1912 $';
-    Date: '$Date: 2007-02-04 19:37:27 +0100 (dim., 04 févr. 2007) $';
-    LogPath: 'JCL\common';
-  );
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);

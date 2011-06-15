@@ -1,30 +1,30 @@
-{****************************************************************************}
-{                                                                            }
-{ Project JEDI Code Library (JCL)                                            }
-{                                                                            }
-{ The contents of this file are subject to the Mozilla Public License        }
-{ Version 1.1 (the "License");                                               }
-{ you may not use this file except in compliance with the License. You may   }
-{ obtain a copy of the License at http://www.mozilla.org/MPL/                }
-{                                                                            }
-{ Software distributed under the License is distributed on an "AS IS" basis, }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License   }
-{ for the specific language governing rights and limitations under the       }
-{ License.                                                                   }
-{                                                                            }
-{ The Original Code is JclOtaWizardFrame.pas.                                }
-{                                                                            }
-{ The Initial Developer of the Original Code is Florent Ouchet               }
-{         <outchy att users dott sourceforge dott net>                       }
-{ Portions created by Florent Ouchet are Copyright (C) of Florent Ouchet.    }
-{                                                                            }
-{ Contributors:                                                              }
-{                                                                            }
-{****************************************************************************}
-{                                                                            }
-{ Last modified: $Date: $                                                    }
-{                                                                            }
-{****************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclOtaWizardFrame.pas.                                                      }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is Florent Ouchet                                     }
+{         <outchy att users dott sourceforge dott net>                                             }
+{ Portions created by Florent Ouchet are Copyright (C) of Florent Ouchet. All rights reserved.     }
+{                                                                                                  }
+{ Contributors:                                                                                    }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date:: 2009-07-30 12:08:05 +0200 (jeu., 30 juil. 2009)                         $ }
+{ Revision:      $Rev:: 2892                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclOtaWizardFrame;
 
@@ -33,7 +33,10 @@ interface
 {$I jcl.inc}
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, 
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Dialogs;
 
 type
@@ -53,6 +56,18 @@ type
   end;
 
   TJclWizardFrameClass = class of TJclWizardFrame;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/experts/common/JclOtaWizardFrame.pas $';
+    Revision: '$Revision: 2892 $';
+    Date: '$Date: 2009-07-30 12:08:05 +0200 (jeu., 30 juil. 2009) $';
+    LogPath: 'JCL\experts\common';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -88,5 +103,12 @@ begin
   // override to customize
 end;
 
-end.
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
 
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
+
+end.

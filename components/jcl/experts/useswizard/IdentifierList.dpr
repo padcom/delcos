@@ -19,7 +19,9 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: $Date: 2006-11-03 18:55:09 +0100 (ven., 03 nov. 2006) $                            }
+{ Last modified: $Date:: 2008-09-09 21:32:17 +0200 (mar., 09 sept. 2008)                         $ }
+{ Revision:      $Rev:: 2461                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -36,7 +38,7 @@ program IdentifierList;
 uses
   SysUtils,
   Classes,
-  JvSimpleXml;
+  JclSimpleXml;
 
 var
   UnitList: TStringList;
@@ -89,12 +91,13 @@ end;
 
 procedure ProcessXML(const FileName: string);
 var
-  SimpleXML: TJvSimpleXML;
-  procedure ProcessNode(const Node: TJvSimpleXMLElem);
+  SimpleXML: TJclSimpleXML;
+
+  procedure ProcessNode(const Node: TJclSimpleXMLElem);
   var
     IndexSection, IndexChild: Integer;
-    SectionNode, ChildNode, LinkNode: TJvSimpleXMLElem;
-    NameProp, IdProp: TJvSimpleXMLProp;
+    SectionNode, ChildNode, LinkNode: TJclSimpleXMLElem;
+    NameProp, IdProp: TJclSimpleXMLProp;
   begin
     if SameText(Node.Name, 'topic') then
     begin
@@ -125,7 +128,7 @@ var
     end;
   end;
 begin
-  SimpleXML := TJvSimpleXML.Create(nil);
+  SimpleXML := TJclSimpleXML.Create;
   try
     Write('Loading XML...');
     SimpleXML.LoadFromFile(FileName);

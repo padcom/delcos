@@ -15,17 +15,20 @@
 { The Initial Developer of the Original Code is Peter Thornqvist.                                  }
 { Portions created by Peter Thornqvist are Copyright (C) Peter Thornqvist. All Rights Reserved.    }
 {                                                                                                  }
-{**************************************************************************************************}
-{                                                                                                  }
-{ MS Structured storage class wrapper                                                              }
-{                                                                                                  }
-{ Unit owner: Peter Thornqvist                                                                     }
 { Contributor(s):                                                                                  }
 {   A. Schmidt (shmia (at) bizerba.de)                                                             }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// Last modified: $Date: 2006-07-25 07:56:46 +0200 (mar., 25 juil. 2006) $
+{                                                                                                  }
+{ MS Structured storage class wrapper                                                              }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date:: 2009-07-30 12:08:05 +0200 (jeu., 30 juil. 2009)                         $ }
+{ Revision:      $Rev:: 2892                                                                     $ }
+{ Author:        $Author:: outchy                                                                $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 {
 Description:
@@ -225,10 +228,12 @@ procedure CoMallocFree(P: Pointer);
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jcl.svn.sourceforge.net/svnroot/jcl/tags/JCL-1.101-Build2725/jcl/source/windows/JclStructStorage.pas $';
-    Revision: '$Revision: 1695 $';
-    Date: '$Date: 2006-07-25 07:56:46 +0200 (mar., 25 juil. 2006) $';
-    LogPath: 'JCL\source\windows'
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/source/windows/JclStructStorage.pas $';
+    Revision: '$Revision: 2892 $';
+    Date: '$Date: 2009-07-30 12:08:05 +0200 (jeu., 30 juil. 2009) $';
+    LogPath: 'JCL\source\windows';
+    Extra: '';
+    Data: nil
     );
 {$ENDIF UNITVERSIONING}
 
@@ -241,30 +246,30 @@ uses
 var
   FMalloc: IMalloc = nil;
 
-type
-  PStgOptions = ^TStgOptions;
-  tagSTGOPTIONS = record
-    usVersion: Byte;
-    reserved: Byte;
-    ulSectorSize: DWORD;
-    pwcsTemplateFile: POleStr;
-  end;
-  {$EXTERNALSYM tagSTGOPTIONS}
-  TStgOptions = tagSTGOPTIONS;
+// type
+  // PStgOptions = ^TStgOptions;
+  // tagSTGOPTIONS = record
+  //   usVersion: Byte;
+  //   reserved: Byte;
+  //   ulSectorSize: DWORD;
+  //   pwcsTemplateFile: POleStr;
+  // end;
+  // {$EXTERNALSYM tagSTGOPTIONS}
+  // TStgOptions = tagSTGOPTIONS;
 
-  TStgCreateStorageExFunc = function(pwcsName: POleStr; grfMode: Longint; StgFmt: Longint; grfAttrs: DWORD; pStgOptions:
-    PStgOptions;
-    reserved2: Pointer; riid: TIID; out ppObjectOpen: IUnknown): HRESULT; stdcall;
-  TStgOpenStorageExFunc = function(pwcsName: POleStr; grfMode: Longint; StgFmt: Longint; grfAttrs: DWORD; pStgOptions:
-    PStgOptions;
-    reserved2: Pointer; riid: TIID; out ppObjectOpen: IUnknown): HRESULT; stdcall;
+  // TStgCreateStorageExFunc = function(pwcsName: POleStr; grfMode: Longint; StgFmt: Longint; grfAttrs: DWORD; pStgOptions:
+  //   PStgOptions;
+  //   reserved2: Pointer; riid: TIID; out ppObjectOpen: IUnknown): HRESULT; stdcall;
+  // TStgOpenStorageExFunc = function(pwcsName: POleStr; grfMode: Longint; StgFmt: Longint; grfAttrs: DWORD; pStgOptions:
+  //   PStgOptions;
+  //   reserved2: Pointer; riid: TIID; out ppObjectOpen: IUnknown): HRESULT; stdcall;
 
-var
+//var
   // replacements for StgCreateDocFile and StgOpenStorage on Win2k and XP - not currently used
-  StgCreateStorageEx: TStgCreateStorageExFunc = nil;
-  {$EXTERNALSYM StgCreateStorageEx}
-  StgOpenStorageEx: TStgOpenStorageExFunc = nil;
-  {$EXTERNALSYM StgOpenStorageEx}
+  // StgCreateStorageEx: TStgCreateStorageExFunc = nil;
+  // {$EXTERNALSYM StgCreateStorageEx}
+  // StgOpenStorageEx: TStgOpenStorageExFunc = nil;
+  // {$EXTERNALSYM StgOpenStorageEx}
 
 procedure CoMallocFree(P: Pointer);
 begin
@@ -339,11 +344,15 @@ begin
     Result := nil
   else
   begin
+    {$IFDEF SUPPORTS_UNICODE}
+    Result := PChar(S);
+    {$ELSE ~SUPPORTS_UNICODE}
     Result := AllocMem((Length(S)+1) * SizeOf(WideChar));
     MultiByteToWideChar(CP_ACP, 0, PChar(S), Length(S), Result, Length(S));
     // (outchy) length(S) is the number of characters, not the size in bytes
     // (rom) fixed output buffer size (see Win32 help)
     //MultiByteToWideChar(CP_ACP, 0, PChar(S), Length(S), Result, Length(S) div 2);
+    {$ENDIF ~SUPPORTS_UNICODE}
   end;
 end;
 

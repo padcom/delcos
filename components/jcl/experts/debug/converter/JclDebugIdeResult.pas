@@ -1,31 +1,39 @@
-{******************************************************************************}
-{                                                                              }
-{ Project JEDI Code Library (JCL) extension                                    }
-{                                                                              }
-{ The contents of this file are subject to the Mozilla Public License Version  }
-{ 1.0 (the "License"); you may not use this file except in compliance with the }
-{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
-{                                                                              }
-{ Software distributed under the License is distributed on an "AS IS" basis,   }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
-{ the specific language governing rights and limitations under the License.    }
-{                                                                              }
-{ The Original Code is JclDebugResult.pas.                                     }
-{                                                                              }
-{ The Initial Developer of the Original Code is documented in the accompanying }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C)   }
-{ of these individuals.                                                        }
-{                                                                              }
-{ Last modified: $Date: 2006-10-30 16:00:17 +0100 (lun., 30 oct. 2006) $                                  }
-{                                                                              }
-{******************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL) extension                                                        }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.0 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclDebugResult.pas.                                                         }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying help file JCL.chm.  }
+{ Portions created by these individuals are Copyright (C) of these individuals.                    }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Last modified: $Date:: 2010-03-04 22:17:07 +0100 (jeu., 04 mars 2010)                          $ }
+{ Revision:      $Rev:: 3206                                                                     $ }
+{ Author:        $Author:: ahuser                                                                $ }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclDebugIdeResult;
+
+{$I jcl.inc}
 
 interface
 
 uses
   Windows, SysUtils, Classes, Controls, Forms, ComCtrls, StdCtrls, ImgList,
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclOtaUtils;
 
 type
@@ -34,7 +42,7 @@ type
     ResultListView: TListView;
     ImageList1: TImageList;
     procedure FormDestroy(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
@@ -47,6 +55,18 @@ type
     constructor Create(AOwner: TComponent; ASettings: TJclOTASettings); reintroduce;
   end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$URL: https://jcl.svn.sourceforge.net:443/svnroot/jcl/tags/JCL-2.2-Build3970/jcl/experts/debug/converter/JclDebugIdeResult.pas $';
+    Revision: '$Revision: 3206 $';
+    Date: '$Date: 2010-03-04 22:17:07 +0100 (jeu., 04 mars 2010) $';
+    LogPath: 'JCL\experts\debug\converter';
+    Extra: '';
+    Data: nil
+    );
+{$ENDIF UNITVERSIONING}
+
 implementation
 
 {$R *.dfm}
@@ -54,7 +74,8 @@ implementation
 uses
   Clipbrd, Math,
   JclStrings,
-  JclOtaConsts;
+  JclOtaConsts,
+  JclOtaResources;
 
 procedure ListViewToStrings(ListView: TListView; Strings: TStrings;
   SelectedOnly: Boolean = False; Headers: Boolean = True);
@@ -160,7 +181,7 @@ begin
     Params.WndParent := Application.Handle;
 end;
 
-procedure TJclDebugResultForm.FormCreate(Sender: TObject);
+procedure TJclDebugResultForm.FormShow(Sender: TObject);
 var
   Index: Integer;
 begin
@@ -168,6 +189,15 @@ begin
             Settings.LoadInteger(JclTop, Top),
             Settings.LoadInteger(JclWidth, Width),
             Settings.LoadInteger(JclHeight, Height));
+
+  OkBtn.Caption := LoadResString(@RsOk);
+  ResultListView.Columns.Items[0].Caption := LoadResString(@RsProject);
+  ResultListView.Columns.Items[1].Caption := LoadResString(@RsMapFileSize);
+  ResultListView.Columns.Items[2].Caption := LoadResString(@RsJCLDebugSize);
+  ResultListView.Columns.Items[3].Caption := LoadResString(@RsRatio);
+  ResultListView.Columns.Items[4].Caption := LoadResString(@RsExecutableFileName);
+  ResultListView.Columns.Items[5].Caption := LoadResString(@RsLinkerBug);
+  ResultListView.Columns.Items[6].Caption := LoadResString(@RsLineErrors);
 
   with ResultListView.Columns do
     for Index := 0 to Count - 1 do
@@ -196,5 +226,13 @@ begin
     MessageBeep(MB_OK);
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
