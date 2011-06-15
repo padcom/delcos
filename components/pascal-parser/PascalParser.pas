@@ -100,8 +100,8 @@ begin
   Tokenizer := TBuildTokenList.Create;
   try
     Tokenizer.SourceCode := Source.Text;
-    Tokenizer.PreserveWhiteSpaces := PreserveWhiteSpaces;
-    Tokenizer.PreserveComments := PreserveComments;
+//    Tokenizer.PreserveWhiteSpaces := PreserveWhiteSpaces;
+//    Tokenizer.PreserveComments := PreserveComments;
     SourceTokens := Tokenizer.BuildTokenList;
     RemoveConditionalCompilation(SourceTokens);
     SourceTokens.SetXYPositions;

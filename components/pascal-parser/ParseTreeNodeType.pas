@@ -11,7 +11,7 @@ unit ParseTreeNodeType;
 
 The Original Code is ParseTreeNodeType, released May 2003.
 The Initial Developer of the Original Code is Anthony Steele. 
-Portions created by Anthony Steele are Copyright (C) 1999-2000 Anthony Steele.
+Portions created by Anthony Steele are Copyright (C) 1999-2008 Anthony Steele.
 All Rights Reserved. 
 Contributor(s): Anthony Steele. 
 
@@ -23,8 +23,14 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either express or implied.
 See the License for the specific language governing rights and limitations 
 under the License.
+
+Alternatively, the contents of this file may be used under the terms of
+the GNU General Public License Version 2 or later (the "GPL") 
+See http://www.gnu.org/licenses/gpl.html
 ------------------------------------------------------------------------------*)
 {*)}
+
+{$I JcfGlobal.inc}
 
 interface
 
@@ -135,7 +141,7 @@ type
     nAsm,
     nAsmStatement,
     nAsmIdent,
-    nASMOpcode,
+    nAsmOpcode,
     nAsmParam,
     nAsmLabel,
     nHintDirectives,
@@ -146,7 +152,10 @@ type
     nHashLiteralChar,
     nHatLiteralChar,
     nAttribute,
-    nClassVars
+    nClassVars,
+    nGeneric,
+    nAnonymousMethod,
+    nMethodReferenceType
     );
 
   TParseTreeNodeTypeSet = set of TParseTreeNodeType;
@@ -176,7 +185,10 @@ const
   nTopLevelSections = [nTypeSection, nConstSection, nVarSection,
     nLabelDeclSection, nExports];
 
-
+  MethodDeclarations: TParseTreeNodeTypeSet =
+    [nProcedureDecl, nFunctionDecl, nConstructorDecl, nDestructorDecl];
+  MethodHeadings: TParseTreeNodeTypeSet =
+    [nFunctionHeading, nProcedureHeading, nConstructorHeading, nDestructorHeading];
 
 function NodeTypeToString(const pe: TParseTreeNodeType): string;
 
@@ -395,7 +407,7 @@ begin
       Result := 'asm statement';
     nAsmIdent:
       Result := 'asm ident';
-    nASMOpcode:
+    nAsmOpcode:
       Result := 'asm opcode';
     nAsmParam:
       Result := 'asm param';
@@ -417,6 +429,12 @@ begin
       Result := 'hat literal char';
     nAttribute:
       Result := 'Attribute';
+    nGeneric:
+      Result := 'Generic';
+    nAnonymousMethod:
+      Result := 'Anonymous method';
+    nMethodReferenceType:
+      Result := 'Method reference type';
     else
       Result := 'Bad node type ' + IntToStr(Ord(pe));
 

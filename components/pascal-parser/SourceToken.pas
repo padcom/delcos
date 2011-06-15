@@ -4,7 +4,7 @@
 
 The Original Code is Token.pas, released April 2000.
 The Initial Developer of the Original Code is Anthony Steele. 
-Portions created by Anthony Steele are Copyright (C) 1999-2000 Anthony Steele.
+Portions created by Anthony Steele are Copyright (C) 1999-2008 Anthony Steele.
 All Rights Reserved. 
 Contributor(s): Anthony Steele. 
 
@@ -16,6 +16,10 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either express or implied.
 See the License for the specific language governing rights and limitations 
 under the License.
+
+Alternatively, the contents of this file may be used under the terms of
+the GNU General Public License Version 2 or later (the "GPL") 
+See http://www.gnu.org/licenses/gpl.html
 ------------------------------------------------------------------------------*)
 {*)}
 
@@ -23,6 +27,8 @@ unit SourceToken;
 
 { Created AFS 29 Nov 1999
   Token  - element of source code text }
+
+{$I JcfGlobal.inc}
 
 interface
 
@@ -35,17 +41,18 @@ type
   TSourceToken = class(TParseTreeNode)
   private
     { property implementation }
-    fsSourceCode: string;
+    fsSourceCode: WideString;
     feTokenType: TTokenType;
     feWordType: TWordType;
     feCommentStyle: TCommentStyle;
 
+    fsFileName: string;
     fiXPosition, fiYPosition: integer;
     fiSolidTokenOnLineIndex: integer;
     fbPreprocessedOut: boolean;
 
     fePreprocessorSymbol: TPreProcessorSymbolType;
-    fsPreProcessorText: string;
+    fsPreProcessorText: WideString;
 
   protected
   public
@@ -55,6 +62,7 @@ type
     function DescribePosition: string;
 
     function IsSolid: boolean;
+    function SourceLine: string;
 
     function HasChildNode(const peTokens: TTokenTypeSet): boolean; override;
     function HasChildNode(const peTokens: TTokenTypeSet;
@@ -77,16 +85,17 @@ type
     property TokenType: TTokenType Read feTokenType Write feTokenType;
     property WordType: TWordType Read feWordType Write feWordType;
 
-    property SourceCode: string Read fsSourceCode Write fsSourceCode;
+    property SourceCode: WideString Read fsSourceCode Write fsSourceCode;
     property CommentStyle: TCommentStyle Read feCommentStyle Write feCommentStyle;
 
+    property FileName: string read fsFileName write fsFileName;
     property XPosition: integer Read fiXPosition Write fiXPosition;
     property YPosition: integer Read fiYPosition Write fiYPosition;
     property SolidTokenOnLineIndex: integer
       Read fiSolidTokenOnLineIndex Write fiSolidTokenOnLineIndex;
 
     property PreprocessorSymbol: TPreProcessorSymbolType Read fePreprocessorSymbol;
-    property PreProcessorText: string Read fsPreProcessorText;
+    property PreProcessorText: WideString Read fsPreProcessorText;
 
     property PreprocessedOut: boolean Read fbPreprocessedOut Write fbPreprocessedOut;
   end;
@@ -233,6 +242,31 @@ begin
     Result := 1
   else
     Result := 0;
+end;
+
+function TSourceToken.SourceLine: string;
+var
+  lcLineToken: TSourceToken;
+begin
+  // find the return at the start of the line
+  // or nil for start of first line
+  lcLineToken := self;
+
+  while lcLineToken.PriorToken <> nil do
+  begin
+    if lcLineToken.PriorToken.TokenType = ttReturn then
+      break
+    else
+      lcLineToken := lcLineToken.PriorToken;
+  end;
+
+  // walk to the end of the line
+  Result := '';
+  while (lcLineToken <> nil) and (lcLineToken.TokenType <> ttReturn) do
+  begin
+    Result := Result + lcLineToken.SourceCode;
+    lcLineToken :=  lcLineToken.NextToken;
+  end;
 end;
 
 function TSourceToken.FirstSolidLeaf: TParseTreeNode;

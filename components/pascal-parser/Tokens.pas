@@ -4,7 +4,7 @@
 
 The Original Code is Tokens.pas, released June 2003.
 The Initial Developer of the Original Code is Anthony Steele.
-Portions created by Anthony Steele are Copyright (C) 1999-2003 Anthony Steele.
+Portions created by Anthony Steele are Copyright (C) 1999-2008 Anthony Steele.
 All Rights Reserved.
 Contributor(s): Anthony Steele, Adem Baba
 
@@ -16,6 +16,10 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either express or implied.
 See the License for the specific language governing rights and limitations
 under the License.
+
+Alternatively, the contents of this file may be used under the terms of
+the GNU General Public License Version 2 or later (the "GPL") 
+See http://www.gnu.org/licenses/gpl.html
 ------------------------------------------------------------------------------*)
 {*)}
 unit Tokens;
@@ -40,6 +44,8 @@ unit Tokens;
   the enum item name is the token prefixed with 'tt'
   ie 'while' -> ttWhile
 }
+
+{$I JcfGlobal.inc}
 
 interface
 
@@ -76,7 +82,7 @@ type
     ttHash,
     ttDoubleDot, // '..' as in '[1 .. 2]'
     ttAssign,    // :=
-    ttAmpersand, // '&' is used in ASM
+    ttAmpersand, // '&' is used in Asm
 
     ttIdentifier, // a user-defined name for a var, type, unit, etc
 
@@ -200,6 +206,9 @@ type
     ttUnsafe,
     ttVarArgs,
 
+    { delphi 2009 }
+    ttReference,
+
     { built-in constants }
     ttNil,
     ttTrue,
@@ -254,6 +263,7 @@ type
     ttHat,
     ttTimes,
     ttFloatDiv,
+    ttExponent,
     ttPlus,
     ttMinus,
     ttEquals,
@@ -378,14 +388,14 @@ const
 
   AddOperators: TTokenTypeSet = [ttPlus, ttMinus, ttOr, ttXor];
 
-  MulOperators: TTokenTypeSet = [ttTimes, ttFloatDiv, ttDiv, ttMod, ttAnd, ttShl, ttShr];
+  MulOperators: TTokenTypeSet = [ttTimes, ttFloatDiv, ttDiv, ttMod, ttAnd, ttShl, ttShr, ttExponent];
 
   SingleSpaceOperators = [
     // some unary operators
     ttNot,
     // all operators that are always binary
     ttAnd, ttAs, ttDiv, ttIn, ttIs, ttMod, ttOr, ttShl, ttShr, ttXor,
-    ttTimes, ttFloatDiv, ttEquals, ttGreaterThan, ttLessThan,
+    ttTimes, ttFloatDiv, ttExponent, ttEquals, ttGreaterThan, ttLessThan,
     ttGreaterThanOrEqual, ttLessThanOrEqual, ttNotEqual];
 
   StringWords: TTokenTypeSet = [ttString, ttAnsiString, ttWideString];
@@ -407,8 +417,8 @@ const
   AsmOffsets: TTokenTypeSet = [ttVmtOffset, ttDmtOffset];
 
 { interpret a string as a token }
-procedure TypeOfToken(const psWord: string; var peWordType: TWordType;
-  var peToken: TTokenType); overload;
+procedure TypeOfToken(const psWord: string; out peWordType: TWordType;
+  out peToken: TTokenType); overload;
 function TypeOfToken(const psWord: string): TTokenType; overload;
 function WordTypeOfToken(const peTokenType: TTokenType): TWordType; overload;
 
@@ -442,8 +452,8 @@ type
 const
   PREPROC_BLOCK_END = [ppElseIf, ppElse, ppEndIf, ppIfEnd];
 
-procedure GetPreprocessorSymbolData(const psSourceCode: string;
-  var peSymbolType: TPreProcessorSymbolType; var psText: string);
+procedure GetPreprocessorSymbolData(const psSourceCode: WideString;
+  var peSymbolType: TPreProcessorSymbolType; var psText: WideString);
 
 function PreProcSymbolTypeToString(const peSymbolType: TPreProcessorSymbolType): string;
 function PreProcSymbolTypeSetToString(
@@ -452,9 +462,14 @@ function PreProcSymbolTypeSetToString(
 implementation
 
 uses
-  SysUtils,
+  { system }
+{$IFNDEF FPC}
   Windows,
-  JclStrings;
+{$ENDIF}
+  SysUtils,
+  { local }
+  JcfStringUtils,
+  JcfUnicode;
 
 { the majority of these tokens have a fixed textual representation
   e.g. ':=', 'if'.
@@ -571,7 +586,7 @@ begin
   AddKeyword('library', wtReservedWord, ttLibrary);
   AddKeyword('object', wtReservedWord, ttObject);
   AddKeyword('of', wtReservedWord, ttOf);
-  AddKeyword('out', wtReservedWord, ttOut);
+  AddKeyword('out', wtReservedWordDirective, ttOut);
   AddKeyword('packed', wtReservedWord, ttPacked);
   AddKeyword('procedure', wtReservedWord, ttProcedure);
   AddKeyword('program', wtReservedWord, ttProgram);
@@ -663,6 +678,10 @@ begin
   AddKeyword('unsafe', wtReservedWordDirective, ttUnsafe);
   AddKeyword('varargs', wtReservedWordDirective, ttVarArgs);
 
+  { delphi 2009 }
+    AddKeyword('reference', wtReservedWordDirective, ttReference);
+
+
   { operators that are words not symbols }
   AddKeyword('and', wtOperator, ttAnd);
   AddKeyword('as', wtOperator, ttAs);
@@ -719,6 +738,7 @@ begin
   AddKeyword('@', wtOperator, ttAtSign);
   AddKeyword('^', wtOperator, ttHat);
   AddKeyword('*', wtOperator, ttTimes);
+  AddKeyword('**', wtOperator, ttExponent); // in FreePascal
   AddKeyword('/', wtOperator, ttFloatDiv);
   AddKeyword('+', wtOperator, ttPlus);
   AddKeyword('-', wtOperator, ttMinus);
@@ -813,8 +833,8 @@ end;
 
 
 { turn text to enum. Assumes data is sorted out and sorted }
-procedure TypeOfToken(const psWord: string; var peWordType: TWordType;
-  var peToken: TTokenType);
+procedure TypeOfToken(const psWord: string; out peWordType: TWordType;
+  out peToken: TTokenType);
 var
   liMapItemLoop:  integer;
   liCharIndex:    integer;
@@ -1015,8 +1035,8 @@ const
 
 
 { given a token, identify the preprocessor symbol and the text after it }
-procedure GetPreprocessorSymbolData(const psSourceCode: string;
-  var peSymbolType: TPreProcessorSymbolType; var psText: string);
+procedure GetPreprocessorSymbolData(const psSourceCode: WideString;
+  var peSymbolType: TPreProcessorSymbolType; var psText: WideString);
 var
   leLoop:    TPreProcessorSymbolType;
   liItemLen: integer;
@@ -1031,7 +1051,7 @@ begin
 
     liItemLen := Length(PreProcessorSymbolData[leLoop]);
     if AnsiSameText(StrLeft(psSourceCode, liItemLen), PreProcessorSymbolData[leLoop]) and
-      ( not CharIsAlpha(psSourceCode[liItemLen + 1])) then
+      ( not WideCharIsAlpha(psSourceCode[liItemLen + 1])) then
     begin
       peSymbolType := leLoop;
       break;

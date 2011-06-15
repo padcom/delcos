@@ -1,5 +1,34 @@
 unit PreProcessorExpressionTokenise;
 
+{(*}
+(*------------------------------------------------------------------------------
+ Delphi Code formatter source code 
+
+The Original Code is PreProcessorExpressionTokenise, released August 2003.
+The Initial Developer of the Original Code is Anthony Steele. 
+Portions created by Anthony Steele are Copyright (C) 2003 Anthony Steele.
+All Rights Reserved. 
+Contributor(s): Anthony Steele. 
+
+The contents of this file are subject to the Mozilla Public License Version 1.1
+(the "License"). you may not use this file except in compliance with the License.
+You may obtain a copy of the License at http://www.mozilla.org/NPL/
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either express or implied.
+See the License for the specific language governing rights and limitations 
+under the License.
+
+Alternatively, the contents of this file may be used under the terms of
+the GNU General Public License Version 2 or later (the "GPL") 
+See http://www.gnu.org/licenses/gpl.html
+------------------------------------------------------------------------------*)
+{*)}
+
+{$I JcfGlobal.inc}
+
+interface
+
 {
   AFS 26 Aug 2003
 
@@ -8,15 +37,12 @@ unit PreProcessorExpressionTokenise;
  The tokens are defined in PreProcessorTokens
  Whitespace is discarded
 }
-
-interface
-
 uses PreProcessorExpressionTokens;
 
 type
   TPreProcessorExpressionTokeniser = class
   private
-    fsExpr: string;
+    fsExpr: String;
     fiCurrentIndex: integer;
     fbHasError: boolean;
 
@@ -35,7 +61,7 @@ type
 
     procedure Tokenise;
 
-    property Expression: string Read fsExpr Write fsExpr;
+    property Expression: String Read fsExpr Write fsExpr;
     property Tokens: TPreProcessorExpressionTokenList Read fcTokens;
     property HasError: boolean Read fbHasError;
   end;
@@ -44,9 +70,9 @@ implementation
 
 uses
   { delphi }
-  SysUtils, Windows,
-  { jcl }
-  JclStrings;
+  {$IFNDEF FPC}Windows,{$ENDIF} SysUtils,
+  { local }
+  JcfStringUtils;
 
 
 constructor TPreProcessorExpressionTokeniser.Create;
@@ -63,12 +89,12 @@ end;
 
 function TPreProcessorExpressionTokeniser.Rest: string;
 begin
-  Result := StrRestOf(fsExpr, fiCurrentIndex);
+  Result := string(StrRestOf(fsExpr, fiCurrentIndex));
 end;
 
 function TPreProcessorExpressionTokeniser.StartsWith(const ps: string): boolean;
 begin
-  Result := AnsiSameText(StrLeft(Rest, length(ps)), ps);
+  Result := AnsiSameText(StrLeft(Rest, Length(ps)), ps);
 end;
 
 procedure TPreProcessorExpressionTokeniser.Tokenise;
@@ -130,7 +156,7 @@ begin
 
     Result := True;
 
-    lsIdentifierText := copy(fsExpr, liStart, fiCurrentIndex - liStart);
+    lsIdentifierText := string(copy(fsExpr, liStart, fiCurrentIndex - liStart));
     fcTokens.Add(eIdentifier, lsIdentifierText);
   end;
 end;

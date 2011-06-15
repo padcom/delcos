@@ -21,7 +21,7 @@ unit SourceTokenList;
 
 The Original Code is SourceTokenList, released May 2003.
 The Initial Developer of the Original Code is Anthony Steele.
-Portions created by Anthony Steele are Copyright (C) 1999-2000 Anthony Steele.
+Portions created by Anthony Steele are Copyright (C) 1999-2008 Anthony Steele.
 All Rights Reserved.
 Contributor(s): Anthony Steele, Adem Baba
 
@@ -33,8 +33,14 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either express or implied.
 See the License for the specific language governing rights and limitations
 under the License.
+
+Alternatively, the contents of this file may be used under the terms of
+the GNU General Public License Version 2 or later (the "GPL") 
+See http://www.gnu.org/licenses/gpl.html
 ------------------------------------------------------------------------------*)
 {*)}
+
+{$I JcfGlobal.inc}
 
 interface
 
@@ -100,8 +106,8 @@ implementation
 uses
   { delphi }
   SysUtils,
-  { jcl }
-  JclAnsiStrings;
+  { local }
+  JcfMiscFunctions;
 
 constructor TSourceTokenList.Create;
 begin
@@ -268,109 +274,6 @@ begin
     Result := lc.WordType;
 end;
 
-procedure PosLastAndCount(const ASubString, AString: ansistring;
-  var ALastPos: integer; var ACount: integer);
-var
-  {This gets the last occurance and count in one go. It saves time}
-  LastCahr1: char;
-  Index1:    integer;
-  Index2:    integer;
-  Index3:    integer;
-  Length1:   integer;
-  Length2:   integer;
-  Found1:    boolean;
-begin
-  ACount   := 0;
-  ALastPos := 0;
-  Length1  := Length(AString);
-  Length2  := Length(ASubString);
-  if Length2 > Length1 then
-    Exit
-  else
-  begin
-    LastCahr1 := ASubString[Length2];
-    Index1    := Length1;
-    while Index1 > 0 do
-    begin
-      if (AString[Index1] = LastCahr1) then
-      begin
-        Index2 := Index1;
-        Index3 := Length2;
-        Found1 := Index2 >= Length2;
-        while Found1 and (Index2 > 0) and (Index3 > 0) do
-        begin
-          Found1 := (AString[Index2] = ASubString[Index3]);
-          Dec(Index2);
-          Dec(Index3);
-        end;
-        if Found1 then
-        begin
-          if ALastPos = 0 then
-            ALastPos := Index2 + 1;
-          Inc(ACount);
-          Index1 := Index2;
-          Continue;
-        end;
-      end;
-      Dec(Index1);
-    end;
-  end;
-end;
-
-{ given an existing source pos, and a text string that adds at that pos,
-  calculate the new text pos
-  - if the text does not contain a newline, add its length onto the Xpos
-  - if the text contains newlines, then add on to the Y pos, and
-    set the X pos to the text length after the last newline }
-{AdemBaba}
-procedure AdvanceTextPos(const AText: string; var ARow, ACol: integer);
-var
-  Length1: integer;
-  Count1:  integer;
-  Pos1:    integer;
-begin
-  {This is more than 3 times faster than the original.
-  I have meticilously checked that it conforms with the original}
-  Length1 := Length(AText);
-  case Length1 of
-    0: ; {Trivial case}
-    1:
-    begin
-      case AText[1] of
-        AnsiCarriageReturn, AnsiLineFeed:
-        begin {#13 or #10}
-          Inc(ACol);
-          ARow := 1; // XPos is indexed from 1
-        end;
-        else
-          Inc(ARow, Length1)
-      end;
-    end;
-    2:
-    begin
-      if (AText[1] = AnsiCarriageReturn) and (AText[2] = AnsiLineFeed) then
-      begin
-        Inc(ACol);
-        ARow := 1; // XPos is indexed from 1
-      end
-      else
-        Inc(ARow, Length1);
-    end;
-    else
-      PosLastAndCount(AnsiLineBreak, AText, Pos1, Count1);
-      if Pos1 <= 0 then
-        Inc(ARow, Length1)
-      else
-      begin // multiline
-        Inc(ACol, Count1);
-        ARow := Length1 - (Pos1 + 1); {2 = Length(AnsiLineBreak)}
-
-        if ARow < 1 then
-          ARow := 1;
-      end;
-  end;
-end;
-
 procedure TSourceTokenList.SetXYPositions;
 var
   liLoop:   integer;
@@ -409,16 +312,16 @@ end;
 
 procedure TSourceTokenList.Insert(const piIndex: integer; const pcItem: TSourceToken);
 begin
-  if fiCurrentTokenIndex <> 0 then
-    raise Exception.Create('Insert Not allowed in Stack mode');
+  if (fiCurrentTokenIndex <> 0) and (piIndex < fiCurrentTokenIndex) then
+    raise Exception.Create('TSourceTokenList: Insert back not allowed in Stack mode');
 
   inherited Insert(piIndex, pcItem);
 end;
 
 procedure TSourceTokenList.Delete(const piIndex: integer);
 begin
-  if fiCurrentTokenIndex <> 0 then
-    raise Exception.Create('Delete Not allowed in Stack mode');
+  if (fiCurrentTokenIndex <> 0) and (piIndex < fiCurrentTokenIndex) then
+    raise Exception.Create('TSourceTokenList: Delete back not allowed in Stack mode');
 
   inherited Delete(piIndex);
 end;

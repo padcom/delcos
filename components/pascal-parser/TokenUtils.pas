@@ -12,8 +12,8 @@ unit TokenUtils;
  Delphi Code formatter source code 
 
 The Original Code is TokenUtils, released May 2003.
-The Initial Developer of the Original Code is Anthony Steele. 
-Portions created by Anthony Steele are Copyright (C) 1999-2000 Anthony Steele.
+The Initial Developer of the Original Code is Anthony Steele.
+Portions created by Anthony Steele are Copyright (C) 1999-2008 Anthony Steele.
 All Rights Reserved. 
 Contributor(s): Anthony Steele. 
 
@@ -23,14 +23,20 @@ You may obtain a copy of the License at http://www.mozilla.org/NPL/
 
 Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either express or implied.
-See the License for the specific language governing rights and limitations
+See the License for the specific language governing rights and limitations 
 under the License.
+
+Alternatively, the contents of this file may be used under the terms of
+the GNU General Public License Version 2 or later (the "GPL") 
+See http://www.gnu.org/licenses/gpl.html
 ------------------------------------------------------------------------------*)
 {*)}
 
+{$I JcfGlobal.inc}
+
 interface
 
-uses ParseTreeNode, SourceToken;
+uses ParseTreeNode, SourceToken, SettingsTypes;
 
 { make a new return token }
 function NewReturn: TSourceToken;
@@ -76,6 +82,7 @@ function InRoundBrackets(const pt: TSourceToken): boolean;
 
 function SemicolonNext(const pt: TSourceToken): boolean;
 
+
 { true if the token is in code, ie in procedure/fn body,
   init section, finalization section, etc
 
@@ -99,7 +106,6 @@ function InFormalParams(const pt: TSourceToken): boolean;
 function IsActualParamOpenBracket(const pt: TSourceToken): boolean;
 function IsFormalParamOpenBracket(const pt: TSourceToken): boolean;
 
-function IsLineBreaker(const pcToken: TSourceToken): boolean;
 function IsMultiLineComment(const pcToken: TSourceToken): boolean;
 function IsSingleLineComment(const pcToken: TSourceToken): boolean;
 
@@ -117,7 +123,7 @@ function InFilesUses(const pt: TParseTreeNode): boolean;
 
 function Root(const pt: TParseTreeNode): TParseTreeNode;
 
-function UnitName(const pt: TParseTreeNode): string;
+function JCFUnitName(const pt: TParseTreeNode): string;
 
 { identifying identifiers is tricky
 since delphi is more lenient about
@@ -156,22 +162,28 @@ function StartsLiteralString(const pt: TSourceToken): boolean;
 
 function NextToWhiteSpace(const pt: TSourceToken): boolean;
 
+
+function IsInsideAsm(const pt: TSourceToken): boolean;
+function HasAsmCaps(const pt: TSourceToken): boolean;
+
+
 implementation
 
 uses
   { delphi }
-  SysUtils, Windows,
-  { jcl }
-  JclAnsiStrings,
+  {$IFNDEF FPC}Windows,{$ENDIF} SysUtils,
   { local }
-  ParseTreeNodeType, Tokens, Nesting;
+  JcfUnicode,
+  JcfStringUtils,
+  ParseTreeNodeType, Tokens, Nesting,
+  AsmKeywords;
 
 
 function NewReturn: TSourceToken;
 begin
   Result := TSourceToken.Create;
   Result.TokenType := ttReturn;
-  Result.SourceCode := AnsiLineBreak;
+  Result.SourceCode := WideLineBreak;
 end;
 
 function NewSpace(const piLength: integer): TSourceToken;
@@ -180,7 +192,7 @@ begin
 
   Result := TSourceToken.Create;
   Result.TokenType := ttWhiteSpace;
-  Result.SourceCode := StrRepeat(AnsiSpace, piLength);
+  Result.SourceCode := WideStringRepeat(WideSpace, piLength);
 end;
 
 procedure InsertTokenAfter(const pt, ptNew: TSourceToken);
@@ -189,6 +201,7 @@ begin
   Assert(pt.Parent <> nil);
   Assert(ptNew <> nil);
 
+  ptNew.FileName := pt.FileName;
   pt.Parent.InsertChild(pt.IndexOfSelf + 1, ptNew);
 end;
 
@@ -198,6 +211,7 @@ begin
   Assert(pt.Parent <> nil);
   Assert(ptNew <> nil);
 
+  ptNew.FileName := pt.FileName;
   pt.Parent.InsertChild(pt.IndexOfSelf, ptNew);
 end;
 
@@ -218,6 +232,7 @@ begin
   Assert(pt.Parent <> nil);
 
   Result := NewSpace(piSpaces);
+  Result.FileName := pt.FileName;
   pt.Parent.InsertChild(pt.IndexOfSelf, Result);
 end;
 
@@ -534,7 +549,7 @@ begin
     exit;
 
   // otherwise, if it contains a return it's not single line 
-  if (Pos(AnsiLineBreak, pcToken.SourceCode) <= 0) then
+  if (Pos(WideString(WideLineBreak), pcToken.SourceCode) <= 0) then
     exit;
 
   Result := True;
@@ -558,12 +573,6 @@ begin
     lcPrev := pcToken.PriorToken;
     Result := (lcPrev <> nil) and (lcPrev.TokenType = ttReturn);
   end;
-end;
-
-function IsLineBreaker(const pcToken: TSourceToken): boolean;
-begin
-  Result := (pcToken.TokenType = ttReturn) or IsMultiLineComment(pcToken) or
-   (pcToken.TokenType = ttConditionalCompilationRemoved);
 end;
 
 { count the number of identifiers in the var decl
@@ -675,7 +684,7 @@ begin
     Result := Result.Parent;
 end;
 
-function UnitName(const pt: TParseTreeNode): string;
+function JCFUnitName(const pt: TParseTreeNode): string;
 var
   lcRoot: TParseTreeNode;
   lcUnitHeader: TParseTreeNode;
@@ -823,6 +832,23 @@ begin
       lcNext := pt.NextToken;
       Result := (lcNext <> nil) and (lcNext.TokenType = ttWhiteSpace) and (lcNext.SourceCode <> '');
     end;
+  end;
+end;
+
+function IsInsideAsm(const pt: TSourceToken): boolean;
+begin
+   Result := pt.HasParentNode(nAsm) and not (pt.TokenType in [ttAsm, ttEnd]);
+end;
+
+function HasAsmCaps(const pt: TSourceToken): boolean;
+begin
+  if pt.TokenType = ttComment then
+  begin
+    Result := False;
+  end
+  else
+  begin
+    Result := pt.HasParentNode(nAsmOpcode, 2) or IsAsmParamKeyword(pt.SourceCode);
   end;
 end;
 
