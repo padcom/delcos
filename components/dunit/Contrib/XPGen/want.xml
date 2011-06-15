@@ -1,0 +1,35 @@
+<!-- 
+========================================================================
+ Copyright (c) 1999-2001 The DUnit Group. All rights reserved.
+ $Id: want.xml,v 1.5 2004/04/29 18:52:44 juanco Exp $
+======================================================================== 
+ This is a Want build script.
+ See:
+  http://www.suigeneris.org/want/
+ for details.
+======================================================================== 
+
+-->
+<project name="xpgen"
+  default="test" 
+  basedir=".">
+ 
+  <target name="compile" >
+    <dcc source="*.dpr"
+         dcuoutput="${scratch.dir}"
+         exeoutput="${bin.dir}"
+         debug="true"
+         build="true"
+         uselibrarypath="yes"
+         console="yes"
+    >
+      <unitpath path="${src.dir}" />
+      <resourcepath path="${src.dir}" />
+    </dcc>
+  </target>
+  
+  <target name="test" depends="compile" >
+    <dunit testlib="${bin.dir}/testXpgenLib.dll" />
+  </target>
+
+</project>

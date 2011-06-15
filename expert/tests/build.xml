@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<project name="CodeMetrics expert - Tests" default="all">
+  <target name="all" depends="compile"/>
+  <target name="compile">
+    <exec executable="dcc32">
+      <arg value="-Q"/>
+      <arg value="-V-"/>
+      <arg value="-$D-"/>
+      <arg value="-E..\build\bin"/>
+      <arg value="-N..\build\obj"/>
+      <arg value="tests.dpr"/>
+    </exec>
+  </target>
+</project>

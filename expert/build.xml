@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<project name="CodeMetrics expert" default="all">
+  <target name="all" depends="compile"/>
+
+  <target name="compile">
+    <mkdir dir="..\build/bin"/>
+    <mkdir dir="..\build/obj"/>
+    <exec executable="dcc32">
+      <arg value="-B"/>
+      <arg value="-Q"/>
+      <arg value="-V-"/>
+      <arg value="-$D-"/>
+      <arg value="-E..\build\bin"/>
+      <arg value="-N..\build\obj"/>
+      <arg value="CodeMetricsExp.dpr"/>
+    </exec>
+  </target>
+
+  <target name="test">
+    <ant dir="tests" target="compile"/>
+    <exec executable="dunit-cli.exe">
+      <arg value="-c"/>
+      <arg value="build\bin\tests.dll"/>
+    </exec>
+  </target>
+
+  <target name="clean">
+    <delete dir="build"/>
+  </target>
+</project>

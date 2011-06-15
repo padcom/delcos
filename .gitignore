@@ -5,3 +5,4 @@ cui/revision.inc
 *.o
 *.rst
 *.exe
+*.dsk

@@ -21,6 +21,7 @@
 			<arg value="-$W-" />
 			<arg value="delcos.dpr" />
 		</exec>
+		<ant dir="expert" target="all"/>
 	</target>
 	<target name="clean">
 		<delete dir="build"/>
