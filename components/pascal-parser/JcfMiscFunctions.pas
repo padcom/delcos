@@ -103,11 +103,15 @@ function Str2Float(s: string): double;
 var
   code: integer;
 begin
+  {$IF CompilerVersion >= 17}
+  // de-localise the string if need be
+  if (FormatSettings.DecimalSeparator <> '.') and (Pos(FormatSettings.DecimalSeparator, s) > 0) then
+    StrReplace(s, FormatSettings.DecimalSeparator, '.');
+  {$ELSE}
   // de-localise the string if need be
   if (DecimalSeparator <> '.') and (Pos(DecimalSeparator, s) > 0) then
-  begin
     StrReplace(s, DecimalSeparator, '.');
-  end;
+  {$IFEND}
 
   Val(s, Result, Code);
   if code <> 0 then
@@ -120,10 +124,15 @@ function Float2Str(const d: double): string;
 var
   OrgSep: char;
 begin
-  OrgSep := DecimalSeparator;
+  {$IF CompilerVersion >= 17}
+  OrgSep := FormatSettings.DecimalSeparator;
+  Result := FloatToStr(d);
+  FormatSettings.DecimalSeparator := OrgSep;
+  {$ELSE}
   DecimalSeparator := '.';
   Result := FloatToStr(d);
   DecimalSeparator := OrgSep;
+  {$IFEND}
 end;
 
 

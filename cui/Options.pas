@@ -170,9 +170,8 @@ begin
 end;
 
 procedure TOptions.WriteProgramVersion;
-{$I revision.inc}
 begin
-  Writeln('version 1.0 (r', REVISION, ')');
+  Writeln('version 1.0');
   Writeln;
 end;
 
