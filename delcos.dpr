@@ -5,17 +5,17 @@ program delcos;
 uses
   Classes, SysUtils, IniFiles,
   PascalParser,
-  CommentRemovalVisitor in 'core\CommentRemovalVisitor.pas',
-  CyclomaticComplexityCalculatorVisitor in 'core\CyclomaticComplexityCalculatorVisitor.pas',
-  IncludeParser in 'core\IncludeParser.pas',
   Options in 'cui\Options.pas',
   OptionsValidator in 'cui\OptionsValidator.pas',
-  ProjectUnitsRegistratorVisitor in 'core\ProjectUnitsRegistratorVisitor.pas',
-  SourceTreeDumperVisitor in 'core\SourceTreeDumperVisitor.pas',
   SourceTreeWalker in 'core\SourceTreeWalker.pas',
+  SourceTreeDumperVisitor in 'core\SourceTreeDumperVisitor.pas',
   UnitRegistry in 'core\UnitRegistry.pas',
+  CommentRemovalVisitor in 'core\CommentRemovalVisitor.pas',
+  WhitespaceRemovalVisitor in 'core\WhitespaceRemovalVisitor.pas',
+  IncludeParser in 'core\IncludeParser.pas',
+  ProjectUnitsRegistratorVisitor in 'core\ProjectUnitsRegistratorVisitor.pas',
   UsesTreeBuilderVisitor in 'core\UsesTreeBuilderVisitor.pas',
-  WhitespaceRemovalVisitor in 'core\WhitespaceRemovalVisitor.pas';
+  CyclomaticComplexityCalculatorVisitor in 'core\CyclomaticComplexityCalculatorVisitor.pas';
 
 procedure DumpCyclomaticComplexity;
 var
@@ -118,6 +118,3 @@ begin
     end;
   end;
 end.
-
-
-

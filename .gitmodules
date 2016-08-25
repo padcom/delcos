@@ -1,3 +1,3 @@
-[submodule "SubModules/FastMM4"]
-	path = SubModules/FastMM4
+[submodule "submodules/FastMM4"]
+	path = submodules/FastMM4
 	url = https://github.com/pleriche/FastMM4
