@@ -129,7 +129,7 @@ end;
 
 function TSourceTokenList.GetItem(const piIndex: integer): TSourceToken;
 begin
-  Result := TSourceToken(List^[piIndex]);
+  Result := TSourceToken(List[piIndex]);
 end;
 
 procedure TSourceTokenList.SetItem(const piIndex: integer; const pcObject: TSourceToken);
@@ -139,21 +139,21 @@ end;
 
 function TSourceTokenList.First: TSourceToken;
 begin
-  Result := TSourceToken(List^[fiCurrentTokenIndex]);
+  Result := TSourceToken(List[fiCurrentTokenIndex]);
 end;
 
 function TSourceTokenList.FirstTokenType: TTokenType;
 begin
   Result := ttUnknown;
   if Count > 0 then
-    Result := TSourceToken(List^[fiCurrentTokenIndex]).TokenType;
+    Result := TSourceToken(List[fiCurrentTokenIndex]).TokenType;
 end;
 
 function TSourceTokenList.FirstWordType: TWordType;
 begin
   Result := wtNotAWord;
   if Count > 0 then
-    Result := TSourceToken(List^[fiCurrentTokenIndex]).WordType;
+    Result := TSourceToken(List[fiCurrentTokenIndex]).WordType;
 end;
 
 function TSourceTokenList.FirstTokenLength: integer;
@@ -206,7 +206,7 @@ begin
   liLoop := fiCurrentTokenIndex;
   while liLoop < Count do
   begin
-    lcItem := TSourceToken(List^[liLoop]);
+    lcItem := TSourceToken(List[liLoop]);
     if not (lcItem.TokenType in AExclusions) then
     begin
       Result := lcItem;
@@ -237,7 +237,7 @@ begin
 
   while liLoop < Count do
   begin
-    lcTestToken := TSourceToken(List^[liLoop]);
+    lcTestToken := TSourceToken(List[liLoop]);
     if (lcTestToken <> nil) and lcTestToken.IsSolid then
     begin
       // found a solid token.
@@ -285,7 +285,7 @@ begin
   liLoop := fiCurrentTokenIndex;
   while liLoop < Count do
   begin
-    lcToken := TSourceToken(List^[liLoop]);
+    lcToken := TSourceToken(List[liLoop]);
     lcToken.XPosition := liX;
     lcToken.YPosition := liY;
     AdvanceTextPos(lcToken.SourceCode, liX, liY);
@@ -299,8 +299,8 @@ begin
 
     Here I am not doing any index checking at all.
     This thing needs to be FAST. Access to here is quite controlled anyway.}
-  Result := TSourceToken(List^[fiCurrentTokenIndex]);
-  List^[fiCurrentTokenIndex] := nil;
+  Result := TSourceToken(List[fiCurrentTokenIndex]);
+  List[fiCurrentTokenIndex] := nil;
 
   inc(fiCurrentTokenIndex);
 end;
